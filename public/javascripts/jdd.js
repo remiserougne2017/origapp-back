@@ -20,7 +20,8 @@ var jddBooks=[
 
         "published": "true",
         "rating": "3",
-        "votesCount": "50"
+        "votesCount": "50",
+        'content':"[{title:1},{title:2}]"
     },
     {
         "isbn": "978-2-8098-0563-5",
