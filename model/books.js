@@ -37,7 +37,7 @@ const booksSchema = mongoose.Schema({
     viewsCount: Number,
     content: [contentSchema],
     publisher: {type: mongoose.Schema.Types.ObjectId, ref:"publishers"},
-
+    comments: [{type: mongoose.Schema.Types.ObjectId, ref:"comments"}]
 })
 
 var booksModel = mongoose.model('books', booksSchema);
