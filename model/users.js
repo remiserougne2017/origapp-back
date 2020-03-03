@@ -1,7 +1,5 @@
 var mongoose = require('./bdd');
 
-
-
 //schema mongoDB
 var usersSchema = mongoose.Schema({
     firstName: String,
