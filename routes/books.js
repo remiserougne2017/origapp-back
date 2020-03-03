@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var booksModel = require('../model/books')
+var booksModel = require('../model/books');
+var usersModel = require('../model/users');
+
 
 /*  Creation BDD */
 router.get('/bdd', async function(req, res, next) {
@@ -1987,9 +1989,65 @@ router.get('/bdd', async function(req, res, next) {
 
 
 router.post('/open-book', async function(req,res,next){
-  console.log('booooooook');
-  res.json({result:true})
+  console.log(req.body);
 
+  // AJOUTER dans le tableau dernière lecture du user l'id du livre
+  var userOpening = await usersModel.findOne({token:req.body.token});
+  var arrayLastRead = userOpening.lastRead;
+
+  var isInList = false;
+  for (let i = 0;i<userOpening.lastRead.length;i++){
+    // console.log("est testé",req.body.idBook,"avec",userOpening.lastRead[i])
+    if(req.body.idBook == userOpening.lastRead[i]) {
+      isInList = true
+  }
+}
+  // console.log(isInList)
+  if(isInList == false) {
+    if(arrayLastRead.length>3) {
+      arrayLastRead.shift();
+      arrayLastRead.push(req.body.idBook);
+    } else {
+      arrayLastRead.push(req.body.idBook);
+    }
+  }
+  await usersModel.updateOne(
+    { token:req.body.token},
+    { lastRead: arrayLastRead });
+
+
+  // ENVOYER AU FRONT les datas du livrs 
+  var bookOpened = await booksModel.findOne({_id:req.body.idBook});
+let arrayContent = [];
+for(let i=0;i<bookOpened.content.length;i++){
+ arrayContent.push({
+  idContent : bookOpened.content[i]._id,
+  title:bookOpened.content[i].title,
+  pageNum:bookOpened.content[i].pageNum,
+  status:bookOpened.content[i].status
+ })
+
+}
+
+  let dataBook = {
+    status:bookOpened.status,
+    idBook:bookOpened._id,
+    title:bookOpened.title,
+    author:bookOpened.authors,
+    description : 'description du livre',
+    coverImage: bookOpened.image,
+    rating:bookOpened.rating,
+    votes:bookOpened.votesCount,
+    contents:arrayContent,
+  }
+  console.log("book opened",dataBook);
+  
+
+
+
+
+
+  res.json({result:true,dataBook:dataBook})
 });
 
 
