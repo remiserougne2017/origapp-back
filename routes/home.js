@@ -36,7 +36,7 @@ router.get('/homePage/:token', async function(req, res, next) {
       inLibrairy: bool
     });
     }
-    console.log("livreMin",livreMin)
+    // console.log("livreMin",livreMin)
      res.json({livreMin});
     }else{
           result="erreur : pas de cata envoyé au front"
