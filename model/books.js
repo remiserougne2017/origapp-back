@@ -1,13 +1,6 @@
 var mongoose = require('./bdd');
 
 
-//Contenu schema
-const contentSchema = mongoose.Schema({
-    title: String,
-    pageNum: String,
-    status: Boolean
-})
-
 //media schema
 const mediaSchema = mongoose.Schema({
     type: String,
@@ -15,6 +8,15 @@ const mediaSchema = mongoose.Schema({
     source: String,
     texte: String,
     duration: Number
+})
+
+//Contenu schema
+const contentSchema = mongoose.Schema({
+    title: String,
+    pageNum: String,
+    status: Boolean,
+    media: [mediaSchema],
+
 })
 
 //Books Schema
@@ -34,7 +36,6 @@ const booksSchema = mongoose.Schema({
     votesCount: Number,
     viewsCount: Number,
     content: [contentSchema],
-    media: [mediaSchema],
     publisher: {type: mongoose.Schema.Types.ObjectId, ref:"publishers"},
     comments: [{type: mongoose.Schema.Types.ObjectId, ref:"comments"}]
 })
