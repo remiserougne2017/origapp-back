@@ -17,10 +17,49 @@ router.post('/sign-up', async (req, res, next) => {
 
   console.log(req.body)
 
+  var error = {};
+  var result = false;
+  var token = null;
+  var saveUser = null;
+  
+  //Vérification d'email unique
+  const searchEmail = await usersModel.findOne({
+    email: req.body.email
+  })
+
+  if(searchEmail != null){
+    error.email = "Email déjà existant"
+  } else {
+
+  //Vérification de champs non vides
+    if(req.body.firstName == ''
+  || req.body.email == ''
+  || req.body.password == ''){
+    error.emptyField = 'Le champ est vide'
+  }
+
+  // Vérification d'email valide
+  var regexEmail = /^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/;
+  var testEmail = req.body.email;
+  if(regexEmail.test(testEmail) != true){
+    error.emailNotValid = 'Email invalide'
+  }
+
+  // Vérification de mot de passe valide - 8 caractères et 1 lettre
+  var regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  var testPassword = req.body.password;
+  if(regexPassword.test(testPassword) != true){
+    error.passwordNotValid = 'Il faut 8 caractères et 1 chiffre'
+  }
+  }
+
+  if(Object.keys(error).length == 0){
     var salt = uid2(32)
+
     var newUser = new usersModel({
       firstName: req.body.firstName,
       email: req.body.email,
+      role: '', //reader ou editor
       pwd: SHA256(req.body.password+salt).toString(encBase64),
       salt: salt,
       token: uid2(32),
@@ -35,8 +74,10 @@ router.post('/sign-up', async (req, res, next) => {
       result = true
       token = saveUser.token
     }
-  console.log(result, saveUser)
-  res.json({result, saveUser, token})
+  }
+  
+  console.log(error)
+  res.json({result, token, error})
 })
 
 
