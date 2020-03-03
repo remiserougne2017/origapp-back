@@ -1,5 +1,6 @@
 var mongoose = require('./bdd');
 
+
 //Contenu schema
 const contentSchema = mongoose.Schema({
     title: String,
