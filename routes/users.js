@@ -9,7 +9,7 @@ var encBase64 = require('crypto-js/enc-base64')
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('oi');
+  res.send('un message');
 });
 
 /* Route POST SIGN-UP */
