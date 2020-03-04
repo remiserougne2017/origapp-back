@@ -14,6 +14,7 @@ router.get('/homePage/:token', async function(req, res, next) {
 
   //Generation du catalogue
  var livreMin = []
+ 
  var result = ''
   var catalogue = await booksModel.find()
 
