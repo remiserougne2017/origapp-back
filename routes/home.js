@@ -12,7 +12,7 @@ router.get('/homePage/:token', async function(req, res, next) {
   var user = await usersModel.findOne({token:req.params.token})
   var userLibrairy = user.myLibrairy
 
-  //Generation du catalogue
+  //Generation du catalogue                                                    ///////
  var livreMin = []
  
  var result = ''
@@ -51,30 +51,44 @@ res.json({livreMin, result})
  */
 router.post('/searchtext', async function(req, res, next) {
 
-  console.log("route recherche",req.body.textSearch)
+  console.log("route recherche",req.body)
   const regex = new RegExp(`${req.body.textSearch}`,"gi");
  
   var resultMin =[]
   var result = ""
- 
-     var exratio = await booksModel.find({ $or: [
-       { 'title': regex },
-       { 'authors': regex },
-       { 'illustrators': regex },
-      // { 'publisher': regex }
-       ]
-    });
-  
+  var user = await usersModel.findOne({token:req.body.token});
+  /* var tokenUser = user.token    */       
+  console.log("user search", user)                                            //
+  var userLibrairy = user.myLibrairy                                              //
+  var exratio = await booksModel.find({ $or: [
+    { 'title': regex },
+    { 'authors': regex },
+    { 'illustrators': regex },
+   // { 'publisher': regex }
+    ]
+ });
+  console.log("EXRATIO",exratio)
+  for (let i=0; i<exratio.length; i++){
+  var isInLibrairy = userLibrairy.findIndex(e =>e.equals(exratio[i]._id));      //
+  var bool = isInLibrairy!=-1?true:false                                        //
+  }
+
+  ///////////////////////////////////////////////////////////
     if (exratio.length>0) {
       result="ok"
      for (let i=0; i<exratio.length; i++){
+
         resultMin.push(
        {image: exratio[i].image,
        title: exratio[i].title,
        authors: exratio[i].authors,
        illustrators: exratio[i].illustrators,
-       rating:exratio[i].rating
+       // publisher: exratio[i].publishers,
+       rating:exratio[i].rating,
+       id: exratio[i]._id,
+      inLibrairy: bool
      });
+     console.log()
    }
    } else {
    result="erreur : pas de resultat searchtext"
