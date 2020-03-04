@@ -80,5 +80,43 @@ router.post('/sign-up', async (req, res, next) => {
   res.json({result, token, error})
 })
 
+/* Route POST SIGN-IN */
+router.post('/sign-in', async (req, res, next) => {
+
+  console.log(req.body)
+
+  var error = {};
+  var result = false;
+  var token = null;
+  var user = null;
+  
+  //Vérification champs non vides
+  if(req.body.email == '' || req.body.password == ''){
+    error.emptyField = 'Le champ est vide'
+
+    //Vérification email
+    if(Object.keys(error).length == 0){
+      const user = await usersModel.findOne({
+      email: req.body.email
+      })
+    }  
+    
+    //Vérification Mot de passe correcte
+    if(user){
+      const passwordEncrypt = SHA256(req.body.password + user.salt).toString(encBase64)
+
+      if(passwordEncrypt == user.pwd){
+        result = true
+        token = user.token
+      } else {
+        result = false
+        error.password = 'email ou mot de passe incorrects'
+      }
+    } else {
+      error.email = 'email inexistant'
+    }
+  }
+  res.json({result, token, error})
+})
 
 module.exports = router;
