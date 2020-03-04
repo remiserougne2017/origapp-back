@@ -1999,6 +1999,7 @@ router.get('/bdd', async function(req, res, next) {
 });
 
 
+// OPEN BOOK
 router.post('/open-book', async function(req,res,next){
   console.log(req.body);
 
@@ -2029,13 +2030,22 @@ router.post('/open-book', async function(req,res,next){
 
   // ENVOYER AU FRONT les datas du livrs 
   var bookOpened = await booksModel.findOne({_id:req.body.idBook});
+
 let arrayContent = [];
 for(let i=0;i<bookOpened.content.length;i++){
+
+  let arrayMedia = []
+  for(let j = 0;j<bookOpened.content[i].media.length;j++){
+    arrayMedia.push({
+      type: bookOpened.content[i].media[j].type,
+    })
+  }
  arrayContent.push({
   idContent : bookOpened.content[i]._id,
   title:bookOpened.content[i].title,
   pageNum:bookOpened.content[i].pageNum,
-  status:bookOpened.content[i].status
+  status:bookOpened.content[i].status,
+  media:arrayMedia
  })
 
 }
@@ -2062,5 +2072,71 @@ for(let i=0;i<bookOpened.content.length;i++){
 });
 
 
+// OPEN CONTENT 
+
+router.post('/open-content', async function(req,res,next){
+  console.log("opening content",req.body.idBook);
+  let bookOpened = await booksModel.findOne({_id:req.body.idBook});
+  console.log("bookopened",bookOpened)
+
+  var contentOpened;
+  var pageOpened;
+  for(let j=0;j<bookOpened.content.length;j++){
+    if(bookOpened.content[j]._id == req.body.idContent) {
+      contentOpened = bookOpened.content[j];
+      pageOpened=  bookOpened.content[j].pageNum
+    }
+
+  } 
+  console.log("content opened",contentOpened)
+
+  let returnedContentToFront = {
+    id:bookOpened._id,
+    title:bookOpened.title,
+    content:contentOpened,
+    pageNum:pageOpened
+  }
+
+
+
+
+  res.json({result:true, returnedContent:returnedContentToFront})
+});
+
+
+
+
+
+// OPEN OVERLAY
+// router.post('/display-content-list', async function(req,res,next){
+//   console.log("hello req body disaply overlay",req.body);
+
+//   var bookOpened = await booksModel.findOne({_id:req.body.idBook});
+
+//   let arrayContent = [];
+//   // console.log('bookopened',bookOpened)
+//   for(let i = 0;i<bookOpened.content.length;i++){
+//     if(bookOpened.content[i].pageNum == req.body.pageNum) {
+//       let arrayMedia = []
+//       for(let j = 0;j<bookOpened.content[i].media.length;j++){
+//         arrayMedia.push({
+//           type: bookOpened.content[i].media[j].type,
+//         })
+//       }
+//       arrayContent.push({
+//         bookTitle:bookOpened.title,
+//         idContent : bookOpened.content[i]._id,
+//         title:bookOpened.content[i].title,
+//         pageNum:bookOpened.content[i].pageNum,
+//         status:bookOpened.content[i].status,
+//         media:arrayMedia
+//       })
+
+//   }
+// }
+//   // console.log("RESUUUUUULT",arrayContent)
+
+//   res.json({result:true, contentFromBack:arrayContent})
+// });
 
 module.exports = router;
