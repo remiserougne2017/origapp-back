@@ -2,9 +2,28 @@ var express = require('express');
 var router = express.Router();
 var booksModel=require('../model/books')
 var usersModel=require('../model/users')
+var tagsModel=require('../model/tags')
+
+//Route récup des tags pour affichage
+router.get('/homePage/tags', async function(req, res, next) {
+//////////////////Chargement de la collection tags//////////////////////////
+    //   var tag =["Jeunesse","Histoire","Affiche","Livre","Comics","BD"]
+    // tag.map(async e=>{
+    //  var newTag =  new tagsModel({
+    //    "name":e
+    //  });
+    //  await newTag.save()
+    // })
+  //var tags= await tagsModel.find()
+
+var tags = await tagsModel.find()
+console.log("hehe",tags)
+
+  res.json(tags)
+  
+});
 
 //// ROUTE CATALOGUE
-
 router.get('/homePage/:token', async function(req, res, next) {
   console.log("route catalogue",req.params)
 
@@ -88,7 +107,7 @@ router.post('/searchtext', async function(req, res, next) {
 { 'illustrators': regex },
 { 'publisher': regex }, */
 
-//Route ajout à la bibliotheque
+//Route ajout à la bibliotheque si bool == true
 router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
   var user = await usersModel.findOne({token:req.params.token})
   var userLib=user.myLibrairy
@@ -99,12 +118,12 @@ router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
     var saveLib = await usersModel.updateOne(
       { token:req.params.token},
       { myLibrairy: newLib })
-      result={mess:"Cet ouvrage a été ajouté à votre bibliothèque.",type:"success"}
+      result={mess:"Ajouté à votre bibliothèque.",type:"success"}
   }else{
     var saveLib =  await usersModel.updateOne(
       { token:req.params.token},
       { myLibrairy: newLib })
-      result={mess:"Cet ouvrage a été supprimé de votre bibliothèque.",type:"info"}
+      result={mess:"Supprimé de votre bibliothèque.",type:"info"}
   }
  
   res.json(result);
