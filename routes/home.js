@@ -21,7 +21,7 @@ router.get('/homePage/:token', async function(req, res, next) {
    result="ok"
   for (let i=0; i<catalogue.length; i++){
     //le livre est il en bibliotheque du user
-    console.log("userLIbrairy",userLibrairy,catalogue[i]._id)
+    
     var isInLibrairy = userLibrairy.findIndex(e =>e.equals(catalogue[i]._id));
     var bool = isInLibrairy!=-1?true:false
 
@@ -36,7 +36,7 @@ router.get('/homePage/:token', async function(req, res, next) {
       inLibrairy: bool
     });
     }
-    console.log("livreMin",livreMin)
+    // console.log("livreMin",livreMin)
      res.json({livreMin});
     }else{
           result="erreur : pas de cata envoyé au front"
@@ -63,10 +63,7 @@ router.post('/searchtext', async function(req, res, next) {
       // { 'publisher': regex }
        ]
     });
-    
-
-    console.log(".................................................",exratio)
-
+  
     if (exratio.length>0) {
       result="ok"
      for (let i=0; i<exratio.length; i++){
@@ -78,20 +75,11 @@ router.post('/searchtext', async function(req, res, next) {
        rating:exratio[i].rating
      });
    }
-   
-     console.log ("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",resultMin)
-   
-     console.log("result searchtext envoyé au front")
-   } else {console.log(exratio);
-   result="erreur : pas de resultat searchtext envoyé au front"
+   } else {
+   result="erreur : pas de resultat searchtext"
    };
    res.json({resultMin, result})
    } )
-    
-    
-  
-  
- 
 
 // ${req.body}
 
@@ -99,11 +87,27 @@ router.post('/searchtext', async function(req, res, next) {
 /* ,
 { 'illustrators': regex },
 { 'publisher': regex }, */
-//Route ajout à la bibliotheque
-router.get('/addLibrairy/:id/:bool', function(req, res, next) {
-console.log("Route addLibrairy", req.params)
 
-  res.json({ title: 'Express Rem' });
+//Route ajout à la bibliotheque
+router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
+  var user = await usersModel.findOne({token:req.params.token})
+  var userLib=user.myLibrairy
+  newLib = userLib.filter(e=>e!=req.params.id)
+  var result
+  if(req.params.bool=="true"){
+    newLib.push(req.params.id)
+    var saveLib = await usersModel.updateOne(
+      { token:req.params.token},
+      { myLibrairy: newLib })
+      result={mess:"Cet ouvrage a été ajouté à votre bibliothèque.",type:"success"}
+  }else{
+    var saveLib =  await usersModel.updateOne(
+      { token:req.params.token},
+      { myLibrairy: newLib })
+      result={mess:"Cet ouvrage a été supprimé de votre bibliothèque.",type:"info"}
+  }
+ 
+  res.json(result);
 });
 
 module.exports = router;
