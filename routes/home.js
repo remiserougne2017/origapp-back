@@ -34,14 +34,13 @@ router.get('/homePage/:token', async function(req, res, next) {
   //Generation du catalogue                                                    ///////
  var livreMin = []
  
- var result = ''
   var catalogue = await booksModel.find()
 
  if (catalogue.length>0) {
    result="ok"
   for (let i=0; i<catalogue.length; i++){
-    //le livre est il en bibliotheque du user
-    
+
+    //le livre est-il en bibliotheque du user
     var isInLibrairy = userLibrairy.findIndex(e =>e.equals(catalogue[i]._id));
     var bool = isInLibrairy!=-1?true:false
 
@@ -64,20 +63,68 @@ router.get('/homePage/:token', async function(req, res, next) {
 res.json({livreMin, result})
 } )
 
-/// ROUTE SEARCH TEXT
+//Route searchTag
+router.post('/searchTag', async function(req, res, next) {
+  var resultMin =[]
+  var userToken=JSON.parse(req.body.token)
+  console.log("userToken",userToken)
+  var user = await usersModel.findOne({token:userToken});
+  var userLibrairy = user.myLibrairy 
+  var tagId=[]
+  var tag=JSON.parse(req.body.tagsSearch)
+  console.log("TAG",tag)
+  for(i=0;i<tag.length;i++){
+    if(tag[i].color=="red"){
+      tagId.push(tag[i]._id)
+    }
+  }
+console.log("tagId",tagId)
+  if(tagId.length==0){
+   var result="Aucune sélection"
+   var allBooks =await booksModel.find()
+   console.log("AllBooks",allBooks.length)
+    res.json({result,resultMin : allBooks})
+  }else{
+    var taggedBooks = await booksModel.find({ category: { $all: tagId } })
+    console.log("taggedBooks",taggedBooks.length)
+    if(taggedBooks.length==0){
+     var result="Aucun résultat"
+      res.json({result})
+    }else{
+      for (let i=0; i<taggedBooks.length; i++){
+        var result="ok"
+        //le livre est-il en bibliotheque du user
+        var isInLibrairy = userLibrairy.findIndex(e =>e.equals(taggedBooks[i]._id));
+        var bool = isInLibrairy!=-1?true:false
+        resultMin.push(
+        {
+          id :  taggedBooks[i]._id,
+          image: taggedBooks[i].image,
+          title: taggedBooks[i].title,
+          authors: taggedBooks[i].authors,
+          illustrators: taggedBooks[i].illustrators,
+          rating: taggedBooks[i].rating,
+          inLibrairy: bool
+        });
+        res.json({result,resultMin})
+        }
+    }
+ 
+  }
 
+})
+/// ROUTE SEARCH TEXT
 /* var regex = /^${req.body.textsearch}/i 
  */
-router.post('/searchtext', async function(req, res, next) {
+router.post('/searchtext/:id', async function(req, res, next) {
 
-  console.log("route recherche",req.body)
+  console.log("route recherche",req.body,req.params)
   const regex = new RegExp(`${req.body.textSearch}`,"gi");
  
   var resultMin =[]
   var result = ""
-  var user = await usersModel.findOne({token:req.body.token});
-  /* var tokenUser = user.token    */       
-  console.log("user search", user)                                            //
+  var user = await usersModel.findOne({token:req.params.id});
+  /* var tokenUser = user.token    */                                               //
   var userLibrairy = user.myLibrairy                                              //
   var exratio = await booksModel.find({ $or: [
     { 'title': regex },
@@ -86,13 +133,12 @@ router.post('/searchtext', async function(req, res, next) {
    // { 'publisher': regex }
     ]
  });
-  console.log("EXRATIO",exratio)
+  console.log("EXRATIO",exratio.length)
   for (let i=0; i<exratio.length; i++){
   var isInLibrairy = userLibrairy.findIndex(e =>e.equals(exratio[i]._id));      //
   var bool = isInLibrairy!=-1?true:false                                        //
   }
 
-  ///////////////////////////////////////////////////////////
     if (exratio.length>0) {
       result="ok"
      for (let i=0; i<exratio.length; i++){
@@ -123,6 +169,7 @@ router.post('/searchtext', async function(req, res, next) {
 { 'publisher': regex }, */
 
 //Route ajout à la bibliotheque si bool == true
+
 router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
   var user = await usersModel.findOne({token:req.params.token})
   var userLib=user.myLibrairy
