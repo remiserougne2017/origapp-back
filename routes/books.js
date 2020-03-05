@@ -10,6 +10,7 @@ router.get('/bdd', async function(req, res, next) {
   var jddBooks=[
     {
         isbn: "978-2-266-17442-8",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://products-images.di-static.com/image/henry-chancellor-les-extraordinaires-aventures-de-tom-scatterhorn-tome-1-le-musee-abandonne/9782266174428-475x500-1.webp",
         title: "extraordinaires aventures de Tom Scatterhorn (Les)",
         authors: "Chancellor",
@@ -190,6 +191,7 @@ router.get('/bdd', async function(req, res, next) {
     },
     {
         isbn: "2-03-652407-9",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://pictures.abebooks.com/CHAPITRE/30288061748.jpg",
         title: "L'histoire du monde",
         year_publishing: 1996,
@@ -367,6 +369,7 @@ router.get('/bdd', async function(req, res, next) {
     ]    },
     {
         isbn: "978-2-8098-0563-5",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://pictures.abebooks.com/isbn/9782809805635-fr.jpg",
         title: "L'eau des anges",
         authors: "Egémar",
@@ -546,6 +549,7 @@ router.get('/bdd', async function(req, res, next) {
     },
     {
         isbn: "978-2-36231-035-5",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://pictures.abebooks.com/RECYCLIVRE/30505372741.jpg",
         title: "Quand on parle du loup",
         authors: "Harrison",
@@ -725,6 +729,7 @@ router.get('/bdd', async function(req, res, next) {
     },
     {
         isbn: "978-2-226-20937-5",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://pictures.abebooks.com/RECYCLIVRE/30514318084.jpg",
         title: "étang aux libellules (L')",
         authors: "Ibbotson",
@@ -904,6 +909,7 @@ router.get('/bdd', async function(req, res, next) {
     },
     {
         isbn: "978-2-8098-0564-2",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://pictures.abebooks.com/isbn/9782809805642-fr.jpg",
         title: "Avant les ténèbres",
         authors: "Cluzeau",
@@ -1083,6 +1089,7 @@ router.get('/bdd', async function(req, res, next) {
     },
     {
         isbn: "2-84789-206-0",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://pictures.abebooks.com/RECYCLIVRE/30565299601.jpg",
         title: "Contes et récits vietnamiens",
         authors: "Minh Than",
@@ -1261,6 +1268,7 @@ router.get('/bdd', async function(req, res, next) {
     },
     {
         isbn: "978-2-01-201748-1",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://pictures.abebooks.com/RECYCLIVRE/30569110610.jpg",
         title: "La boussole du Club des cinq",
         authors: "Blyton",
@@ -1440,6 +1448,7 @@ router.get('/bdd', async function(req, res, next) {
     },
     {
         isbn: "978-2-7470-2469-3",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://pictures.abebooks.com/isbn/9782747024693-fr.jpg",
         title: "Momo",
         authors: "Ende",
@@ -1619,6 +1628,7 @@ router.get('/bdd', async function(req, res, next) {
     },
     {
         isbn: "978-2-35504-169-3",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://pictures.abebooks.com/AMMAREAL2013/30303239658.jpg",
         title: "Je m'appelle pas Ben Laden !",
         authors: "Chambaz",
@@ -1798,6 +1808,7 @@ router.get('/bdd', async function(req, res, next) {
     },
     {
         isbn: "978-2-211-20802-4",
+        category:["5e5f6b2ce3d9713cb8410b88","5e5fb0b7fc0db3426cd0b72d"],
         image: "https://pictures.abebooks.com/RECYCLIVRE/30574082639.jpg",
         title: "Ogres, brigands et compagnie",
         authors: "Ungerer",
@@ -1988,6 +1999,7 @@ router.get('/bdd', async function(req, res, next) {
 });
 
 
+// OPEN BOOK
 router.post('/open-book', async function(req,res,next){
   console.log(req.body);
 
@@ -2018,13 +2030,22 @@ router.post('/open-book', async function(req,res,next){
 
   // ENVOYER AU FRONT les datas du livrs 
   var bookOpened = await booksModel.findOne({_id:req.body.idBook});
+
 let arrayContent = [];
 for(let i=0;i<bookOpened.content.length;i++){
+
+  let arrayMedia = []
+  for(let j = 0;j<bookOpened.content[i].media.length;j++){
+    arrayMedia.push({
+      type: bookOpened.content[i].media[j].type,
+    })
+  }
  arrayContent.push({
   idContent : bookOpened.content[i]._id,
   title:bookOpened.content[i].title,
   pageNum:bookOpened.content[i].pageNum,
-  status:bookOpened.content[i].status
+  status:bookOpened.content[i].status,
+  media:arrayMedia
  })
 
 }
@@ -2051,5 +2072,71 @@ for(let i=0;i<bookOpened.content.length;i++){
 });
 
 
+// OPEN CONTENT 
+
+router.post('/open-content', async function(req,res,next){
+  console.log("opening content",req.body.idBook);
+  let bookOpened = await booksModel.findOne({_id:req.body.idBook});
+  console.log("bookopened",bookOpened)
+
+  var contentOpened;
+  var pageOpened;
+  for(let j=0;j<bookOpened.content.length;j++){
+    if(bookOpened.content[j]._id == req.body.idContent) {
+      contentOpened = bookOpened.content[j];
+      pageOpened=  bookOpened.content[j].pageNum
+    }
+
+  } 
+  console.log("content opened",contentOpened)
+
+  let returnedContentToFront = {
+    id:bookOpened._id,
+    title:bookOpened.title,
+    content:contentOpened,
+    pageNum:pageOpened
+  }
+
+
+
+
+  res.json({result:true, returnedContent:returnedContentToFront})
+});
+
+
+
+
+
+// OPEN OVERLAY
+// router.post('/display-content-list', async function(req,res,next){
+//   console.log("hello req body disaply overlay",req.body);
+
+//   var bookOpened = await booksModel.findOne({_id:req.body.idBook});
+
+//   let arrayContent = [];
+//   // console.log('bookopened',bookOpened)
+//   for(let i = 0;i<bookOpened.content.length;i++){
+//     if(bookOpened.content[i].pageNum == req.body.pageNum) {
+//       let arrayMedia = []
+//       for(let j = 0;j<bookOpened.content[i].media.length;j++){
+//         arrayMedia.push({
+//           type: bookOpened.content[i].media[j].type,
+//         })
+//       }
+//       arrayContent.push({
+//         bookTitle:bookOpened.title,
+//         idContent : bookOpened.content[i]._id,
+//         title:bookOpened.content[i].title,
+//         pageNum:bookOpened.content[i].pageNum,
+//         status:bookOpened.content[i].status,
+//         media:arrayMedia
+//       })
+
+//   }
+// }
+//   // console.log("RESUUUUUULT",arrayContent)
+
+//   res.json({result:true, contentFromBack:arrayContent})
+// });
 
 module.exports = router;

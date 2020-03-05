@@ -29,7 +29,7 @@ const booksSchema = mongoose.Schema({
     illustrators: String,
     year_publishing: String,
     type: String,
-    category: {type: mongoose.Schema.Types.ObjectId, ref:"tags"},
+    category: [{type: mongoose.Schema.Types.ObjectId, ref:"tags"}],
     status: Boolean,
     modificationDate: String,
     rating: String,
