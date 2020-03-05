@@ -33,6 +33,9 @@ router.get('/homePage/:token', async function(req, res, next) {
 
   //Generation du catalogue                                                    ///////
  var livreMin = []
+
+ // Generation des livres mieux notés
+ var livresMieuxNotes = []
  
   var catalogue = await booksModel.find()
 
@@ -54,13 +57,19 @@ router.get('/homePage/:token', async function(req, res, next) {
       rating: catalogue[i].rating,
       inLibrairy: bool
     });
-    }
+  }
+
+  //Livres mieux notés
+   var rating = catalogue.sort(function (a, b) {
+    return b.rating - a.rating})
+   livresMieuxNotes = rating.slice(0,6)
+
     // console.log("livreMin",livreMin)
-     res.json({livreMin});
+     res.json({livreMin, livresMieuxNotes});
     }else{
           result="erreur : pas de cata envoyé au front"
           };
-res.json({livreMin, result})
+res.json({livreMin, result, livresMieuxNotes})
 } )
 
 //Route searchTag
