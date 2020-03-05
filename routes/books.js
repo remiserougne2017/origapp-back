@@ -2009,7 +2009,7 @@ router.post('/open-book', async function(req,res,next){
 
   var isInList = false;
   for (let i = 0;i<userOpening.lastRead.length;i++){
-    // console.log("est testé",req.body.idBook,"avec",userOpening.lastRead[i])
+     console.log("est testé",req.body.idBook,"avec",userOpening.lastRead[i])
     if(req.body.idBook == userOpening.lastRead[i]) {
       isInList = true
   }
