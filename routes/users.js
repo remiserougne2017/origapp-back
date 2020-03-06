@@ -21,6 +21,7 @@ router.post('/sign-up', async (req, res, next) => {
   var result = false;
   var token = null;
   var saveUser = null;
+  var prenom = null;
   
   //Vérification d'email unique
   const searchEmail = await usersModel.findOne({
@@ -45,11 +46,11 @@ router.post('/sign-up', async (req, res, next) => {
     error.emailNotValid = 'Email invalide'
   }
 
-  // Vérification de mot de passe valide - 8 caractères et 1 lettre
+  // Vérification de mot de passe valide - 8 caractères dont 1 chiffre
   var regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   var testPassword = req.body.password;
   if(regexPassword.test(testPassword) != true){
-    error.passwordNotValid = 'Il faut 8 caractères et 1 chiffre'
+    error.passwordNotValid = 'Au moins 8 caractères dont 1 chiffre'
   }
   }
 
@@ -74,10 +75,11 @@ router.post('/sign-up', async (req, res, next) => {
       result = true
       token = saveUser.token
       prenom = saveUser.firstName
+      console.log(prenom)
     }
   }
   
-  console.log(prenom)
+  
   res.json({result, token, prenom, error})
 })
 
@@ -90,12 +92,14 @@ router.post('/sign-in', async (req, res, next) => {
   var result = false;
   var token = null;
   var user = null;
+  var prenom = null; 
   
   //Vérification champs non vides
   if(req.body.email == '' || req.body.password == ''){
     error.emptyField = 'Le champ est vide'
-  }
-    //Vérification email
+  } else {
+
+      //Vérification email
     if(Object.keys(error).length == 0){
       var user = await usersModel.findOne({
       email: req.body.email
@@ -123,6 +127,9 @@ router.post('/sign-in', async (req, res, next) => {
       }
     } 
   }
+
+  }
+    
 
 
   console.log(error)
