@@ -30,38 +30,21 @@ router.post('/', async function(req, res, next) {
   // //GOOGLE API
     const imageUrl = resultCloudinary.url
     const options = {
-      body: `{
-      "requests":[
-        {
-          "image":{
-            "source":{
-              "imageUri":"${imageUrl}"
-                
-            }
-          },
-          "features":[
-            {
-              "type":"TEXT_DETECTION",
-              "maxResults":1
-            }
-          ]
-        }
-      ]
-    }`,
+      body: `{"Url": "${imageUrl}"}`,
       headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Prediction-Key':'b037117a45c949adb2acb6978eb248b5',
       },
     };
   
     
-    var res = request('POST', 'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyD23hWLX66RH0NlkksQxM9W_9V_kTwf-4I', options);
+    var res = request('POST', 'https://origapp.cognitiveservices.azure.com/customvision/v3.0/Prediction/9a28ffac-b50b-47ec-ae90-41b183bc3bfe/classify/iterations/Iteration1/url/', options);
     
-    var responseGoogle = JSON.parse(res.getBody('utf8'));
-    console.log("API reponse",responseGoogle.responses) 
+    var prediction = JSON.parse(res.getBody('utf8'));
+    console.log("API reponse",prediction) 
 
     
-    
-
+  
 //Suppression du fichier tmp
     fs.unlinkSync(path);
     res.json({result :ok});
