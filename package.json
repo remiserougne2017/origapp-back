@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@google-cloud/vision": "^1.10.0",
     "cloudinary": "^1.19.0",
     "cookie-parser": "~1.4.4",
     "crypto-js": "^4.0.0",

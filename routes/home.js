@@ -3,17 +3,7 @@ var router = express.Router();
 var booksModel=require('../model/books')
 var usersModel=require('../model/users')
 var tagsModel=require('../model/tags')
-var cloudinary = require('cloudinary').v2;
-var uniqid = require('uniqid');
-//remove le fichier temporaire stocké
-const fs = require('fs')
 
-cloudinary.config({ 
-  cloud_name: 'dxkvzc4jc', 
-  api_key: '431357233339179', 
-  api_secret: '5WaenVfxAS-a4DRzSEMMSwLUqwg' 
-});
-var request = require('sync-request');
 
 //Route récup des tags pour affichage
 router.get('/homePage/tags', async function(req, res, next) {
@@ -202,22 +192,5 @@ router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
   res.json(result);
 });
 
+module.exports = router; 
 
-//route SCAN
-router.post('/scan', async function(req, res, next) {
-  console.log("SCAN ROUTE",req.files)
-  var id=uniqid()
-  var path = './public/tmp/'+id+'.jpg'
-  var resultCopy = await req.files.picture.mv(path);
-  
-  //Envoi sur cloudinary
-  if(!resultCopy) {
-    var resultCloudinary = await cloudinary.uploader.upload(path, function(error, result){
-      console.log("Router Cloud? ",result, error)
-    })
-  };
-  fs.unlinkSync(path);
-  res.json({});
-});
-
-module.exports = router;
