@@ -181,6 +181,7 @@ router.post('/searchtext/:id', async function(req, res, next) {
 //Route ajout à la bibliotheque si bool == true
 
 router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
+
   var user = await usersModel.findOne({token:req.params.token})
   var userLib=user.myLibrairy
   newLib = userLib.filter(e=>e!=req.params.id)
@@ -200,6 +201,42 @@ router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
  
   res.json(result);
 });
+
+//Route Bibliothèque
+router.get('/myLibrary/:token', async (req, res, next) => {
+  console.log('123')
+  var maBibliotheque = await usersModel.findOne({
+    token:req.params.token
+  }).populate('myLibrairy').exec();
+
+  //rechercher la librairy du user !! token en DUR à enlever
+  var user = await usersModel.findOne({token:req.params.token})
+  
+  //console.log(maBibliotheque)
+  console.log('456')
+   var mesLivres = [];
+   for(let i=0; i < maBibliotheque.myLibrairy.length; i++){
+
+    //le livre est-il en bibliotheque du user
+    var isInLibrairy = maBibliotheque.myLibrairy.findIndex(e => e.equals(maBibliotheque.myLibrairy[i]._id));
+    var bool = isInLibrairy!=-1?true:false
+
+    mesLivres.push({
+      id: maBibliotheque.myLibrairy[i]._id,
+      title: maBibliotheque.myLibrairy[i].title, 
+      image: maBibliotheque.myLibrairy[i].image,
+      authors: maBibliotheque.myLibrairy[i].authors,
+      illustrators: maBibliotheque.myLibrairy[i].illustrators,
+      rating: maBibliotheque.myLibrairy[i].rating,
+      inLibrairy: bool})
+    }
+
+  console.log(mesLivres)
+  res.json(mesLivres)
+});
+
+
+
 
 module.exports = router; 
 
