@@ -204,7 +204,7 @@ router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
 
 //Route Bibliothèque
 router.get('/myLibrary/:token', async (req, res, next) => {
-  console.log('123')
+  
   var maBibliotheque = await usersModel.findOne({
     token:req.params.token
   }).populate('myLibrairy').exec();
@@ -213,7 +213,6 @@ router.get('/myLibrary/:token', async (req, res, next) => {
   var user = await usersModel.findOne({token:req.params.token})
   
   //console.log(maBibliotheque)
-  console.log('456')
    var mesLivres = [];
    for(let i=0; i < maBibliotheque.myLibrairy.length; i++){
 
@@ -231,7 +230,6 @@ router.get('/myLibrary/:token', async (req, res, next) => {
       inLibrairy: bool})
     }
 
-  console.log(mesLivres)
   res.json(mesLivres)
 });
 
