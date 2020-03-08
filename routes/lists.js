@@ -56,6 +56,7 @@ router.get('/bestRated', async (req, res, next) => {
       rating: rating[i].rating,
       /* inLibrairy: bool */})
 }
+console.log(bestRated)
        /* //le livre est-il en bibliotheque du user
       var isInLibrairy = user.myLibrairy.findIndex(e => e.equals(user.myLibrairy[i]._id));
       var bool = isInLibrairy!=-1?true:false */
