@@ -2027,8 +2027,7 @@ router.post('/open-book', async function(req,res,next){
     { token:req.body.token},
     { lastRead: arrayLastRead });
 
-
-  // ENVOYER AU FRONT les datas du livrs 
+  // ENVOYER AU FRONT les datas du livre
   var bookOpened = await booksModel.findOne({_id:req.body.idBook});
 
 let arrayContent = [];
@@ -2063,11 +2062,6 @@ for(let i=0;i<bookOpened.content.length;i++){
   }
   console.log("book opened",dataBook);
   
-
-
-
-
-
   res.json({result:true,dataBook:dataBook})
 });
 

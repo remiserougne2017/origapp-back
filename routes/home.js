@@ -32,11 +32,11 @@ router.get('/homePage/:token', async function(req, res, next) {
   var user = await usersModel.findOne({token:req.params.token})
   var userLibrairy = user.myLibrairy
 
-  //Generation du catalogue                                                    ///////
+  //Generation du catalogue                                                   
  var livreMin = []
 
- // Generation des livres mieux notés
- var livresMieuxNotes = []
+/*  // Generation des livres mieux notés
+ var livresMieuxNotes = [] */
  
   var catalogue = await booksModel.find()
 
@@ -60,17 +60,17 @@ router.get('/homePage/:token', async function(req, res, next) {
     });
   }
 
-  //Livres mieux notés
+  /* //Livres mieux notés
    var rating = catalogue.sort(function (a, b) {
     return b.rating - a.rating})
-   livresMieuxNotes = rating.slice(0,6)
+   livresMieuxNotes = rating.slice(0,6) */
 
     // console.log("livreMin",livreMin)
-     res.json({livreMin, livresMieuxNotes});
+     res.json({livreMin});
     }else{
           result="erreur : pas de cata envoyé au front"
           };
-res.json({livreMin, result, livresMieuxNotes})
+res.json({livreMin, result})
 } )
 
 //Route searchTag
@@ -204,37 +204,28 @@ router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
 
 //Route Bibliothèque
 router.get('/myLibrary/:token', async (req, res, next) => {
-  
-  var maBibliotheque = await usersModel.findOne({
-    token:req.params.token
-  }).populate('myLibrairy').exec();
 
-  //rechercher la librairy du user !! token en DUR à enlever
-  var user = await usersModel.findOne({token:req.params.token})
+  var user = await usersModel.findOne({token:req.params.token}).populate('myLibrairy').exec();
   
-  //console.log(maBibliotheque)
-   var mesLivres = [];
-   for(let i=0; i < maBibliotheque.myLibrairy.length; i++){
+  var mesLivres = [];
+  for(let i=0; i < user.myLibrairy.length; i++){
 
     //le livre est-il en bibliotheque du user
-    var isInLibrairy = maBibliotheque.myLibrairy.findIndex(e => e.equals(maBibliotheque.myLibrairy[i]._id));
+    var isInLibrairy = user.myLibrairy.findIndex(e => e.equals(user.myLibrairy[i]._id));
     var bool = isInLibrairy!=-1?true:false
 
     mesLivres.push({
-      id: maBibliotheque.myLibrairy[i]._id,
-      title: maBibliotheque.myLibrairy[i].title, 
-      image: maBibliotheque.myLibrairy[i].image,
-      authors: maBibliotheque.myLibrairy[i].authors,
-      illustrators: maBibliotheque.myLibrairy[i].illustrators,
-      rating: maBibliotheque.myLibrairy[i].rating,
+      id: user.myLibrairy[i]._id,
+      title: user.myLibrairy[i].title, 
+      image: user.myLibrairy[i].image,
+      authors: user.myLibrairy[i].authors,
+      illustrators: user.myLibrairy[i].illustrators,
+      rating: user.myLibrairy[i].rating,
       inLibrairy: bool})
     }
 
   res.json(mesLivres)
 });
-
-
-
 
 module.exports = router; 
 
