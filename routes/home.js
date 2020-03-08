@@ -32,11 +32,11 @@ router.get('/homePage/:token', async function(req, res, next) {
   var user = await usersModel.findOne({token:req.params.token})
   var userLibrairy = user.myLibrairy
 
-  //Generation du catalogue                                                    ///////
+  //Generation du catalogue                                                   
  var livreMin = []
 
- // Generation des livres mieux notés
- var livresMieuxNotes = []
+/*  // Generation des livres mieux notés
+ var livresMieuxNotes = [] */
  
   var catalogue = await booksModel.find()
 
@@ -60,17 +60,17 @@ router.get('/homePage/:token', async function(req, res, next) {
     });
   }
 
-  //Livres mieux notés
+  /* //Livres mieux notés
    var rating = catalogue.sort(function (a, b) {
     return b.rating - a.rating})
-   livresMieuxNotes = rating.slice(0,6)
+   livresMieuxNotes = rating.slice(0,6) */
 
     // console.log("livreMin",livreMin)
-     res.json({livreMin, livresMieuxNotes});
+     res.json({livreMin});
     }else{
           result="erreur : pas de cata envoyé au front"
           };
-res.json({livreMin, result, livresMieuxNotes})
+res.json({livreMin, result})
 } )
 
 //Route searchTag
@@ -182,6 +182,7 @@ router.post('/searchtext/:id', async function(req, res, next) {
 
 router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
  console.log("LIBRAIRY", req.params)
+
   var user = await usersModel.findOne({token:req.params.token})
   var userLib=user.myLibrairy
   newLib = userLib.filter(e=>e!=req.params.id)
@@ -200,6 +201,31 @@ router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
   }
  
   res.json(result);
+});
+
+//Route Bibliothèque
+router.get('/myLibrary/:token', async (req, res, next) => {
+
+  var user = await usersModel.findOne({token:req.params.token}).populate('myLibrairy').exec();
+  
+  var mesLivres = [];
+  for(let i=0; i < user.myLibrairy.length; i++){
+
+    //le livre est-il en bibliotheque du user
+    var isInLibrairy = user.myLibrairy.findIndex(e => e.equals(user.myLibrairy[i]._id));
+    var bool = isInLibrairy!=-1?true:false
+
+    mesLivres.push({
+      id: user.myLibrairy[i]._id,
+      title: user.myLibrairy[i].title, 
+      image: user.myLibrairy[i].image,
+      authors: user.myLibrairy[i].authors,
+      illustrators: user.myLibrairy[i].illustrators,
+      rating: user.myLibrairy[i].rating,
+      inLibrairy: bool})
+    }
+
+  res.json(mesLivres)
 });
 
 module.exports = router; 
