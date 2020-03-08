@@ -1,5 +1,11 @@
 var mongoose = require('./bdd');
 
+//Commentaires
+const commentsSchema = mongoose.Schema({
+    userId:[{type: mongoose.Schema.Types.ObjectId, ref:"users"}],
+    userRating: Number,
+    comment: String,
+})
 
 //media schema
 const mediaSchema = mongoose.Schema({
@@ -37,7 +43,7 @@ const booksSchema = mongoose.Schema({
     viewsCount: Number,
     content: [contentSchema],
     publisher: {type: mongoose.Schema.Types.ObjectId, ref:"publishers"},
-    comments: [{type: mongoose.Schema.Types.ObjectId, ref:"comments"}]
+    comments: [commentsSchema]
 })
 
 var booksModel = mongoose.model('books', booksSchema);

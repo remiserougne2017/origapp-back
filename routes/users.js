@@ -109,29 +109,24 @@ router.post('/sign-in', async (req, res, next) => {
       result = false
       error.email = 'Email inexistant'
     }
-    console.log(user+'bla')
-    
+        
     //Vérification Mot de passe correcte
-      
-
     if(user){
       const passwordEncrypt = SHA256(req.body.password + user.salt).toString(encBase64)
-
+      console.log(user.pwd+' compare '+passwordEncrypt)
       if(passwordEncrypt == user.pwd){
         result = true
         token = user.token
         prenom = user.firstName
       } else {
         result = false
-        error.password = 'Email ou mot de passe incorrects'
+        error.password = 'mot de passe incorrect'
       }
     } 
   }
 
   }
     
-
-
   console.log(error)
   res.json({result, token, prenom, error})
 })

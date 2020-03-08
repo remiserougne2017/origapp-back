@@ -181,6 +181,7 @@ router.post('/searchtext/:id', async function(req, res, next) {
 //Route ajout à la bibliotheque si bool == true
 
 router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
+ console.log("LIBRAIRY", req.params)
   var user = await usersModel.findOne({token:req.params.token})
   var userLib=user.myLibrairy
   newLib = userLib.filter(e=>e!=req.params.id)
