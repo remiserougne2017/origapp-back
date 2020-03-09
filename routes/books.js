@@ -2002,7 +2002,7 @@ router.get('/bdd', async function(req, res, next) {
 
 // OPEN BOOK
 router.post('/open-book', async function(req,res,next){
-  console.log(req.body);
+  // console.log(req.body);
 
   // AJOUTER dans le tableau dernière lecture du user l'id du livre
   var userOpening = await usersModel.findOne({token:req.body.token});
@@ -2061,7 +2061,7 @@ for(let i=0;i<bookOpened.content.length;i++){
     votes:bookOpened.votesCount,
     contents:arrayContent,
   }
-  console.log("book opened",dataBook);
+  // console.log("book opened",dataBook);
   
   res.json({result:true,dataBook:dataBook})
 });
@@ -2072,7 +2072,7 @@ for(let i=0;i<bookOpened.content.length;i++){
 router.post('/open-content', async function(req,res,next){
   console.log("opening content",req.body.idBook);
   let bookOpened = await booksModel.findOne({_id:req.body.idBook});
-  console.log("bookopened",bookOpened)
+  // console.log("bookopened",bookOpened)
 
   var contentOpened;
   var pageOpened;
