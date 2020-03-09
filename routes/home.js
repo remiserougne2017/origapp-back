@@ -230,3 +230,30 @@ router.post('/scan', async function(req, res, next) {
 });
 
 module.exports = router;
+
+
+//// ROUTE SUGGESTIONS/vous devriez aimer
+
+router.post('/suggest', async (req, res, next) => {
+  var result = "suggest"
+  console.log("route suggest",req.body)
+  var token = req.body.token
+
+  var userFind = await usersModel.findOne({token:req.body.token})
+  console.log("bibli : user trouvé en bdd", userFind)
+  // var bibliUser = []
+  var booksId = []
+  var bibliUserBdd = await userFind.myLibrairy
+  console.log("bibliUserBdd",bibliUserBdd )
+  // bibliUser.push(bibliUserBdd)
+  /* console.log("bibliUser",bibliUser ) */
+
+
+/*   for (i=0; i<bibliUserBdd.length; i++) {
+    JSON.parse([i])
+  }
+  for (i=0; i<bibliUserBdd.length; i++) {
+    booksId.push([i])
+  }
+  console.log("booksId", booksId) */
+})
