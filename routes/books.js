@@ -2032,7 +2032,9 @@ router.post('/open-book', async function(req,res,next){
   var bookOpened = await booksModel.findOne({_id:req.body.idBook});
 
 let arrayContent = [];
+
 for(let i=0;i<bookOpened.content.length;i++){
+
 
   let arrayMedia = []
   for(let j = 0;j<bookOpened.content[i].media.length;j++){
@@ -2043,19 +2045,20 @@ for(let i=0;i<bookOpened.content.length;i++){
  arrayContent.push({
   idContent : bookOpened.content[i]._id,
   title:bookOpened.content[i].title,
+  imageContent:bookOpened.content[i].imageContent,
   pageNum:bookOpened.content[i].pageNum,
   status:bookOpened.content[i].status,
   media:arrayMedia
  })
 
 }
-
+  // console.log('ARRAYYYYYYYY CONTNET',arrayContent)
   let dataBook = {
     status:bookOpened.status,
     idBook:bookOpened._id,
     title:bookOpened.title,
     author:bookOpened.authors,
-    description : 'description du livre',
+    description : bookOpened.description,
     coverImage: bookOpened.image,
     rating:bookOpened.rating,
     votes:bookOpened.votesCount,
