@@ -6,6 +6,9 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@azure/cognitiveservices-customvision-prediction": "^4.0.0",
+    "@azure/cognitiveservices-customvision-training": "^4.0.0",
+    "@google-cloud/vision": "^1.10.0",
     "cloudinary": "^1.19.0",
     "cookie-parser": "~1.4.4",
     "crypto-js": "^4.0.0",

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var booksModel = require('../model/books');
 var usersModel = require('../model/users');
+var commentsModel = require('../model/comments')
 
 
 /*  Creation BDD */
@@ -2027,8 +2028,7 @@ router.post('/open-book', async function(req,res,next){
     { token:req.body.token},
     { lastRead: arrayLastRead });
 
-
-  // ENVOYER AU FRONT les datas du livrs 
+  // ENVOYER AU FRONT les datas du livre
   var bookOpened = await booksModel.findOne({_id:req.body.idBook});
 
 let arrayContent = [];
@@ -2063,11 +2063,6 @@ for(let i=0;i<bookOpened.content.length;i++){
   }
   console.log("book opened",dataBook);
   
-
-
-
-
-
   res.json({result:true,dataBook:dataBook})
 });
 
@@ -2104,7 +2099,36 @@ router.post('/open-content', async function(req,res,next){
 });
 
 
+//Route ajout de commentaire sur un livre
+router.post('/comments', async function(req,res,next){
+  var result
+  console.log("Comment", req.body)
+  //recup du user pour récuperer l'id du user
+  var user = await usersModel.findOne({token: req.body.token})
+  // recup de l'ouvrage si un 
+  var book = await booksModel.findById({_id:req.body.idBook})
+  var newComment = {
+      userId:user._id,
+      userRating: req.body.rating,
+      comment:req.body.comment
+    };
+    //MAJ du rating global du livre
+    var newRating=parseInt(req.body.rating)
+    //MAJ du nb de vote pour le livre sans oublier celui que l'on est en train d'ajouter
+    var totalRating=book.comments.length+1
+    console
+    for(let i=0;i<book.comments.length;i++){
+      newRating += parseInt(book.comments[i].userRating)
+    }
+    console.log("new rating",newRating,"voteCount",totalRating,"moyenne:",newRating/totalRating)
 
+    book.comments.push(newComment)
+    book.rating=newRating/totalRating 
+    book.votesCount = book.comments.length+1
+    newCommentSave = await book.save()
+    console.log("save comment BDD")
+res.json({})
+});
 
 
 // OPEN OVERLAY
