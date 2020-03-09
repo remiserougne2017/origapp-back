@@ -19,6 +19,7 @@ const mediaSchema = mongoose.Schema({
 //Contenu schema
 const contentSchema = mongoose.Schema({
     title: String,
+    imageContent:String,
     pageNum: String,
     status: Boolean,
     media: [mediaSchema],
