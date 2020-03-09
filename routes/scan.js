@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var cloudinary = require('cloudinary').v2;
 var uniqid = require('uniqid');
+var booksModel=require('../model/books')
 //remove le fichier temporaire stocké
 const fs = require('fs')
 
@@ -23,7 +24,7 @@ router.post('/', async function(req, res, next) {
     //Envoi sur cloudinary
     if(!resultCopy) {
       var resultCloudinary = await cloudinary.uploader.upload(path, function(error, result){
-        console.log("Router Cloud? ",result, "erreur?",error)
+        //console.log("Router Cloud? ",result, "erreur?",error)
       })
     };
     
@@ -38,16 +39,23 @@ router.post('/', async function(req, res, next) {
     };
   
     
-    var res = request('POST', 'https://origapp.cognitiveservices.azure.com/customvision/v3.0/Prediction/9a28ffac-b50b-47ec-ae90-41b183bc3bfe/classify/iterations/Iteration1/url/', options);
+    var response = request('POST', 'https://origapp.cognitiveservices.azure.com/customvision/v3.0/Prediction/9a28ffac-b50b-47ec-ae90-41b183bc3bfe/classify/iterations/Iteration1/url/', options);
     
-    var prediction = JSON.parse(res.getBody('utf8'));
-    console.log("API reponse",prediction) 
+    var responseAPI = JSON.parse(response.getBody('utf8'));
+    console.log(responseAPI.predictions[0].probability)
+    var bookMatchId = null
+    for(let i = 0; i < responseAPI.predictions.length; i++){
+      console.log(responseAPI.predictions[i].tagName);
+      if(responseAPI.predictions[i].probability >= 0.99){
+          var bookMatchId = '5e5fd3b2a2f6a844f031ebd1'// On prod changer pour responseAPI.predictions[i].tagName
+      }
+    }
 
-    
+    console.log(bookMatchId)    
   
 //Suppression du fichier tmp
     fs.unlinkSync(path);
-    res.json({result :ok});
+    res.json(bookMatchId);
   });
   
   module.exports = router;

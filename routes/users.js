@@ -131,4 +131,21 @@ router.post('/sign-in', async (req, res, next) => {
   res.json({result, token, prenom, error})
 })
 
+
+///// ROUTE PARAMS
+
+router.post('/params', async (req, res, next) => {
+  var result = "params"
+  console.log("route params",req.body)
+  var token = req.body.token
+ 
+  
+
+  var userFind = await usersModel.findOne({token:req.body.token})
+  var user = userFind.firstName
+  result = true
+  res.json({result, token, user})
+  console.log("prenom user envoyé au front", result, token, user)
+})
+
 module.exports = router;
