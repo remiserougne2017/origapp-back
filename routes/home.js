@@ -273,4 +273,29 @@ console.log("myUserSuggestions", mySuggest);
 
 } });
 
+/////////////////// ROUTE COMMENTS SUR LE LIVRE ///////
+
+router.get('/comments/:id', async (req, res, next) => {
+
+          var id = req.params.id
+          var comments = []
+          var livre= await booksModel.findOne({_id : req.params.id})
+          var livretab = livre.comments
+          console.log("livretab",livretab)
+
+          for (let i=0; i<livretab.length; i++) {
+    comments.push("livretab[i]",livretab[i])
+    console.log("comments", comments)
+
+
+          var usercomment = await booksModel.findOne({_id : req.params.id})
+          .populate({path: 'comments',
+            select: 'userId'})
+          
+          .exec();
+
+          console.log("usercomment", usercomment)
+}})
+  
+
 module.exports = router;
