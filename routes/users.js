@@ -131,4 +131,12 @@ router.post('/sign-in', async (req, res, next) => {
   res.json({result, token, prenom, error})
 })
 
-module.exports = router;
+//Update USER
+router.post('/update', async (req, res, next) => {
+
+     
+  console.log("Update USer")
+    res.json({result, token, prenom, error})
+  }) 
+
+  module.exports = router;
