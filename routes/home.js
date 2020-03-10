@@ -18,7 +18,6 @@ router.get('/homePage/tags', async function(req, res, next) {
   //var tags= await tagsModel.find()
 
 var tags = await tagsModel.find()
-console.log("hehe",tags)
 
   res.json(tags)
   
@@ -26,7 +25,6 @@ console.log("hehe",tags)
 
 //// ROUTE CATALOGUE
 router.get('/homePage/:token', async function(req, res, next) {
-  console.log("route catalogue",req.params)
 
   //rechercher la librairy du user !! token en DUR à enlever
   var user = await usersModel.findOne({token:req.params.token})
@@ -47,7 +45,6 @@ router.get('/homePage/:token', async function(req, res, next) {
     //le livre est-il en bibliotheque du user
     var isInLibrairy = userLibrairy.findIndex(e =>e.equals(catalogue[i]._id));
     var bool = isInLibrairy!=-1?true:false
-    console.log("trueFalse",isInLibrairy)
      livreMin.push(
     {
       id :  catalogue[i]._id,
@@ -66,7 +63,6 @@ router.get('/homePage/:token', async function(req, res, next) {
    livresMieuxNotes = rating.slice(0,6) */
 
     // console.log("livreMin",livreMin)
-    console.log("CATALOGUE",livreMin)
      res.json({result:"ok", livreMin});
     }else{
           result="erreur : pas de cata envoyé au front"
@@ -80,26 +76,21 @@ router.get('/homePage/:token', async function(req, res, next) {
 router.post('/searchTag', async function(req, res, next) {
   var resultMin =[]
   var userToken=JSON.parse(req.body.token)
-  console.log("userToken",userToken)
   var user = await usersModel.findOne({token:userToken});
   var userLibrairy = user.myLibrairy 
   var tagId=[]
   var tag=JSON.parse(req.body.tagsSearch)
-  console.log("TAG",tag)
   for(i=0;i<tag.length;i++){
     if(tag[i].color=="red"){
       tagId.push(tag[i]._id)
     }
   }
-console.log("tagId",tagId)
   if(tagId.length==0){
    var result="Aucune sélection"
    var allBooks =await booksModel.find()
-   console.log("AllBooks",allBooks.length)
     res.json({result,resultMin : allBooks})
   }else{
     var taggedBooks = await booksModel.find({ category: { $all: tagId } })
-    console.log("taggedBooks",taggedBooks.length)
     if(taggedBooks.length==0){
      var result="Aucun résultat"
       res.json({result})
@@ -131,7 +122,6 @@ console.log("tagId",tagId)
  */
 router.post('/searchtext/:id', async function(req, res, next) {
 
-  console.log("route recherche",req.body,req.params)
   const regex = new RegExp(`${req.body.textSearch}`,"gi");
  
   var resultMin =[]
@@ -146,7 +136,6 @@ router.post('/searchtext/:id', async function(req, res, next) {
    // { 'publisher': regex }
     ]
  });
-  console.log("EXRATIO",exratio.length)
   for (let i=0; i<exratio.length; i++){
   var isInLibrairy = userLibrairy.findIndex(e =>e.equals(exratio[i]._id));      //
   var bool = isInLibrairy!=-1?true:false                                        //
@@ -166,7 +155,6 @@ router.post('/searchtext/:id', async function(req, res, next) {
        id: exratio[i]._id,
       inLibrairy: bool
      });
-     console.log()
    }
    } else {
    result="erreur : pas de resultat searchtext"
@@ -179,7 +167,6 @@ router.post('/searchtext/:id', async function(req, res, next) {
 //Route ajout à la bibliotheque si bool == true     ///////////////////////////  LIBRAIRY  /////////////////
 
 router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
- console.log("LIBRAIRY", req.params)
 
   var user = await usersModel.findOne({token:req.params.token})
   var userLib=user.myLibrairy
@@ -234,7 +221,6 @@ module.exports = router;
 router.get('/suggest/:token', async (req, res, next) => {
   
    var result = "suggest"
-  console.log("route suggest",req.params)
   var token = req.params.token
 
   var userFind = await usersModel.findOne({token:req.params.token})
@@ -253,12 +239,9 @@ for (let i=0; i<bibliUserBdd.length; i++) {
     myTags = allTags;
   }   
 }
-console.log("MY TAGS",myTags);
-console.log('BIBLU ID',bibliUserBdd)
+
 var taggedBooks = await booksModel.find({ $and:[{category: { $all: myTags} },{_id:{ $nin: bibliUserBdd}}]});
 
-
-console.log("....................................................taggedBooks", taggedBooks)
 for (let i=0; i<taggedBooks.length; i++) {
 mySuggest.push({
   _id: taggedBooks[i]._id,
@@ -267,10 +250,6 @@ mySuggest.push({
   rating: taggedBooks[i].rating,
   authors: taggedBooks[i].authors
 })
-console.log("myUserSuggestions", mySuggest);
-
-
-
 
   res.json({result:true, mySuggest, mess: "liste suggestion pr user"})
 
