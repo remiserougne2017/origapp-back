@@ -131,12 +131,18 @@ router.post('/sign-in', async (req, res, next) => {
   res.json({result, token, prenom, error})
 })
 
-//Update USER
-router.post('/update', async (req, res, next) => {
 
-     
-  console.log("Update USer")
-    res.json({result, token, prenom, error})
-  }) 
+///// ROUTE PARAMS
 
-  module.exports = router;
+router.get('/logout/:token', async (req, res, next) => {
+
+  console.log("route params",req.params)
+  var token = req.params.token
+  var userFind = await usersModel.findOne({token:req.params.token})
+  var user = userFind.firstName
+  var result = true
+  res.json({result, token, user})
+  console.log("prenom user envoyé au front", result, token, user)
+})
+
+module.exports = router;
