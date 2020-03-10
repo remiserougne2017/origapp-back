@@ -2,7 +2,7 @@ var mongoose = require('./bdd');
 
 //Commentaires
 const commentsSchema = mongoose.Schema({
-    userId:[{type: mongoose.Schema.Types.ObjectId, ref:"users"}],
+    userId:{type: mongoose.Schema.Types.ObjectId, ref:"users"},
     userRating: Number,
     comment: String,
 })
