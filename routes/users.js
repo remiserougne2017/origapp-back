@@ -134,18 +134,52 @@ router.post('/sign-in', async (req, res, next) => {
 
 ///// ROUTE PARAMS
 
-router.post('/params', async (req, res, next) => {
-  var result = "params"
-  console.log("route params",req.body)
-  var token = req.body.token
- 
-  
+router.get('/logout/:token', async (req, res, next) => {
 
-  var userFind = await usersModel.findOne({token:req.body.token})
+  console.log("route params",req.params)
+  var token = req.params.token
+  var userFind = await usersModel.findOne({token:req.params.token})
   var user = userFind.firstName
-  result = true
-  res.json({result, token, user})
+  var result = true
+  res.json({result, user})
   console.log("prenom user envoyé au front", result, token, user)
+})
+
+router.post('/update/:token', async (req, res, next)=>{
+  console.log("update params&body",req.params, req.body)
+ // Vérification de mot de passe valide - 8 caractères dont 1 chiffre
+ var regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+ var testPassword = req.body.pwd1;
+ if(regexPassword.test(testPassword) != true){
+   var mess = 'Le mot de passe doit avoir au moins 8 caractères dont 1 chiffre'
+   res.json({result: "ko",mess});
+ }else{
+   
+  if(req.body.pwd1==req.body.pwd2){
+    if(req.body.pwd1!=""){
+      console.log("IF salt")
+      var updatedToken = uid2(32)
+      var salt =uid2(32)
+      console.log("salt",salt,"updateToken",updatedToken)
+      var userFind = await usersModel.updateOne({token:req.params.token},{
+        pwd: SHA256(req.body.pwd1+salt).toString(encBase64),
+        salt: salt,
+        token:updatedToken
+      })
+      console.log("is it ok?",userFind)
+      var mess="Mot de passe mis à jour"
+    
+      res.json({result: "ok",token:updatedToken,mess});
+    }else{
+      var mess="Champs vides, réessayer..."
+      res.json({result: "ko",mess});
+    }
+   
+  }else{
+    var mess="Mots de passe différents, réessayer..."
+    res.json({result: "ko",mess});
+  }
+}
 })
 
 module.exports = router;
