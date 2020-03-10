@@ -2064,9 +2064,33 @@ for(let i=0;i<bookOpened.content.length;i++){
     votes:bookOpened.votesCount,
     contents:arrayContent,
   }
-  // console.log("book opened",dataBook);
+  // console.log("book opened",dataBook); ////////////////////////////////////////
   
-  res.json({result:true,dataBook:dataBook})
+  ///////////////////////////COMMENTS BOOK 
+
+    var bookCommented= await booksModel.findOne({_id : req.params.id});
+    console.log("livre commenté trouvé en back, bookCommented",bookCommented);
+ 
+    var plsCom = bookCommented.comments
+    console.log("ensemble des com sur un livre, plsCom", plsCom)
+    var userCom = []
+    for (let i=0; i < plsCom.length ;i++){
+     var user = await usersModel.findOne({_id : plsCom[i].userId})
+
+      userCom.push({
+        com: plsCom[i].comment,
+        userName: user.firstName,
+        rating: plsCom[i].userRating
+        })
+
+      }
+
+      console.log("com d'un user, avec infos user, userCom", userCom)
+      
+    
+
+
+  res.json({result:true,dataBook:dataBook,userCom })
 });
 
 

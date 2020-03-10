@@ -47,7 +47,7 @@ router.get('/homePage/:token', async function(req, res, next) {
     //le livre est-il en bibliotheque du user
     var isInLibrairy = userLibrairy.findIndex(e =>e.equals(catalogue[i]._id));
     var bool = isInLibrairy!=-1?true:false
-
+    console.log("trueFalse",isInLibrairy)
      livreMin.push(
     {
       id :  catalogue[i]._id,
@@ -66,11 +66,14 @@ router.get('/homePage/:token', async function(req, res, next) {
    livresMieuxNotes = rating.slice(0,6) */
 
     // console.log("livreMin",livreMin)
-     res.json({livreMin});
+    console.log("CATALOGUE",livreMin)
+     res.json({result:"ok", livreMin});
     }else{
           result="erreur : pas de cata envoyé au front"
+          res.json({livreMin, result})
           };
-res.json({livreMin, result})
+    
+
 } )
 
 //Route searchTag    ///////////////////////////////////////////////////////////////////  TAG  ////////////
@@ -273,29 +276,13 @@ console.log("myUserSuggestions", mySuggest);
 
 } });
 
-/////////////////// ROUTE COMMENTS SUR LE LIVRE ///////
-
-router.get('/comments/:id', async (req, res, next) => {
-
-          var id = req.params.id
-          var comments = []
-          var livre= await booksModel.findOne({_id : req.params.id})
-          var livretab = livre.comments
-          console.log("livretab",livretab)
-
-          for (let i=0; i<livretab.length; i++) {
-    comments.push("livretab[i]",livretab[i])
-    console.log("comments", comments)
+/////////////////// ROUTE COMMENTS SUR LE LIVRE /////// est dans books.js
 
 
-          var usercomment = await booksModel.findOne({_id : req.params.id})
-          .populate({path: 'comments',
-            select: 'userId'})
-          
-          .exec();
 
-          console.log("usercomment", usercomment)
-}})
-  
+
+      
+    
+
 
 module.exports = router;
