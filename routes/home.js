@@ -68,19 +68,22 @@ router.get('/homePage/:token', async function(req, res, next) {
           result="erreur : pas de cata envoyé au front"
           res.json({livreMin, result})
           };
-    
+}
+)
 
-} )
-
-//Route searchTag    ///////////////////////////////////////////////////////////////////  TAG  ////////////
+//Route searchTag //////////  TAG  ////////////
 router.post('/searchTag', async function(req, res, next) {
+  console.log("searcheTag",req.body)
   var resultMin =[]
-  var userToken=JSON.parse(req.body.token)
+  console.log("HEO")
+  var userToken=req.body.token
   var user = await usersModel.findOne({token:userToken});
+  
   var userLibrairy = user.myLibrairy 
   var tagId=[]
   var tag=JSON.parse(req.body.tagsSearch)
   for(i=0;i<tag.length;i++){
+    console.log("TAG?",tag)
     if(tag[i].color=="red"){
       tagId.push(tag[i]._id)
     }
@@ -113,9 +116,7 @@ router.post('/searchTag', async function(req, res, next) {
         res.json({result,resultMin})
         }
     }
- 
   }
-
 })
 /// ROUTE SEARCH TEXT
 /* var regex = /^${req.body.textsearch}/i 
