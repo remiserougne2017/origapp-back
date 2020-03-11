@@ -220,12 +220,10 @@ module.exports = router;
 //// ROUTE SUGGESTIONS/vous devriez aimer    //////////////////////////////  SUGGEST  ////////////
 
 router.get('/suggest/:token', async (req, res, next) => {
-  
-   var result = "suggest"
+  console.log("hello suggest 2")
   var token = req.params.token
-
   var userFind = await usersModel.findOne({token:req.params.token})
-  
+  // console.log("user",userFind)
 
   var bibliUserBdd = await userFind.myLibrairy
  
@@ -241,9 +239,17 @@ for (let i=0; i<bibliUserBdd.length; i++) {
   }   
 }
 
-var taggedBooks = await booksModel.find({ $and:[{category: { $all: myTags} },{_id:{ $nin: bibliUserBdd}}]});
+var tagsBook = await booksModel.findOne({_id:bibliUserBdd[0]});
+// console.log("tags du book",tagsBook.category)
+var taggedBooks = await booksModel.find(
+  { $and:[{category: { $in: myTags} },{_id:{ $nin: bibliUserBdd}}]});
+
+console.log("taggedbooks",taggedBooks);
 
 for (let i=0; i<taggedBooks.length; i++) {
+console.log({
+  _id: taggedBooks[i]._id,title: taggedBooks[i].title,
+})
 mySuggest.push({
   _id: taggedBooks[i]._id,
   image: taggedBooks[i].image,
@@ -251,10 +257,12 @@ mySuggest.push({
   rating: taggedBooks[i].rating,
   authors: taggedBooks[i].authors
 })
+}
+// console.log("SUGGEST before send",mySuggest)
 
   res.json({result:true, mySuggest, mess: "liste suggestion pr user"})
-
-} });
+ 
+});
 
 /////////////////// ROUTE COMMENTS SUR LE LIVRE /////// est dans books.js
 
