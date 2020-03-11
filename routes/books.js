@@ -2067,28 +2067,21 @@ for(let i=0;i<bookOpened.content.length;i++){
   // console.log("book opened",dataBook); ////////////////////////////////////////
   
   ///////////////////////////COMMENTS BOOK 
-
-    var bookCommented= await booksModel.findOne({_id : req.params.id});
-    console.log("livre commenté trouvé en back, bookCommented",bookCommented);
+  var userCom = []
+    // var bookCommented= await booksModel.findOne({_id : req.params.id});
  
-    var plsCom = bookCommented.comments
-    console.log("ensemble des com sur un livre, plsCom", plsCom)
-    var userCom = []
-    for (let i=0; i < plsCom.length ;i++){
-     var user = await usersModel.findOne({_id : plsCom[i].userId})
-
-      userCom.push({
-        com: plsCom[i].comment,
-        userName: user.firstName,
-        rating: plsCom[i].userRating
-        })
-
-      }
-
-      console.log("com d'un user, avec infos user, userCom", userCom)
-      
+    // var plsCom = bookCommented.comments
     
+    // for (let i=0; i < plsCom.length ;i++){
+    //  var user = await usersModel.findOne({_id : plsCom[i].userId})
 
+    //   userCom.push({
+    //     com: plsCom[i].comment,
+    //     userName: user.firstName,
+    //     rating: plsCom[i].userRating
+    //     })
+
+    //   } 
 
   res.json({result:true,dataBook:dataBook,userCom })
 });
@@ -2097,9 +2090,7 @@ for(let i=0;i<bookOpened.content.length;i++){
 // OPEN CONTENT 
 
 router.post('/open-content', async function(req,res,next){
-  console.log("opening content",req.body.idBook);
   let bookOpened = await booksModel.findOne({_id:req.body.idBook});
-  // console.log("bookopened",bookOpened)
 
   var contentOpened;
   var pageOpened;
@@ -2110,7 +2101,6 @@ router.post('/open-content', async function(req,res,next){
     }
 
   } 
-  console.log("content opened",contentOpened)
 
   let returnedContentToFront = {
     id:bookOpened._id,
@@ -2129,7 +2119,6 @@ router.post('/open-content', async function(req,res,next){
 //Route ajout de commentaire sur un livre
 router.post('/comments', async function(req,res,next){
   var result
-  console.log("Comment", req.body)
   //recup du user pour récuperer l'id du user
   var user = await usersModel.findOne({token: req.body.token})
   // recup de l'ouvrage si un 
@@ -2147,13 +2136,11 @@ router.post('/comments', async function(req,res,next){
     for(let i=0;i<book.comments.length;i++){
       newRating += parseInt(book.comments[i].userRating)
     }
-    console.log("new rating",newRating,"voteCount",totalRating,"moyenne:",newRating/totalRating)
 
     book.comments.push(newComment)
     book.rating=newRating/totalRating 
     book.votesCount = book.comments.length+1
     newCommentSave = await book.save()
-    console.log("save comment BDD")
 res.json({})
 });
 
