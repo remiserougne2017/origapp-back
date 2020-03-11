@@ -2002,7 +2002,6 @@ router.get('/bdd', async function(req, res, next) {
 
 // OPEN BOOK
 router.post('/open-book', async function(req,res,next){
-  console.log("OPEN BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOK,",req.body);
 
   // AJOUTER dans le tableau dernière lecture du user l'id du livre
   var userOpening = await usersModel.findOne({token:req.body.token});
@@ -2066,10 +2065,8 @@ for(let i=0;i<bookOpened.content.length;i++){
   ///////////////////////////COMMENTS BOOK 
 
     var bookCommented= await booksModel.findOne({_id : req.body.idBook});
-    console.log("livre commenté trouvé en back, bookCommented",bookCommented);
 
     var plsCom = bookCommented.comments
-    console.log("ensemble des com sur un livre, plsCom", plsCom)
     var userCom = []
     for (let i=0; i < plsCom.length ;i++){
      var user = await usersModel.findOne({_id : plsCom[i].userId})
@@ -2082,7 +2079,6 @@ for(let i=0;i<bookOpened.content.length;i++){
 
       }
 
-      console.log("com d'un user, avec infos user, userCom", userCom)
 
 
 
@@ -2123,9 +2119,7 @@ router.post('/open-content', async function(req,res,next){
 
 //Route ajout de commentaire sur un livre
 router.post('/comments', async function(req,res,next){
-  console.log('comment receiving')
   var result
-  console.log("Comment", req.body)
   //recup du user pour récuperer l'id du user
   var user = await usersModel.findOne({token: req.body.token})
   // recup de l'ouvrage si un 
