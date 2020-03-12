@@ -131,6 +131,27 @@ router.post('/sign-in', async (req, res, next) => {
   res.json({result, token, prenom, error})
 })
 
+//Update Name
+router.post('/updateUser/:token', async (req,res,next)=>{
+console.log("UpDAteNmae",req.body,req.params)
+
+var result="ko"
+var mess="Aucune modification apportée"
+var type="info"
+
+var resp = await usersModel.updateOne({token:req.params.token},
+  {firstName:req.body.name})
+  console.log("resp",resp)
+  if(resp.nModified==1){
+    console.log("modifieré")
+    result="ok";
+    mess="Prénom mis à jour"
+    type="success"
+    res.json({result:result,mess,type})
+  }else{
+    res.json({result:result,mess,type})
+  }
+})
 
 ///// ROUTE PARAMS
 
