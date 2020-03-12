@@ -2005,12 +2005,10 @@ router.post('/open-book', async function(req,res,next){
 
   // AJOUTER dans le tableau dernière lecture du user l'id du livre
   var userOpening = await usersModel.findOne({token:req.body.token});
-  console.log("//////////////////////////////",userOpening)
-  var arrayLastRead = userOpening.lastRead;
+    var arrayLastRead = userOpening.lastRead;
 
   var isInList = false;
   for (let i = 0;i<userOpening.lastRead.length;i++){
-     console.log("est testé",req.body.idBook,"avec",userOpening.lastRead[i])
     if(req.body.idBook == userOpening.lastRead[i]) {
       isInList = true
   }
@@ -2028,6 +2026,18 @@ router.post('/open-book', async function(req,res,next){
     { token:req.body.token},
     { lastRead: arrayLastRead });
 
+  //Checker si le livre est dans les favoris du user
+  var inLibrairy
+  var userLib = userOpening.myLibrairy
+  console.log("LIBRAIRyUSER",userLib,"vs",req.body.idBook)
+  var check = userLib.findIndex(e=>e==req.body.idBook)
+  console.log("CHECK",check)
+  if(check==-1){
+   inLibrairy=false
+  }else{
+    inLibrairy=true
+  }
+  
   // ENVOYER AU FRONT les datas du livre
   var bookOpened = await booksModel.findOne({_id:req.body.idBook});
 
@@ -2079,19 +2089,14 @@ for(let i=0;i<bookOpened.content.length;i++){
         userName: user.firstName,
         rating: plsCom[i].userRating
         })
-
       }
-
-
-
-  res.json({result:true,dataBook:dataBook,userCom })
+  res.json({result:true,dataBook:dataBook,userCom,inLibrairy})
 });
 
 
 // OPEN CONTENT 
 
 router.post('/open-content', async function(req,res,next){
-  console.log("opening content",req.body.idBook);
   let bookOpened = await booksModel.findOne({_id:req.body.idBook});
   // console.log("bookopened",bookOpened)
 
@@ -2104,7 +2109,6 @@ router.post('/open-content', async function(req,res,next){
     }
 
   } 
-  console.log("content opened",contentOpened)
 
   let returnedContentToFront = {
     id:bookOpened._id,
@@ -2136,17 +2140,15 @@ router.post('/comments', async function(req,res,next){
     var newRating=parseInt(req.body.rating)
     //MAJ du nb de vote pour le livre sans oublier celui que l'on est en train d'ajouter
     var totalRating=book.comments.length+1
-    console
     for(let i=0;i<book.comments.length;i++){
       newRating += parseInt(book.comments[i].userRating)
     }
-    console.log("new rating",newRating,"voteCount",totalRating,"moyenne:",newRating/totalRating)
 
     book.comments.push(newComment)
     book.rating=newRating/totalRating 
     book.votesCount = book.comments.length+1
     newCommentSave = await book.save()
-    console.log("save comment BDD")
+    
 res.json({})
 });
 

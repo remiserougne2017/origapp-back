@@ -244,12 +244,10 @@ var tagsBook = await booksModel.findOne({_id:bibliUserBdd[0]});
 var taggedBooks = await booksModel.find(
   { $and:[{category: { $in: myTags} },{_id:{ $nin: bibliUserBdd}}]});
 
-console.log("taggedbooks",taggedBooks);
+// console.log("taggedbooks",taggedBooks);
 
 for (let i=0; i<taggedBooks.length; i++) {
-console.log({
-  _id: taggedBooks[i]._id,title: taggedBooks[i].title,
-})
+
 mySuggest.push({
   _id: taggedBooks[i]._id,
   image: taggedBooks[i].image,
@@ -258,7 +256,7 @@ mySuggest.push({
   authors: taggedBooks[i].authors
 })
 }
-// console.log("SUGGEST before send",mySuggest)
+console.log("SUGGEST before send",mySuggest)
 
   res.json({result:true, mySuggest, mess: "liste suggestion pr user"})
  
