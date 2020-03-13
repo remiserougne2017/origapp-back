@@ -2005,17 +2005,14 @@ router.post('/open-book', async function(req,res,next){
 
   // AJOUTER dans le tableau dernière lecture du user l'id du livre
   var userOpening = await usersModel.findOne({token:req.body.token});
-  console.log("//////////////////////////////",userOpening)
   var arrayLastRead = userOpening.lastRead;
 
   var isInList = false;
   for (let i = 0;i<userOpening.lastRead.length;i++){
-     console.log("est testé",req.body.idBook,"avec",userOpening.lastRead[i])
     if(req.body.idBook == userOpening.lastRead[i]) {
       isInList = true
   }
 }
-  // console.log(isInList)
   if(isInList == false) {
     if(arrayLastRead.length>3) {
       arrayLastRead.shift();
@@ -2052,8 +2049,8 @@ for(let i=0;i<bookOpened.content.length;i++){
  })
 
 }
-  // console.log('ARRAYYYYYYYY CONTNET',arrayContent)
-  let dataBook = {
+
+let dataBook = {
     status:bookOpened.status,
     idBook:bookOpened._id,
     title:bookOpened.title,
@@ -2064,7 +2061,7 @@ for(let i=0;i<bookOpened.content.length;i++){
     votes:bookOpened.votesCount,
     contents:arrayContent,
   }
-  // console.log("book opened",dataBook); ////////////////////////////////////////
+
   
   ///////////////////////////COMMENTS BOOK 
 
@@ -2091,9 +2088,7 @@ for(let i=0;i<bookOpened.content.length;i++){
 // OPEN CONTENT 
 
 router.post('/open-content', async function(req,res,next){
-  console.log("opening content",req.body.idBook);
   let bookOpened = await booksModel.findOne({_id:req.body.idBook});
-  // console.log("bookopened",bookOpened)
 
   var contentOpened;
   var pageOpened;
@@ -2104,7 +2099,6 @@ router.post('/open-content', async function(req,res,next){
     }
 
   } 
-  console.log("content opened",contentOpened)
 
   let returnedContentToFront = {
     id:bookOpened._id,
@@ -2136,51 +2130,17 @@ router.post('/comments', async function(req,res,next){
     var newRating=parseInt(req.body.rating)
     //MAJ du nb de vote pour le livre sans oublier celui que l'on est en train d'ajouter
     var totalRating=book.comments.length+1
-    console
     for(let i=0;i<book.comments.length;i++){
       newRating += parseInt(book.comments[i].userRating)
     }
-    console.log("new rating",newRating,"voteCount",totalRating,"moyenne:",newRating/totalRating)
 
     book.comments.push(newComment)
     book.rating=newRating/totalRating 
     book.votesCount = book.comments.length+1
     newCommentSave = await book.save()
-    console.log("save comment BDD")
 res.json({})
 });
 
 
-// OPEN OVERLAY
-// router.post('/display-content-list', async function(req,res,next){
-//   console.log("hello req body disaply overlay",req.body);
-
-//   var bookOpened = await booksModel.findOne({_id:req.body.idBook});
-
-//   let arrayContent = [];
-//   // console.log('bookopened',bookOpened)
-//   for(let i = 0;i<bookOpened.content.length;i++){
-//     if(bookOpened.content[i].pageNum == req.body.pageNum) {
-//       let arrayMedia = []
-//       for(let j = 0;j<bookOpened.content[i].media.length;j++){
-//         arrayMedia.push({
-//           type: bookOpened.content[i].media[j].type,
-//         })
-//       }
-//       arrayContent.push({
-//         bookTitle:bookOpened.title,
-//         idContent : bookOpened.content[i]._id,
-//         title:bookOpened.content[i].title,
-//         pageNum:bookOpened.content[i].pageNum,
-//         status:bookOpened.content[i].status,
-//         media:arrayMedia
-//       })
-
-//   }
-// }
-//   // console.log("RESUUUUUULT",arrayContent)
-
-//   res.json({result:true, contentFromBack:arrayContent})
-// });
 
 module.exports = router;
