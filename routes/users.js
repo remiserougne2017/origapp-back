@@ -95,23 +95,21 @@ router.post('/sign-in', async (req, res, next) => {
   var prenom = null; 
   
   //Vérification champs non vides
-  if(req.body.email == '' || req.body.password == ''){
-    error.emptyField = 'Le champ est vide'
-  } else {
+  if(req.body.email == '' ){
+    error.emptyFieldMail = 'Ce champ est obligatoire'
+  } else if( req.body.password == '') {
+    error.emptyFieldPwd = 'Ce champ est obligatoire'
+   }else{
 
       //Vérification email
-    if(Object.keys(error).length == 0){
       var user = await usersModel.findOne({
       email: req.body.email
       })  
     
     if(!user){
       result = false
-      error.email = 'Email inexistant'
-    }
-        
-    //Vérification Mot de passe correcte
-    if(user){
+      error.email = 'e-mail inconnu'
+    }else{
       const passwordEncrypt = SHA256(req.body.password + user.salt).toString(encBase64)
       console.log(user.pwd+' compare '+passwordEncrypt)
       if(passwordEncrypt == user.pwd){
@@ -123,8 +121,6 @@ router.post('/sign-in', async (req, res, next) => {
         error.password = 'mot de passe incorrect'
       }
     } 
-  }
-
   }
     
   console.log(error)

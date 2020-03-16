@@ -2029,9 +2029,7 @@ router.post('/open-book', async function(req,res,next){
   //Checker si le livre est dans les favoris du user
   var inLibrairy
   var userLib = userOpening.myLibrairy
-  console.log("LIBRAIRyUSER",userLib,"vs",req.body.idBook)
   var check = userLib.findIndex(e=>e==req.body.idBook)
-  console.log("CHECK",check)
   if(check==-1){
    inLibrairy=false
   }else{

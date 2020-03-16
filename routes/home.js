@@ -73,9 +73,9 @@ router.get('/homePage/:token', async function(req, res, next) {
 
 //Route searchTag //////////  TAG  ////////////
 router.post('/searchTag', async function(req, res, next) {
-  console.log("searcheTag",req.body)
+
   var resultMin =[]
-  console.log("HEO")
+  
   var userToken=req.body.token
   var user = await usersModel.findOne({token:userToken});
   
@@ -94,14 +94,12 @@ router.post('/searchTag', async function(req, res, next) {
     res.json({result,resultMin : allBooks})
   }else{
     var taggedBooks = await booksModel.find({ category: { $all: tagId } })
-    console.log("taggedBook",taggedBooks)
       if(taggedBooks.length==0){
       var result="Aucun résultat"
         res.json({result})
       }else{
         for (let i=0; i<taggedBooks.length; i++){
           var result="ok"
-          console.log("RSUl?",result)
           //le livre est-il en bibliotheque du user
           var isInLibrairy = userLibrairy.findIndex(e =>e.equals(taggedBooks[i]._id));
           var bool = isInLibrairy!=-1?true:false
@@ -115,7 +113,6 @@ router.post('/searchTag', async function(req, res, next) {
             rating: taggedBooks[i].rating,
             inLibrairy: bool
           });
-          console.log("RSUl2?",resultMin)
           };
           res.json({result,resultMin})
     };
@@ -223,7 +220,6 @@ module.exports = router;
 //// ROUTE SUGGESTIONS/vous devriez aimer    //////////////////////////////  SUGGEST  ////////////
 
 router.get('/suggest/:token', async (req, res, next) => {
-  console.log("hello suggest 2")
   var token = req.params.token
   var userFind = await usersModel.findOne({token:req.params.token})
   // console.log("user",userFind)
