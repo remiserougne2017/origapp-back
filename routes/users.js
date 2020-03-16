@@ -137,7 +137,6 @@ var resp = await usersModel.updateOne({token:req.params.token},
   {firstName:req.body.name})
   console.log("resp",resp)
   if(resp.nModified==1){
-    console.log("modifieré")
     result="ok";
     mess="Prénom mis à jour"
     type="success"

@@ -169,7 +169,7 @@ router.post('/searchtext/:id', async function(req, res, next) {
 //Route ajout à la bibliotheque si bool == true     ///////////////////////////  LIBRAIRY  /////////////////
 
 router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
-
+console.log("ADDLIBRAIRY",req.params)
   var user = await usersModel.findOne({token:req.params.token})
   var userLib=user.myLibrairy
   newLib = userLib.filter(e=>e!=req.params.id)
@@ -178,7 +178,8 @@ router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
     newLib.push(req.params.id)
     var saveLib = await usersModel.updateOne(
       { token:req.params.token},
-      { myLibrairy: newLib })
+      { myLibrairy: newLib });
+      // console.log("responseBDD",saveLib)
       result={mess:"Ajouté à votre bibliothèque.",type:"success"}
   }else{
     var saveLib =  await usersModel.updateOne(
@@ -256,9 +257,8 @@ mySuggest.push({
   authors: taggedBooks[i].authors
 })
 }
-console.log("SUGGEST before send",mySuggest)
 
-  res.json({result:true, mySuggest, mess: "liste suggestion pr user"})
+res.json({result:true, mySuggest, mess: "liste suggestion pr user"})
  
 });
 
