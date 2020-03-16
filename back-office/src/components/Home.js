@@ -4,6 +4,7 @@ import '../App.css';
 import { Modal, Button,Card} from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'reactstrap';
+import OverlayForm from './Overlay-creaBook'
 
 function Home() {
 
@@ -49,10 +50,9 @@ var displayBooks = dataBooks.map((book, i) => {
             <Container>
                 <Row>
                     {displayBooks}
+                <OverlayForm/>
                 </Row>
             </Container>
-
-
         </div>
     </div>
   );
