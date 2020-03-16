@@ -29,59 +29,57 @@ router.post('/sign-up', async (req, res, next) => {
   })
 
   if(searchEmail != null){
-    error.email = "Email déjà existant"
-  } else {
+    error.email = "Email déjà existant";
+    res.json({result, error})
+  } else if (req.body.firstName == ''
+  || req.body.email == ''
+  || req.body.password == '' ){
 
   //Vérification de champs non vides
-    if(req.body.firstName == ''
-  || req.body.email == ''
-  || req.body.password == ''){
-    error.emptyField = 'Le champ est vide'
-  }
-
-  // Vérification d'email valide
+    error.emptyField = 'Champs obligatoires'
+    res.json({result, error})
+  }else{
+     // Vérification d'email valide
   var regexEmail = /^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/;
   var testEmail = req.body.email;
   if(regexEmail.test(testEmail) != true){
     error.emailNotValid = 'Email invalide'
+    res.json({result, error})
   }
 
   // Vérification de mot de passe valide - 8 caractères dont 1 chiffre
-  var regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  var regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/;
   var testPassword = req.body.password;
   if(regexPassword.test(testPassword) != true){
     error.passwordNotValid = 'Au moins 8 caractères dont 1 chiffre'
-  }
-  }
-
-  if(Object.keys(error).length == 0){
-    var salt = uid2(32)
-
-    var newUser = new usersModel({
-      firstName: req.body.firstName,
-      email: req.body.email,
-      role: '', //reader ou editor
-      pwd: SHA256(req.body.password+salt).toString(encBase64),
-      salt: salt,
-      token: uid2(32),
-      myLibrairy: [],
-      lastRead: [],
-      comments: []
-    })
-
-    saveUser = await newUser.save()
+    res.json({result, error})
+    }else{
+        var salt = uid2(32)
+        var newUser = new usersModel({
+          firstName: req.body.firstName,
+          email: req.body.email,
+          role: '', //reader ou editor
+          pwd: SHA256(req.body.password+salt).toString(encBase64),
+          salt: salt,
+          token: uid2(32),
+          myLibrairy: [],
+          lastRead: [],
+          comments: []
+        })
     
-    if(saveUser){
-      result = true
-      token = saveUser.token
-      prenom = saveUser.firstName
-      console.log(prenom)
+        saveUser = await newUser.save()
+        
+        if(saveUser){
+          result = true
+          token = saveUser.token
+          prenom = saveUser.firstName
+          res.json({result, token, prenom, error})      
+        }else{
+        res.json({result, token, prenom, error})   
+        }
+      }
     }
-  }
-  
-  
-  res.json({result, token, prenom, error})
-})
+});
 
 /* Route POST SIGN-IN */
 router.post('/sign-in', async (req, res, next) => {
