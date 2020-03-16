@@ -25,9 +25,10 @@ var tags = await tagsModel.find()
 
 //// ROUTE CATALOGUE
 router.get('/homePage/:token', async function(req, res, next) {
+  console.log("TOKEN",req.params.token)
 
   //rechercher la librairy du user !! token en DUR à enlever
-  var user = await usersModel.findOne({token:req.params.token})
+  var user = await usersModel.findOne({token:req.params.token});
   var userLibrairy = user.myLibrairy
 
   //Generation du catalogue                                                   
