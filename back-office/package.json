@@ -10,8 +10,10 @@
     "bootstrap": "^4.4.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-dropzone": "^10.2.1",
     "react-scripts": "3.4.0",
-    "reactstrap": "^8.4.1"
+    "reactstrap": "^8.4.1",
+    "superagent": "^5.2.2"
   },
   "scripts": {
     "start": "react-scripts start",

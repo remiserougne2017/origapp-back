@@ -3,7 +3,8 @@ import '../App.css';
 import { Modal, Button,Card, Form, Input,Tag} from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'reactstrap';
-import Tags from './Tags'
+import Tags from './Tags';
+import DropZone from './dropZone'
 
 
 function ModalForm(props) {
@@ -43,7 +44,7 @@ const handleOk = () => {
             <Input placeholder="Séparés par des virgules"/>
         </Form.Item>
         <Form.Item label="image de couverture">
-            <Button>Parcourir</Button>
+            <DropZone></DropZone>
         </Form.Item>
         <Form.Item label="Résumé de l'ouvrage">
         <TextArea rows={4} />
