@@ -8,7 +8,7 @@ import Tags from './Tags'
 
 function ModalForm(props) {
 
-const [visible,setVisible] = useState(true);
+const [visible,setVisible] = useState(false);
 const [confirmLoading,setConfirmLoading]= useState(false)
 
 const handleOk = () => {

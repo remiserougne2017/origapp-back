@@ -3,6 +3,7 @@ import './App.css';
 import Home from './components/Home'
 
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'; 
+import Book from './components/Book';
 
 
 
@@ -18,7 +19,8 @@ function App() {
       <Router>
         <Switch>
           <Route path="/" exact component={Home} />
-    
+          <Route path={"/openbook/:idBook"} exact component={Book} />
+
         </Switch>
       </Router>
     // </Provider>
