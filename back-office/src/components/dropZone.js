@@ -1,23 +1,47 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {useDropzone} from 'react-dropzone';
 import Dropzone from 'react-dropzone'
 import request from "superagent";
+import cuid from "cuid";
 
 function MyDropzone() {
-    const onDrop = (files) => {
-            // POST to a test endpoint for demo purposes
-            const req = request.post('https://httpbin.org/post');
+    // const onDrop = (files) => {
+    //         // POST to a test endpoint for demo purposes
+    //         const req = request.post('https://httpbin.org/post');
         
-            files.forEach(file => {
-              req.attach(file.name, file);
-            });
+    //         files.forEach(file => {
+    //           req.attach(file.name, file);
+    //         });
         
-            req.end();
-          }
-    
+    //         req.end();
+    //       }
+    const [images,setImages]=useState([])
+    const onDrop = useCallback(acceptedFiles => {
+        // Loop through accepted files
+        acceptedFiles.map(file => {
+          // Initialize FileReader browser API
+          const reader = new FileReader();
+          // onload callback gets called after the reader reads the file data
+          reader.onload = function(e) {
+            // add the image into the state. Since FileReader reading process is asynchronous, its better to get the latest snapshot state (i.e., prevState) and update it. 
+            setImages(prevState => [
+              ...prevState,
+              { id: cuid(), src: e.target.result }
+            ]);
+          };
+          // Read the file as Data URL (since we accept only images)
+          reader.readAsDataURL(file);
+         
+          return file;
+        });
+        console.log("FILE!!",acceptedFiles)
+
+
+      }, []);
+      
     return(
     <Dropzone  
-     onDrop={acceptedFiles =>{console.log(acceptedFiles); onDrop()}}>
+     onDrop={acceptedFiles =>{console.log(acceptedFiles); onDrop(acceptedFiles)}}>
   {({getRootProps, getInputProps}) => (
     <section>
       <div {...getRootProps()} 
@@ -29,57 +53,6 @@ function MyDropzone() {
   )}
 </Dropzone>
 )
-//   const onDrop = useCallback((acceptedFiles) => {
-//       console.log("HEO FILE 1")
-//     acceptedFiles.forEach((file) => {
-//       const reader = new FileReader()
-
-//       reader.onabort = () => console.log('file reading was aborted')
-//       reader.onerror = () => console.log('file reading has failed')
-//       reader.onload = () => {
-//       // Do whatever you want with the file contents
-//         const binaryStr = reader.result
-//         console.log("HEHO FILE2",binaryStr)
-//       }
-//       reader.readAsArrayBuffer(file)
-// //     })
-//   }, [])
-        
-// const onDrop = (files) => {
-//     // POST to a test endpoint for demo purposes
-//     const req = request.post('https://httpbin.org/post');
-
-//     files.forEach(file => {
-//       req.attach(file.name, file);
-//     });
-
-//     req.end();
-//   }
-
-//   return (
-//     <div className="App">
-//       <ReactDropzone
-//         // onDrop={onDrop}
-//       >
-//         Drop your best gator GIFs here!!
-//       </ReactDropzone>
-//     </div>
-//   );
-
-//   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
-
-//   return (
-//     <div {...getRootProps()} style={{height:100, border: '0.5px solid gray'}}>
-//       <input {...getInputProps()}
-//         onDrop={()=>{console.log("DROP!!")}}
-//        style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}}/>
-//       {
-//         isDragActive ?
-//           <p>Sélectionnez vos fichiers</p> :
-//           <p style={{textAlign:"center", marginTop:10}}>Glissez/Déposer votre fichier ou cliquer</p>
-//       }
-//     </div>
-//   )
 }
 
 export default MyDropzone

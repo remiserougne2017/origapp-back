@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link,Redirect } from "react-router-dom";
 import logo from '../logoOrigapp_detoure.png';
 import '../App.css';
@@ -10,7 +10,7 @@ import Header from './Header'
 
 
 function Home() {
-
+const [visible,setVisible]=useState(false)
 
 
 var date = new Date(1544825952726); // pour simuler une date 
@@ -31,8 +31,7 @@ function DateFormat(d){
     var dateformat = `${day}/${month}/${year}`;
     return dateformat
     }
-
-    
+  
 var displayBooks = dataBooks.map((book, i) => {
     return (
         <Col xs="12" sm="4" md='3'style ={{margin:30}}>
@@ -50,6 +49,11 @@ var displayBooks = dataBooks.map((book, i) => {
     )
     })
 
+    const handleClickOverlayCreaBook = ()=>{
+        setVisible(false)
+    }
+    
+
   return (
     <div className="App">
         <Header/>
@@ -61,11 +65,11 @@ var displayBooks = dataBooks.map((book, i) => {
             <div style = {{display:'flex', flexDirection:'column'}}>
                 <div style = {{fontSize:20, width:'20%'}}>Mes livres
                 </div>
-                <Button style = {{width:'20%', margin:30}} type="primary" onClick={()=> console.log('back in react') }>Ajouter un livre</Button>
+                <Button style = {{width:'20%', margin:30}} type="primary" onClick={()=>{console.log('back in react');setVisible(true)}}>Ajouter un livre</Button>
                 <Container>
                     <Row>
                         {displayBooks}
-                    <OverlayForm/>
+                    <OverlayForm visible={visible} handleClickParent ={handleClickOverlayCreaBook}/>
                     </Row>
                 </Container>
             </div>

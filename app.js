@@ -16,6 +16,7 @@ var homeRouter = require('./routes/home');
 var booksRouter = require('./routes/books');
 var listsRouter = require('./routes/lists');
 var scanRouter = require('./routes/scan');
+var backOfficeRouter = require('./routes/bo/routes-creaBook');
 
 var app = express();
 app.use(fileUpload());
@@ -37,6 +38,7 @@ app.use('/lists',listsRouter);
 app.use('/books',booksRouter);
 app.use('/home',homeRouter);
 app.use('/scan',scanRouter);
+app.use('/bo',backOfficeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
