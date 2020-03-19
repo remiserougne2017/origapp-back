@@ -11,7 +11,7 @@ import Header from './Header'
 
 function Home() {
 const [visible,setVisible]=useState(false)
-
+const [image,setImage]=useState()
 
 var date = new Date(1544825952726); // pour simuler une date 
 
@@ -49,8 +49,8 @@ var displayBooks = dataBooks.map((book, i) => {
     )
     })
 
-    const handleClickOverlayCreaBook = ()=>{
-        setVisible(false)
+    const handleClickOverlayCreaBook = (bool)=>{
+            setVisible(false)
     }
     
 

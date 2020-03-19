@@ -44,9 +44,9 @@ function MyDropzone() {
      onDrop={acceptedFiles =>{console.log(acceptedFiles); onDrop(acceptedFiles)}}>
   {({getRootProps, getInputProps}) => (
     <section>
-      <div {...getRootProps()} 
+      <div {...getRootProps() } 
         style={{height:100, border: '0.5px solid gray'}}>
-        <input {...getInputProps()} type="file" />
+        <input {...getInputProps()} />
         <p style={{textAlign:"center", marginTop:10}}>Glissez/Déposer votre fichier ou cliquer</p>
       </div>
     </section>

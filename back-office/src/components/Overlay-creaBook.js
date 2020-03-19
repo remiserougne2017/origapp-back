@@ -4,7 +4,8 @@ import { Modal, Button,Card, Form, Input,Tag,p} from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, } from 'reactstrap';
 import Tags from './Tags';
-import DropZone from './dropZone'
+// import DropZone from './dropZone'
+import Upload from './upload'
 
 
 function ModalForm(props) {
@@ -17,36 +18,60 @@ const [desc,setDesc]=useState('');
 const [image,setImage]=useState();
 const [errorMEssage,setErrorMessage]=useState({})
 
+const dataImage = (img)=>{
+  setImage(img)
+  console.log("IMAGE OVERLAY",img)
+}
 
 const handleOk = async () => {
+
   // if (title == "" ){
   //   setErrorMessage({...errorMEssage, title :"Le titre est obligatoire"})
   // }else if(desc==""){
   //   setErrorMessage({...errorMEssage, desc:"La description est obligatoire"})
   // }else {
-    //Les champs obligatoires sont remplis, on envoie
-    console.log("REMPLI",authors,illustrators)  
+    // Les champs obligatoires sont remplis, on envoie
+    //création d'un envoie de fichier
+    var data = new FormData();
+    console.log("IAMGE DATA",image.thumbUrl)
+    // data.append('bookData',{
+    //   "title":title,
+    //   "authors":authors,
+    //   "illustrators": illustrators,
+    //   "desc": desc,
+    //   'img' : image
+    // });
+    data.append('imageData',image)
+
     var creaBook = await fetch('http://192.168.1.28:3000/bo/creaBook',{
-     method: 'POST',
-    //  mode: 'no-cors',
-     headers: {'Content-Type':'application/x-www-form-urlencoded',
-     'Access-Control-Allow-Origin' : "*"
-    },
-     body: `title=${title}&authors=${authors}&illustrators=${illustrators}&desc=${desc}`
+     method: 'post',
+     mode: 'no-cors',
+     headers: {'Content-Type':'application/x-www-form-urlencoded'},
+     body: `title=${title}&authors=${authors}&illustrators=${illustrators}&desc=${desc}&img=${image.thumbUrl}`
+    //  body: data
    });
+
+  //   console.log("REMPLI",authors,illustrators)  
+  //   var creaBook = await fetch('http://192.168.1.28:3000/bo/creaBook',{
+  //    method: 'POST',
+  //    mode: 'no-cors',
+  //    headers: {'Content-Type':'application/x-www-form-urlencoded',
+  //    'Access-Control-Allow-Origin' : "*"
+  //   },
+  //    body: `title=${title}&authors=${authors}&illustrators=${illustrators}&desc=${desc}`
+  //  });
 
   //  var resp = await creaBook.json()
    console.log('RESP',creaBook)
   // }
-  console.log("OK")
 };  
 
  const handleCancel = () => {
    setErrorMessage({})
     setAuthors('')
     setIllustrators('')
-    setDesc('')
-    props.handleClickParent()
+    setDesc('') 
+    props.handleClickParent(false)
   };
     const layout = {
       labelCol: { span: 8 },
@@ -77,7 +102,8 @@ const handleOk = async () => {
           onChange={(e)=>{setIllustrators(e.target.value)}}
           value={illustrators}/>
          <p className="form">Image de couverture:</p>    
-        <DropZone></DropZone>
+          {/* <DropZone/> */}
+          <Upload dataImage={dataImage}></Upload>
          <p className="form">Résumé de l'ouvrage:</p>
         <TextArea className="input" name="description" rows={4}
           style={{marginBottom:20}} 
@@ -86,7 +112,7 @@ const handleOk = async () => {
            {errorMEssage.desc?<p className="alert">{errorMEssage.desc}</p>:null}
          <p className="form">Catégories:</p>
         <Tags></Tags>
-    </div>
+     </div>
 </Modal>
       )
 };
