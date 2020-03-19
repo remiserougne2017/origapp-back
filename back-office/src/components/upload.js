@@ -10,8 +10,8 @@ function UploadComp(props){
     const propsUp = {
       // action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
       action:'http://192.168.1.28:3000/bo/upload',
-      headers: {'Content-Type':'application/x-www-form-urlencoded',
-      'Access-Control-Allow-Origin' : "*"},
+      // headers: {'Content-Type':'application/x-www-form-urlencoded',
+      // 'Access-Control-Allow-Origin' : "*"},
       listType: 'picture',
       defaultFileList: [...fileList],
 

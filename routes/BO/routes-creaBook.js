@@ -11,10 +11,13 @@ cloudinary.config({
 var request = require('sync-request');
 
 router.post('/creaBook', async function(req,res,next){
-// console.log("BODY?", req.body.img,"FILES?",req.files)
+console.log("BODY?",typeof req.body.img ,"FILES?",req.files)
+var string=JSON.stringify(req.body.img)
+// test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+var resultCloudinary = await cloudinary.uploader.upload(req.body.img, function(error, result){
+  console.log("Router Cloud? ",result, error)
+});
 
-var resultCloudinary = await cloudinary.uploader.upload(`${req.body.img}`)
-console.log("resultCloud",resultCloudinary)
 
     // var newBook = await booksModel({
     //     title:req.body.title,
@@ -28,12 +31,12 @@ console.log("resultCloud",resultCloudinary)
 res.json({result:"ok"})
 })
 router.post('/upload', async function(req,res,next){
-    console.log("Upload BODY?", req," Upload FILES?",req.files)
-
+    console.log("Upload BODY?", req.body," Upload FILES?",req.files)
+console.log("HEOH DATA IMAGE!!",JSON.stringify(req.files.file.data))
     // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
     
 
-    res.json({result:"ok"})
+    res.json({status:"done"})
     })
     
 module.exports = router;

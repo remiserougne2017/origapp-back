@@ -33,7 +33,7 @@ const handleOk = async () => {
     // Les champs obligatoires sont remplis, on envoie
     //création d'un envoie de fichier
     var data = new FormData();
-    console.log("IAMGE DATA",image.thumbUrl)
+    console.log("IMAGE DATA",typeof image.thumbUrl)
     // data.append('bookData',{
     //   "title":title,
     //   "authors":authors,
@@ -45,7 +45,7 @@ const handleOk = async () => {
 
     var creaBook = await fetch('http://192.168.1.28:3000/bo/creaBook',{
      method: 'post',
-     mode: 'no-cors',
+    //  mode: 'no-cors',
      headers: {'Content-Type':'application/x-www-form-urlencoded'},
      body: `title=${title}&authors=${authors}&illustrators=${illustrators}&desc=${desc}&img=${image.thumbUrl}`
     //  body: data

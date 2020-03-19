@@ -20,6 +20,7 @@ var backOfficeRouter = require('./routes/bo/routes-creaBook');
 
 var app = express();
 app.use(fileUpload());
+var cors = require('cors');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,7 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'back-office/build')));
-
+app.use(cors());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/lists',listsRouter);
