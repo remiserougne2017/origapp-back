@@ -43,7 +43,7 @@ const handleOk = async () => {
     // });
     data.append('imageData',image)
 
-    var creaBook = await fetch('http://192.168.1.28:3000/bo/creaBook',{
+    var creaBook = await fetch('http://192.168.0.28:3000/bo/creaBook',{
      method: 'post',
     //  mode: 'no-cors',
      headers: {'Content-Type':'application/x-www-form-urlencoded'},

@@ -31,8 +31,8 @@ var resultCloudinary = await cloudinary.uploader.upload(req.body.img, function(e
 res.json({result:"ok"})
 })
 router.post('/upload', async function(req,res,next){
-    console.log("Upload BODY?", req.body," Upload FILES?",req.files)
-console.log("HEOH DATA IMAGE!!",JSON.stringify(req.files.file.data))
+    console.log("Upload FILES?",req.files.file.data)
+// console.log("HEOH DATA IMAGE!!",JSON.stringify(req.files.file.data))
     // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
     
 
