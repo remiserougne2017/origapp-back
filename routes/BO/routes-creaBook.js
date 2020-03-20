@@ -31,10 +31,11 @@ var resultCloudinary = await cloudinary.uploader.upload(req.body.imageData, func
     // console.log("SAVE?",bookSave)
 res.json({result:"ok",imageUrl})
 })
+
+
+
 router.post('/upload', async function(req,res,next){
-
 console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
-
 // let what = req.files.file.data
 // console.log("WHAT DATA IMAGE!!",what)
     // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
@@ -43,4 +44,21 @@ console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
     res.json({status:"done"})
     })
     
+
+
+
+  router.post('/creaContent', async function(req,res,next){
+      // console.log("hello crea content")
+      console.log("BODY?",req.body ,"FILES?",req.files)  
+      // var imageUrl
+      // var resultCloudinary = await cloudinary.uploader.upload(req.body.imageData, function(error, result){
+      //   console.log("Router Cloud? ",result, error)
+      //    imageUrl = resultCloudinary.url
+      // });
+      
+
+      res.json({result:"ok"})
+      })
+
+      
 module.exports = router;
