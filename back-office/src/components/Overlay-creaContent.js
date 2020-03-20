@@ -42,8 +42,7 @@ let mediaDropdown = mediaType.map((type,j) => {
 const handleOk = async () => {
     console.log("inputFields", inputMedia);
   console.log("OK",media,title,page);
-  props.handleClickParent()
-
+  props.handleClickParent();
 };  
 
  const handleCancel = () => {

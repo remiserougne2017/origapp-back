@@ -6,6 +6,7 @@ import { Container, Row, Col, } from 'reactstrap';
 import Tags from './Tags';
 // import DropZone from './dropZone'
 import Upload from './upload'
+import InputFileCustom from './inputFile'
 
 
 function ModalForm(props) {
@@ -44,7 +45,7 @@ const handleOk = async () => {
     data.append('imageData',image)
 
     var creaBook = await fetch('http://192.168.0.28:3000/bo/creaBook',{
-     method: 'post',
+     method: 'POST',
     //  mode: 'no-cors',
      headers: {'Content-Type':'application/x-www-form-urlencoded'},
      body: `title=${title}&authors=${authors}&illustrators=${illustrators}&desc=${desc}&img=${image.thumbUrl}`

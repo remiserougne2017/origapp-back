@@ -9,7 +9,7 @@ import OverlayForm from './Overlay-creaBook';
 import Header from './Header';
 import color from './color';
 import background from '../origami_background.jpg';
-
+import InputFileCustom from './inputFile'
 
 function Home() {
 const [visible,setVisible]=useState(false)
@@ -69,7 +69,7 @@ var displayBooks = dataBooks.map((book, i) => {
                 to={`/openbook/${book.idBook}`}
                 style={{ textDecoration: 'none' }}
                 >
-                <Card title={book.title} 
+                <Card key={i} title={book.title} 
                     style = {{marginBottom:20,borderRadius:10}}
                     hoverable = {true}
                     headStyle = {{backgroundColor:color('red'),color:'white'}}>
@@ -93,15 +93,11 @@ var displayBooks = dataBooks.map((book, i) => {
             setVisible(false)
     }
 
-
-
-
-
 // RETURN GLOBAL
   return (
     <div style = {{backgroundImage: `url(${background})` }}>
         <Header/>
-        
+        <InputFileCustom></InputFileCustom>
         <div style = {{display:'flex',flexDirection: 'column',justifyContent:'left'}}>
             <div style = {{height:200}}>
                 <div style = {mainTitleStyle}>Tableau de bord</div>
