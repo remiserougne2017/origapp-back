@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link,Redirect } from "react-router-dom";
 import logo from '../logoOrigapp_detoure.png';
 import '../App.css';
@@ -9,10 +9,41 @@ import Header from './Header';
 import color from './color';
 import { EyeOutlined,EditOutlined,DeleteOutlined } from '@ant-design/icons';
 import OverlayContent from './Overlay-creaContent'
+import background from '../origami_background.jpg';
 
 
 function Book(props) {
+
+
+// STYLE VARIABLE
+
+let mainTitleStyle = {
+    fontSize:20, 
+    textAlign:'left',
+    fontSize:40, 
+    color: color('red'),
+    padding:5, 
+    paddingLeft:50 ,
+    marginLeft:30,
+    marginBottom:20,
+    borderBottomColor:color('red'),
+    borderBottomWidth:3,
+    borderBottomStyle:'solid'        // backgroundColor:color('red')
+}
+
+let headerStyle = {
+    fontSize:20,
+    textAlign:'center',
+    paddingBottom:10, 
+    paddingTop:10,
+    backgroundColor:color('red'),
+    color:'white'
+}
+
+
 // routes to do : au chargement du composant fetch data book, toggle publier,
+
+const [isVisible,setIsVisible] = useState(false);
 
 
 var date = new Date(1544825952726); // pour simuler une date 
@@ -30,6 +61,14 @@ var dataBook = {
     contentNumber: 6,
     rating: 4
 }
+
+// gestion de l'overlay
+
+const handleClickOverlayCreaContent = ()=>{
+    console.log('hello handleclik')
+    setIsVisible(false)
+}
+
 
 // converti timestamp au format date dd/mm/yyyy
 function DateFormat(d){
@@ -50,23 +89,26 @@ var displayTags = dataBook.category.map((tag, i) => {
     })
 
   return (
-    <Container>
+    <div style = {{backgroundImage: `url(${background})` }}>
         <Header/>
         <div style = {{marginLeft:10    }}>
             <Row style = {{display:'flex', flexDirection:'column', marginLeft:20, marginBottom:30}}>
-                <Col xs="12" sm="6">
+                <Col xs="12">
                     <div style = {{marginLeft:5,textAlign:'left'}}><Link to={`/`}>Retour</Link></div>
-                    <div style = {{textAlign:'left',fontSize:44, color: color('red')}}>{dataBook.title}</div>
-                    <div style = {{textAlign:'left',fontSize:14,fontStyle:'italic',marginBottom:20}}>{dataBook.author}</div>
-                    <div style = {{textAlign:'left'}}>{displayTags}</div> 
+                    <div style = {mainTitleStyle}>{dataBook.title}</div>
+                    <div style = {{display:'flex', flexDirection:'row', marginLeft:30,alignItems:'center'}}> 
+                        <div style = {{fontSize:20,fontStyle:'italic',paddingRight:20}}>{dataBook.author}</div>
+                        <div >{displayTags}</div> 
+                    </div>
                 </Col>
             </Row>
-            <Row style = {{display:'flex', flexDirection:'row', marginRight:'auto'}}>
-                <Col xs="12" sm="4">
-                    <img src = {dataBook.image} style = {{height:300,margin:20}} />
+            <Row style = {{display:'flex', flexDirection:'row', marginRight:'auto',marginLeft:50,marginBottom:20}}>
+                <Col xs="12" sm="2">
+                    <img src = {dataBook.image} style = {{height:300}} />
                 </Col>
-                <Col xs="12" sm="6">
-                    <div style = {{display:'flex',flexDirection:'column',height:200, witdh:'40%', backgroundColor:'#ECF0F1',margin:20, borderRadius:10}}>
+                <Col xs="12" sm="4">
+                    <div style = {{display:'flex',flexDirection:'column',height:300, witdh:'40%', backgroundColor:'white', borderRadius:10,borderColor:color('red'),borderWidth:1,borderStyle:'solid'}}>
+                        <div style = {headerStyle}>Informations clés</div>
                         <div style = {{display:'flex',flexDirection:'row', justifyContent:'space-around', margin:10}}>
                             <div>Statut: Publié {dataBook.status}</div>
                             <Button type="primary"  >Publier/Dépublier</Button>
@@ -83,11 +125,11 @@ var displayTags = dataBook.category.map((tag, i) => {
         </div>
         <div style = {{marginLeft:30}}>
             <Row style = {{display:'flex',flexDirection:'column',marginLeft:20}}>
-                <div style = {{textAlign:'left',fontSize:44, color: color('red')}}>Les contenus associés</div>
-                <Button style = {{width:'20%', margin:30}} type="primary" onClick={()=>{console.log('back in react')}}>Ajouter un contenu</Button>
+                <div style = {mainTitleStyle}>Les contenus associés</div>
+                <Button style = {{width:'20%', margin:30}} type="primary" onClick={()=>{setIsVisible(true)}}>Ajouter un contenu</Button>
             </Row>
         </div>
-        <OverlayContent/>
+        <OverlayContent isVisible = {isVisible} handleClickParent ={handleClickOverlayCreaContent}/>
         <div style = {{marginLeft:30}}>
             <Row> 
                 <Col xs="12" sm='6'>
@@ -112,7 +154,7 @@ var displayTags = dataBook.category.map((tag, i) => {
             </Row>
 
         </div>
-    </Container>
+    </div>
   );
 }
 

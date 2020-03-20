@@ -9,7 +9,6 @@ import { Container, Row, Col, } from 'reactstrap';
 
 function OverlayContent(props) {
 
-const [visible,setVisible] = useState(true);
 const [title,setTitle] = useState('');
 const [page,setPage] = useState('');
 const [media,setMedia]=useState('');
@@ -42,12 +41,17 @@ let mediaDropdown = mediaType.map((type,j) => {
 // Gestion de l'overlay
 const handleOk = async () => {
     console.log("inputFields", inputMedia);
-  console.log("OK",media,title,page)
+  console.log("OK",media,title,page);
+  props.handleClickParent()
+
 };  
 
  const handleCancel = () => {
 console.log('cancel')
+props.handleClickParent()
+
   };
+
 
 
 
@@ -111,7 +115,7 @@ const handleInputChange = (index, event) => {
         return (
     <Modal
     title="Nouveau Contenu"
-    visible={true}
+    visible={props.isVisible}
     onOk={handleOk}
     onCancel={handleCancel}
     >

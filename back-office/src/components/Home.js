@@ -6,7 +6,9 @@ import { Modal, Button,Card} from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'reactstrap';
 import OverlayForm from './Overlay-creaBook';
-import Header from './Header'
+import Header from './Header';
+import color from './color';
+import background from '../origami_background.jpg';
 
 
 function Home() {
@@ -23,6 +25,30 @@ var date = new Date(1544825952726); // pour simuler une date
      {title:'Livre 4',author:'Marc Levy',status:true,image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',lastModified:date,idBook:"5e5fd3b2a2f6a844f031ec35"}
     ]
 
+
+    // STYLE VARIABLES: 
+
+    let mainTitleStyle = {
+        fontSize:20, 
+        textAlign:'left',
+        fontSize:40, 
+        color: color('red'),
+        padding:5, 
+        paddingLeft:50 ,
+        marginLeft:30,
+        marginBottom:40,
+        borderBottomColor:color('red'),
+        borderBottomWidth:3,
+        borderBottomStyle:'solid'        // backgroundColor:color('red')
+    }
+        
+    let buttonStyle = {
+        backgroundColor:color('blue'),
+        borderColor:color('blue')
+    
+    
+    }
+
 // converti timestamp au format date dd/mm/yyyy
 function DateFormat(d){
     var day = d.getDate();
@@ -32,46 +58,64 @@ function DateFormat(d){
     return dateformat
     }
   
+
+
+// GENERE LA LISTE DES CARDS
+
 var displayBooks = dataBooks.map((book, i) => {
     return (
-        <Col xs="12" sm="4" md='3'style ={{margin:30}}>
-            <Card title={book.title} style={{ width: 300}}>
-                <p>Dernière modification :{DateFormat(book.lastModified)}</p>
+        <Col xs="12" sm="4" >
+            <Link 
+                to={`/openbook/${book.idBook}`}
+                style={{ textDecoration: 'none' }}
+                >
+                <Card title={book.title} 
+                    style = {{marginBottom:20,borderRadius:10}}
+                    hoverable = {true}
+                    headStyle = {{backgroundColor:color('red'),color:'white'}}>
+                    <p>Dernière modification :{DateFormat(book.lastModified)}</p>
 
-                <div style = {{flexDirection:'row',display:'flex', justifyContent:''}}>
-                    <img src = {book.image} style = {{height:"200px",marginTop:'auto'}} />
-                    
-                    <Button type="primary"  ><Link to={`/openbook/${book.idBook}`}>Voir</Link></Button>
-                </div>
-
-            </Card>        
+                    <div style = {{flexDirection:'row',display:'flex', justifyContent:'space-between'}}>
+                        <img src = {book.image} style = {{height:"200px",marginTop:'auto'}} />
+                        
+                        <Button type="primary" style = {{...buttonStyle}} ><Link to={`/openbook/${book.idBook}`}>Voir</Link></Button>
+                    </div>
+                </Card>   
+            </Link>     
         </Col>
     )
     })
 
+
+
+    // GESTION DE L'OVERLAY
     const handleClickOverlayCreaBook = (bool)=>{
             setVisible(false)
     }
-    
 
+
+
+
+
+// RETURN GLOBAL
   return (
-    <div className="App">
+    <div style = {{backgroundImage: `url(${background})` }}>
         <Header/>
         
         <div style = {{display:'flex',flexDirection: 'column',justifyContent:'left'}}>
             <div style = {{height:200}}>
-                <div style = {{width:'20%',fontSize:20}}>Tableau de bord</div>
+                <div style = {mainTitleStyle}>Tableau de bord</div>
             </div>
             <div style = {{display:'flex', flexDirection:'column'}}>
-                <div style = {{fontSize:20, width:'20%'}}>Mes livres
+                <div style = {mainTitleStyle}>Mes livres
                 </div>
-                <Button style = {{width:'20%', margin:30}} type="primary" onClick={()=>{console.log('back in react');setVisible(true)}}>Ajouter un livre</Button>
-                <Container>
+                <div style = {{marginLeft:30}}>
+                    <Button style = {{width:'20%',marginTop:20, marginBottom:60,height:50, ...buttonStyle}} type="primary" onClick={()=>{setVisible(true)}}>Ajouter un livre</Button>
                     <Row>
                         {displayBooks}
                     <OverlayForm visible={visible} handleClickParent ={handleClickOverlayCreaBook}/>
                     </Row>
-                </Container>
+                </div>
             </div>
         </div>
     </div>
