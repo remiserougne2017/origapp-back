@@ -1,18 +1,20 @@
 import React, { useState,useEffect,Fragment } from 'react';
 import {  Input} from 'antd';
 
-function inputFile(){
+function inputFile(props){
 console.log("TYPE media?")
     // const [typeFile,setFileType]=useState()
 
     onchange=(e)=>{
-        console.log("INFO!",e.target.files);
-        // let files=e.target.files
-        // let reader = new FileReader();
-        // reader.readAsDataURL(files)
-        // reader.onload=(x)=>{
-        //     console.log("img Data",x.target.result)
-        // }
+        console.log("INFO!",e.target.files[0]);
+        let files=e.target.files[0]
+        let reader = new FileReader();
+        reader.readAsDataURL(files)
+        reader.onload=(x)=>{
+            console.log("img Data",x.target.result)
+            props.dataImage(x.target.result)
+
+        }
     }
 return (
     <div style={{width:"50%",height:20}}>

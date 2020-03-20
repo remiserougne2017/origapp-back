@@ -10,6 +10,8 @@ import Header from './Header';
 import color from './color';
 import background from '../origami_background.jpg';
 import InputFileCustom from './inputFile'
+import CreaBookOverlay2 from './CreaBook-Overlay-2'
+
 
 function Home() {
 const [visible,setVisible]=useState(false)
@@ -64,8 +66,8 @@ function DateFormat(d){
 
 var displayBooks = dataBooks.map((book, i) => {
     return (
-        <Col xs="12" sm="4" >
-            <Link 
+        <Col  key={i} xs="12" sm="4" >
+            <Link  key={i}
                 to={`/openbook/${book.idBook}`}
                 style={{ textDecoration: 'none' }}
                 >
@@ -88,7 +90,7 @@ var displayBooks = dataBooks.map((book, i) => {
 
 
 
-    // GESTION DE L'OVERLAY
+    // GESTION DE L'OVERLAY 
     const handleClickOverlayCreaBook = (bool)=>{
             setVisible(false)
     }
@@ -97,7 +99,7 @@ var displayBooks = dataBooks.map((book, i) => {
   return (
     <div style = {{backgroundImage: `url(${background})` }}>
         <Header/>
-        <InputFileCustom></InputFileCustom>
+        {/* <InputFileCustom></InputFileCustom> */}
         <div style = {{display:'flex',flexDirection: 'column',justifyContent:'left'}}>
             <div style = {{height:200}}>
                 <div style = {mainTitleStyle}>Tableau de bord</div>
@@ -110,6 +112,7 @@ var displayBooks = dataBooks.map((book, i) => {
                     <Row>
                         {displayBooks}
                     <OverlayForm visible={visible} handleClickParent ={handleClickOverlayCreaBook}/>
+                    {/* <CreaBookOverlay2 visible={visible} handleClickParent ={handleClickOverlayCreaBook}/> */}
                     </Row>
                 </div>
             </div>

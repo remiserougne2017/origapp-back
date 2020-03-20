@@ -34,7 +34,7 @@ const handleOk = async () => {
     // Les champs obligatoires sont remplis, on envoie
     //création d'un envoie de fichier
     var data = new FormData();
-    console.log("IMAGE DATA",typeof image.thumbUrl)
+
     // data.append('bookData',{
     //   "title":title,
     //   "authors":authors,
@@ -44,12 +44,12 @@ const handleOk = async () => {
     // });
     data.append('imageData',image)
 
-    var creaBook = await fetch('http://192.168.0.28:3000/bo/creaBook',{
+    var creaBook = await fetch('http://192.168.1.28:3000/bo/creaBook',{
      method: 'POST',
     //  mode: 'no-cors',
-     headers: {'Content-Type':'application/x-www-form-urlencoded'},
-     body: `title=${title}&authors=${authors}&illustrators=${illustrators}&desc=${desc}&img=${image.thumbUrl}`
-    //  body: data
+    //  headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    //  body: `title=${title}&authors=${authors}&illustrators=${illustrators}&desc=${desc}&img=${image}`
+     body: data
    });
 
   //   console.log("REMPLI",authors,illustrators)  
@@ -104,8 +104,9 @@ const handleOk = async () => {
           value={illustrators}/>
          <p className="form">Image de couverture:</p>    
           {/* <DropZone/> */}
-          <Upload dataImage={dataImage}></Upload>
-         <p className="form">Résumé de l'ouvrage:</p>
+          {/* <Upload dataImage={dataImage}></Upload> */}
+          <InputFileCustom dataImage={dataImage}></InputFileCustom>
+         <p style={{marginTop:35}}className="form">Résumé de l'ouvrage:</p>
         <TextArea className="input" name="description" rows={4}
           style={{marginBottom:20}} 
           onChange={(e)=>{setDesc(e.target.value)}}
