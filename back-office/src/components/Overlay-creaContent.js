@@ -12,13 +12,11 @@ function OverlayContent(props) {
 
 const [title,setTitle] = useState('');
 const [page,setPage] = useState('');
-const [media,setMedia]=useState('');
 const [errorMEssage,setErrorMessage]=useState({})
 const { Option } = Select;
 const [imageContent,setImageContent]=useState("");
 
 const [inputMedia, setInputMedia] = useState([{ 
-    idBook:'',
     type: '', 
     title: '',
     text:'',
@@ -28,7 +26,7 @@ const [inputMedia, setInputMedia] = useState([{
      }
   ])
 
-
+console.log("OVERLAY",props.idBook)
 // Liste des medias disponibles dans le form
 const mediaType = ['Texte','Image','Audio','Video','Citation']
 let mediaDropdown = mediaType.map((type,j) => {
@@ -48,17 +46,29 @@ const handleOk = async () => {
   props.handleClickParent();
   var data = new FormData();
   let sendContentCreation = {
+    idBook:props.idBook,
     title:title,
     imageContent:imageContent,
     page:page,
     media:inputMedia
 }
 console.log(sendContentCreation)
-  data.append('contentData',sendContentCreation);
+  data.append('contentData',JSON.stringify(sendContentCreation));
   var creaContent = await fetch(`${Ip()}/bo/creaContent`,{
     method: 'POST',
     body: data
   });
+
+  setInputMedia([{ 
+    type: '', 
+    title: '',
+    text:'',
+    sourceUrl:'',
+    sourceBase64:'',
+    duration:'',
+     }]);
+  setTitle('');
+  setPage('');
 
 
 };  
@@ -123,22 +133,32 @@ const handleInputChange = (index, event) => {
     setInputMedia(copyInputMedia);
   };
 
-  const dataImage = (img)=>{
-    setImageContent(img);
+  // const dataImage = (img)=>{
+  //   setImageContent(img);
+  //   console.log("HELLO IM IMAGE CONTENT")
 
-  }
+  // }
 
   
-  const dataFieldImage = (img,index)=>{
-    const copyInputMedia = [...inputMedia];
-    copyInputMedia[index].sourceBase64 = img;
-    setInputMedia(copyInputMedia);
+  const dataFieldImage = (img,index,type)=>{
+    console.log("dataFieldImage est executé",type, index)
+    if(type == 'imageMedia') {
+      const copyInputMedia = [...inputMedia];
+      copyInputMedia[index].sourceBase64 = img;
+      setInputMedia(copyInputMedia);
+      console.log("HELLO IM IMAGE MEDIA")
+    }
+    if(type == 'imageContent') {
+      setImageContent(img);
+      console.log("HELLO IM IMAGE CONTENT")
+  
+    }
 
   }
   
 
 // RETURN GLOBAL
-
+  
         return (
     <Modal
     title="Nouveau Contenu"
@@ -156,7 +176,7 @@ const handleInputChange = (index, event) => {
             onChange={(e)=>{setPage(e.target.value)}}
             value={page}/>
         <p className="form" >image de couverture du contenu:</p>
-        <InputFileCustom dataImage={dataImage}></InputFileCustom>
+        <InputFileCustom  dataImage={dataFieldImage}  dataObject={{index:"NoIndex",type:'imageContent'}}></InputFileCustom>
 
         <Button
             type="primary"
@@ -165,6 +185,7 @@ const handleInputChange = (index, event) => {
         > Ajouter un media
         </Button>
           {inputMedia.map((inputField, index) => (
+
             <Fragment key={`${inputField}~${index}`}>
               <div style = {{marginTop:15, padding:10,backgroundColor:'#ECF0F1',borderRadius:5}}>
                 <div style = {{display:'flex', flexDirection:'row', alignItems:'center'}}>
@@ -213,7 +234,7 @@ const handleInputChange = (index, event) => {
                 </div>
                 <div>
                     <p className="form" >Source du media (si le fichier est sur votre ordinateur)</p>
-                    <InputFileCustom dataImage={event => dataFieldImage(event,index)}></InputFileCustom>
+                    <InputFileCustom dataImage={e => dataFieldImage(e,index,'imageMedia')} dataObject={{index:index,type:'imageMedia'}}></InputFileCustom>
                 </div>
                 <div>
                     <p className="form" style = {{marginTop:20}} >Duration</p>

@@ -130,7 +130,7 @@ var displayTags = dataBook.category.map((tag, i) => {
                 <Button style = {{width:'20%', margin:30}} type="primary" onClick={()=>{setIsVisible(true)}}>Ajouter un contenu</Button>
             </Row>
         </div>
-        <OverlayContent isVisible = {isVisible} handleClickParent ={handleClickOverlayCreaContent}/>
+        <OverlayContent isVisible = {isVisible} handleClickParent ={handleClickOverlayCreaContent} idBook = {props.match.params.idBook}/>
         <div style = {{marginLeft:30}}>
             <Row> 
                 <Col xs="12" sm='6'>

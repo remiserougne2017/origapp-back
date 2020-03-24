@@ -48,13 +48,97 @@ console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
 
 
   router.post('/creaContent', async function(req,res,next){
-      // console.log("hello crea content")
-      console.log("BODY?",req.body ,"FILES?",req.files)  
-      // var imageUrl
-      // var resultCloudinary = await cloudinary.uploader.upload(req.body.imageData, function(error, result){
-      //   console.log("Router Cloud? ",result, error)
-      //    imageUrl = resultCloudinary.url
-      // });
+
+      let message;
+      
+      // JSON body
+      let reqContentDataJson = JSON.parse(req.body.contentData);
+
+      // image de contenu
+      let imageContentUrl;
+      if(reqContentDataJson.imageContent != "") {
+        var resultCloudinary = await cloudinary.uploader.upload(reqContentDataJson.imageContent, function(error, result){
+          console.log("Router  ? ",result, error)
+        });
+        imageContentUrl = resultCloudinary.url
+        console.log(imageContentUrl)
+      }
+      console.log("/////////",imageContentUrl)
+
+      // tableau de media
+      const mediaData = async () => {
+        return Promise.all(reqContentDataJson.media.map( async (obj,j) => { 
+          let media;  
+          if((obj.type == 'Texte')||(obj.type == 'Citation')) { // a terme mettre un switch si les objets différent beacuoup
+            media = {
+              title:obj.title,
+              type:obj.type,
+              texte:obj.text,
+            } 
+          } 
+          if((obj.type == 'Image')||(obj.type == 'Video')||(obj.type == 'Audio')) {
+            if(((obj.sourceUrl == '')||(obj.sourceUrl == undefined))&&((obj.sourceBase64 == '')||(obj.sourceBase64 == undefined))) {
+              message = "source manquante"
+            } 
+            else {
+              let sourceMedia;
+              if((obj.sourceUrl=='')||(obj.sourceUrl == undefined)) {
+                if(obj.type == "Image") {
+                  var resultCloudinary = await cloudinary.uploader.upload(obj.sourceBase64, function(error, result){
+                  // console.log("Router  ? ",result, error)
+                  });
+                }  
+                if((obj.type == "Video")||(obj.type =="Audio")) {
+                  console.log("audio")
+                  var resultCloudinary = await cloudinary.uploader.upload(obj.sourceBase64,{ resource_type: "video" },function(error, result){
+                  console.log("Router Cloud? ",result, error)
+                  });
+                }
+                sourceMedia = resultCloudinary.url 
+              }    
+              else {
+                console.log('url expected',obj.sourceUrl)
+                sourceMedia = obj.sourceUrl
+                }
+
+              media = {
+                title:obj.title,
+                type:obj.type,
+                duration:obj.duration,
+                source:sourceMedia
+                }
+            }
+          }
+
+        return media
+        })
+        )}
+        
+        console.log("///////// 2",imageContentUrl)
+
+        mediaData().then(data => {
+          console.log("data loading",{
+            title:reqContentDataJson.title,
+            pageNum:reqContentDataJson.page,
+            imageContent:imageContentUrl,
+            media:data
+
+
+          }) 
+        
+          // enregistrement en DB
+          // var bookAdding = await booksModel.findById(reqContentDataJson.idBook);
+          // bookAdding.content.push({
+          //   title:reqContentDataJson.title,
+          //   pageNum:reqContentDataJson.page,
+          //   imageContent:imageContentUrl,
+          //   media:data
+          // })
+    
+          // await bookAdding.save();
+          // console.log(bookAdding);
+        
+        })
       
 
       res.json({result:"ok"})
