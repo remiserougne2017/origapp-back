@@ -158,7 +158,7 @@ const handleInputChange = (index, event) => {
   
 
 // RETURN GLOBAL
-  
+
         return (
     <Modal
     title="Nouveau Contenu"
@@ -185,7 +185,6 @@ const handleInputChange = (index, event) => {
         > Ajouter un media
         </Button>
           {inputMedia.map((inputField, index) => (
-
             <Fragment key={`${inputField}~${index}`}>
               <div style = {{marginTop:15, padding:10,backgroundColor:'#ECF0F1',borderRadius:5}}>
                 <div style = {{display:'flex', flexDirection:'row', alignItems:'center'}}>
@@ -234,7 +233,7 @@ const handleInputChange = (index, event) => {
                 </div>
                 <div>
                     <p className="form" >Source du media (si le fichier est sur votre ordinateur)</p>
-                    <InputFileCustom dataImage={e => dataFieldImage(e,index,'imageMedia')} dataObject={{index:index,type:'imageMedia'}}></InputFileCustom>
+                    <InputFileCustom key = {index} dataImage={e => {console.log("unput file",index);dataFieldImage(e,index,'imageMedia')}} dataObject={{index:index,type:'imageMedia'}}></InputFileCustom>
                 </div>
                 <div>
                     <p className="form" style = {{marginTop:20}} >Duration</p>
