@@ -25,8 +25,8 @@ const [inputMedia, setInputMedia] = useState([{
     duration:'',
      }
   ])
-
-console.log("OVERLAY",props.idBook)
+  const [inputIndex,setInputIndex]=useState()
+  console.log("OVERLAY",props.idBook)
 // Liste des medias disponibles dans le form
 const mediaType = ['Texte','Image','Audio','Video','Citation']
 let mediaDropdown = mediaType.map((type,j) => {
@@ -140,11 +140,11 @@ const handleInputChange = (index, event) => {
   // }
 
   
-  const dataFieldImage = (img,index,type)=>{
-    console.log("dataFieldImage est executé",type, index)
+  const dataFieldImage = (img,type)=>{
+    console.log("dataFieldImage est executé",type, inputIndex)
     if(type == 'imageMedia') {
       const copyInputMedia = [...inputMedia];
-      copyInputMedia[index].sourceBase64 = img;
+      copyInputMedia[inputIndex].sourceBase64 = img;
       setInputMedia(copyInputMedia);
       console.log("HELLO IM IMAGE MEDIA")
     }
@@ -176,7 +176,7 @@ const handleInputChange = (index, event) => {
             onChange={(e)=>{setPage(e.target.value)}}
             value={page}/>
         <p className="form" >image de couverture du contenu:</p>
-        <InputFileCustom  dataImage={dataFieldImage}  dataObject={{index:"NoIndex",type:'imageContent'}}></InputFileCustom>
+        <InputFileCustom  dataImage={dataFieldImage}></InputFileCustom>
 
         <Button
             type="primary"
@@ -184,8 +184,10 @@ const handleInputChange = (index, event) => {
             style = {{marginTop:40}}
         > Ajouter un media
         </Button>
-          {inputMedia.map((inputField, index) => (
+          {inputMedia.map((inputField, index) => { 
 
+            return(
+            (
             <Fragment key={`${inputField}~${index}`}>
               <div style = {{marginTop:15, padding:10,backgroundColor:'#ECF0F1',borderRadius:5}}>
                 <div style = {{display:'flex', flexDirection:'row', alignItems:'center'}}>
@@ -232,9 +234,9 @@ const handleInputChange = (index, event) => {
                         value={inputField.sourceUrl}
                         />
                 </div>
-                <div>
+                <div onClick = {() =>{console.log("ONCHANGE",index); setInputIndex(index) }}>
                     <p className="form" >Source du media (si le fichier est sur votre ordinateur)</p>
-                    <InputFileCustom dataImage={e => dataFieldImage(e,index,'imageMedia')} dataObject={{index:index,type:'imageMedia'}}></InputFileCustom>
+                    <InputFileCustom  dataImage={e =>{dataFieldImage(e,'imageMedia')}} /*dataObject={{index:index,type:'imageMedia'}}*/></InputFileCustom>
                 </div>
                 <div>
                     <p className="form" style = {{marginTop:20}} >Duration</p>
@@ -249,6 +251,7 @@ const handleInputChange = (index, event) => {
               </div>
             </Fragment>
           ))}
+          )}
     </div>
     <div>hello Content in creation   {JSON.stringify({
         title:title,
