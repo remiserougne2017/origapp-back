@@ -15,7 +15,6 @@ const [page,setPage] = useState('');
 const [errorMEssage,setErrorMessage]=useState({})
 const { Option } = Select;
 const [imageContent,setImageContent]=useState("");
-
 const [inputMedia, setInputMedia] = useState([{ 
     type: '', 
     title: '',
@@ -25,8 +24,11 @@ const [inputMedia, setInputMedia] = useState([{
     duration:'',
      }
   ])
+  const [inputIndex,setInputIndex]=useState()
+  const [sourceFormType,setSourceFormType]=useState("sourceContent")
 
-console.log("OVERLAY",props.idBook)
+
+  console.log("OVERLAY",props.idBook)
 // Liste des medias disponibles dans le form
 const mediaType = ['Texte','Image','Audio','Video','Citation']
 let mediaDropdown = mediaType.map((type,j) => {
@@ -69,6 +71,7 @@ console.log(sendContentCreation)
      }]);
   setTitle('');
   setPage('');
+  setImageContent('');
 
 
 };  
@@ -123,7 +126,14 @@ const handleInputChange = (index, event) => {
 
   const handleAddFields = () => {
     const copyInputMedia = [...inputMedia];
-    copyInputMedia.push({ title: '', type: '' });
+    copyInputMedia.push({ 
+      type: '', 
+      title: '',
+      text:'',
+      sourceUrl:'',
+      sourceBase64:'',
+      duration:'',
+       });
     setInputMedia(copyInputMedia);
   };
 
@@ -133,22 +143,16 @@ const handleInputChange = (index, event) => {
     setInputMedia(copyInputMedia);
   };
 
-  // const dataImage = (img)=>{
-  //   setImageContent(img);
-  //   console.log("HELLO IM IMAGE CONTENT")
-
-  // }
 
   
-  const dataFieldImage = (img,index,type)=>{
-    console.log("dataFieldImage est executé",type, index)
-    if(type == 'imageMedia') {
+  const dataFieldSource = (img,type)=>{
+    if(type == 'sourceMedia') {
       const copyInputMedia = [...inputMedia];
-      copyInputMedia[index].sourceBase64 = img;
+      copyInputMedia[inputIndex].sourceBase64 = img;
       setInputMedia(copyInputMedia);
       console.log("HELLO IM IMAGE MEDIA")
     }
-    if(type == 'imageContent') {
+    if(type == 'sourceContent') {
       setImageContent(img);
       console.log("HELLO IM IMAGE CONTENT")
   
@@ -176,7 +180,7 @@ const handleInputChange = (index, event) => {
             onChange={(e)=>{setPage(e.target.value)}}
             value={page}/>
         <p className="form" >image de couverture du contenu:</p>
-        <InputFileCustom  dataImage={dataFieldImage}  dataObject={{index:"NoIndex",type:'imageContent'}}></InputFileCustom>
+        <InputFileCustom  dataSource={e => {setSourceFormType('sourceContent');dataFieldSource(e,sourceFormType)}}></InputFileCustom>
 
         <Button
             type="primary"
@@ -184,7 +188,10 @@ const handleInputChange = (index, event) => {
             style = {{marginTop:40}}
         > Ajouter un media
         </Button>
-          {inputMedia.map((inputField, index) => (
+          {inputMedia.map((inputField, index) => { 
+
+            return(
+            (
             <Fragment key={`${inputField}~${index}`}>
               <div style = {{marginTop:15, padding:10,backgroundColor:'#ECF0F1',borderRadius:5}}>
                 <div style = {{display:'flex', flexDirection:'row', alignItems:'center'}}>
@@ -231,10 +238,10 @@ const handleInputChange = (index, event) => {
                         value={inputField.sourceUrl}
                         />
                 </div>
-                <div>
-                    <p className="form" >Source du media (si le fichier est sur votre ordinateur)</p>
-                    <InputFileCustom key = {index} dataImage={e => {console.log("unput file",index);dataFieldImage(e,index,'imageMedia')}} dataObject={{index:index,type:'imageMedia'}}></InputFileCustom>
-                </div>
+                  <div onClick = {() =>{console.log("ONCHANGE",index); setInputIndex(index) }}>
+                      <p className="form" >Source du media (si le fichier est sur votre ordinateur)</p>
+                      <InputFileCustom dataSource={e => {setSourceFormType('sourceMedia');dataFieldSource(e,sourceFormType)}}></InputFileCustom>
+                  </div>
                 <div>
                     <p className="form" style = {{marginTop:20}} >Duration</p>
                     <Input
@@ -248,6 +255,7 @@ const handleInputChange = (index, event) => {
               </div>
             </Fragment>
           ))}
+          )}
     </div>
     <div>hello Content in creation   {JSON.stringify({
         title:title,

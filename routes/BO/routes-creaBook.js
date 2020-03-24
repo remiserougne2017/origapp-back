@@ -115,34 +115,59 @@ console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
         )}
         
         console.log("///////// 2",imageContentUrl)
-
-        mediaData().then(data => {
+        mediaData().then(async (data) => {
           console.log("data loading",{
             title:reqContentDataJson.title,
             pageNum:reqContentDataJson.page,
             imageContent:imageContentUrl,
             media:data
-
-
           }) 
-        
+
           // enregistrement en DB
-          // var bookAdding = await booksModel.findById(reqContentDataJson.idBook);
-          // bookAdding.content.push({
-          //   title:reqContentDataJson.title,
-          //   pageNum:reqContentDataJson.page,
-          //   imageContent:imageContentUrl,
-          //   media:data
-          // })
+          var bookAdding = await booksModel.findById(reqContentDataJson.idBook);
+          bookAdding.content.push({
+            title:reqContentDataJson.title,
+            pageNum:reqContentDataJson.page,
+            imageContent:imageContentUrl,
+            media:data
+          })
     
-          // await bookAdding.save();
-          // console.log(bookAdding);
-        
+          await bookAdding.save();
+          console.log(bookAdding);
         })
-      
+
 
       res.json({result:"ok"})
       })
 
-      
+  router.post('/loadBook', async function(req,res,next){
+
+    var bookOpened = await booksModel.findById(req.body.idBook);
+    let contentData = bookOpened.content.map((cont,k) => {
+      let data = {
+        contentTitle : cont.title,
+        contentImage:cont.imageContent,
+        contentPage: cont.pageNum,
+        contentStatus:cont.status,
+        content_id:cont._id
+      }
+      return data
+    })
+
+    console.log("content",contentData)
+
+    let dataToFront = {
+      title:bookOpened.title,
+      author:bookOpened.authors,
+      status:bookOpened.status,
+      coverImage:bookOpened.image,
+      rating:bookOpened.rating,
+      votesCount:bookOpened.votesCount,
+      contentData:contentData,
+      category:bookOpened.category
+    }
+
+
+  res.json({result:"ok",dataFromBack:dataToFront})
+    })   
 module.exports = router;

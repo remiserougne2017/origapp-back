@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Link,Redirect } from "react-router-dom";
 import logo from '../logoOrigapp_detoure.png';
 import '../App.css';
@@ -10,7 +10,7 @@ import color from './color';
 import { EyeOutlined,EditOutlined,DeleteOutlined } from '@ant-design/icons';
 import OverlayContent from './Overlay-creaContent'
 import background from '../origami_background.jpg';
-
+import Ip from './Ip'
 
 function Book(props) {
 
@@ -44,26 +44,45 @@ let headerStyle = {
 // routes to do : au chargement du composant fetch data book, toggle publier,
 
 const [isVisible,setIsVisible] = useState(false);
+const [dataBook,setDataBook] = useState({contentData:[],category:[]});
 
 
 var date = new Date(1544825952726); // pour simuler une date 
 
 
-var dataBook = {
-    title : 'Livre 1',
-    author:'Proust',
-    status:true,
-    image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',
-    lastModified:DateFormat(date),
-    idBook:props.match.params.idBook,
-    category : ['jeunesse','histoire'],
-    views: 212,
-    contentNumber: 6,
-    rating: 4
-}
-const [isPublished,setIsPublished] =useState(dataBook.status)
-// gestion de l'overlay
+// var dataBook = {
+//     title : 'Livre 1',
+//     author:'Proust',
+//     status:true,
+//     image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',
+//     lastModified:DateFormat(date),
+//     idBook:props.match.params.idBook,
+//     category : ['jeunesse','histoire'],
+//     views: 212,
+//     contentNumber: 6,
+//     rating: 4
+// }
 
+const [isPublished,setIsPublished] =useState(dataBook.status)
+console.log(dataBook.status)
+// load info from db
+useEffect( ()=> {
+    async function loadDataBook() {
+        console.log(props.match.params.idBook)
+        var bookData = await fetch(`${Ip()}/bo/loadBook`, { 
+                method: 'POST',
+                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                body: `idBook=${props.match.params.idBook}`
+              }
+        );
+        var bookDataJson = await bookData.json();
+        console.log(bookDataJson)
+        setDataBook(bookDataJson.dataFromBack)
+        }   
+        loadDataBook();
+  },[])
+
+// gestion de l'overlay
 const handleClickOverlayCreaContent = ()=>{
     console.log('hello handleclik')
     setIsVisible(false)
@@ -81,13 +100,43 @@ function DateFormat(d){
 
     
 
-
+// gestion des tags
 var displayTags = dataBook.category.map((tag, i) => {
     return (
     <Tag  key={i} color={color('red')} style ={{borderRadius:5}}>{tag}</Tag>
     )
     })
 
+
+// affichage des cards contenus
+var displayContents = dataBook.contentData.map((cont, i) => {
+    return (
+        <Col xs="12" sm='4' key={i}>
+        <Card key={i} style={{ borderRadius:10,backgroundColor:'#ECF0F1',marginBottom:20}}>
+            <div style={{display:'flex',flexDirection:'column'}}>
+                <div style = {{display:'flex',flexDirection:'row', justifyContent:'space-between',marginBottom:10,alignItems:'center'}}>
+                    <div style = {{fontSize:16}}>{cont.contentTitle}</div>
+                    <Button type="primary"  >{JSON.stringify(cont.contentStatus)}</Button>
+                    
+                </div>
+                <div style = {{display:'flex',flexDirection:'row',marginBottom:10,alignItems:'center'}}>
+                    <Tag color={color('blue')} style ={{borderRadius:5, width:60,marginRight:'auto'}}>page {cont.contentPage}</Tag>
+                    <div style={{marginLeft:'auto'}}>
+                        <EyeOutlined style={{fontSize: 30,margin:10}}/>
+                        <EditOutlined style={{fontSize: 30,margin:10}}/>
+                        <DeleteOutlined style={{fontSize: 30,margin:10}}/>
+                    </div>
+                </div> 
+                <img src = {cont.contentImage} style = {{height:"300px",marginTop:'auto'}} />
+            </div>
+        </Card>        
+    </Col>
+        )
+    })
+
+
+
+// return  global 
   return (
     <div style = {{backgroundImage: `url(${background})` }}>
         <Header/>
@@ -104,7 +153,7 @@ var displayTags = dataBook.category.map((tag, i) => {
             </Row>
             <Row style = {{display:'flex', flexDirection:'row', marginRight:'auto',marginLeft:50,marginBottom:20}}>
                 <Col xs="12" sm="2">
-                    <img src = {dataBook.image} style = {{height:300}} />
+                    <img src = {dataBook.coverImage} style = {{height:300}} />
                 </Col>
                 <Col xs="12" sm="4">    
                     <div style = {{display:'flex',flexDirection:'column',height:300, witdh:'40%', backgroundColor:'white', borderRadius:10,borderColor:color('red'),borderWidth:1,borderStyle:'solid'}}>
@@ -133,26 +182,7 @@ var displayTags = dataBook.category.map((tag, i) => {
         <OverlayContent isVisible = {isVisible} handleClickParent ={handleClickOverlayCreaContent} idBook = {props.match.params.idBook}/>
         <div style = {{marginLeft:30}}>
             <Row> 
-                <Col xs="12" sm='6'>
-                    <Card style={{ borderRadius:10,backgroundColor:'#ECF0F1',marginBottom:20}}>
-                        <div style={{display:'flex',flexDirection:'column'}}>
-                            <div style = {{display:'flex',flexDirection:'row', justifyContent:'space-between',marginBottom:10,alignItems:'center'}}>
-                                <div style = {{fontSize:16}}>Nom du contenu</div>
-                                <Button type="primary"  >Publier</Button>
-                                
-                            </div>
-                            <div style = {{display:'flex',flexDirection:'row',marginBottom:10,alignItems:'center'}}>
-                                <Tag color={color('blue')} style ={{borderRadius:5, width:60,marginRight:'auto'}}>page 3</Tag>
-                                <div style={{marginLeft:'auto'}}>
-                                    <EyeOutlined style={{fontSize: 30,margin:10}}/>
-                                    <EditOutlined style={{fontSize: 30,margin:10}}/>
-                                    <DeleteOutlined style={{fontSize: 30,margin:10}}/>
-                                </div>
-                            </div> 
-                            <img src = {dataBook.image} style = {{height:"300px",marginTop:'auto'}} />
-                        </div>
-                    </Card>        
-                </Col>    
+                {displayContents}
             </Row>
 
         </div>

@@ -19,7 +19,7 @@ const [desc,setDesc]=useState('');
 const [image,setImage]=useState();
 const [errorMEssage,setErrorMessage]=useState({})
 
-const dataImage = (img)=>{
+const dataSource = (img)=>{
   setImage(img)
   console.log("IMAGE OVERLAY",img)
 }
@@ -105,7 +105,7 @@ const handleOk = async () => {
          <p className="form">Image de couverture:</p>    
           {/* <DropZone/> */}
           {/* <Upload dataImage={dataImage}></Upload> */}
-          <InputFileCustom dataImage={dataImage}></InputFileCustom>
+          <InputFileCustom dataSource={dataSource}></InputFileCustom>
          <p style={{marginTop:35}}className="form">Résumé de l'ouvrage:</p>
         <TextArea className="input" name="description" rows={4}
           style={{marginBottom:20}} 
