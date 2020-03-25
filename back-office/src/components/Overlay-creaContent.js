@@ -28,7 +28,44 @@ const [inputMedia, setInputMedia] = useState([{
   const [sourceFormType,setSourceFormType]=useState("sourceContent")
 
 
-  console.log("OVERLAY",props.idBook)
+
+// Load editable information from DB
+useEffect( ()=> {
+  async function editContent() {
+    if(props.idContent == 'new-content') {
+      setTitle("");
+      setPage("");
+      setImageContent("");
+      setInputMedia([{ 
+        type: '', 
+        title: '',
+        text:'',
+        sourceUrl:'',
+        sourceBase64:'',
+        duration:'',
+         }])
+    } else {
+      var contentData = await fetch(`${Ip()}/bo/editContent`, { 
+              method: 'POST',
+              headers: {'Content-Type':'application/x-www-form-urlencoded'},
+              body: `idBook=${props.idBook}&idContent=${props.idContent}`
+            }
+      );
+      var contentDataJson = await contentData.json();
+      // console.log("//////////////////////",contentDataJson.dataFromBack)
+      if(contentDataJson.dataFromBack !== undefined) {
+        setTitle(contentDataJson.dataFromBack.title);
+        setPage(contentDataJson.dataFromBack.page);
+        setImageContent(contentDataJson.dataFromBack.imageContent);
+        setInputMedia(contentDataJson.dataFromBack.mediaData)
+      }
+
+      }   
+    }
+      editContent();
+},[props.isVisible])
+
+
 // Liste des medias disponibles dans le form
 const mediaType = ['Texte','Image','Audio','Video','Citation']
 let mediaDropdown = mediaType.map((type,j) => {
@@ -42,21 +79,21 @@ let mediaDropdown = mediaType.map((type,j) => {
 
 
 
-// Gestion de l'overlay
+// Gestion de l'overlay : envoie au DB on ok et cancel
 const handleOk = async () => {
 
   props.handleClickParent();
   var data = new FormData();
   let sendContentCreation = {
     idBook:props.idBook,
+    idContent:props.idContent,
     title:title,
     imageContent:imageContent,
     page:page,
     media:inputMedia
 }
-console.log(sendContentCreation)
   data.append('contentData',JSON.stringify(sendContentCreation));
-  var creaContent = await fetch(`${Ip()}/bo/creaContent`,{
+  var creaContent = await fetch(`${Ip()}/bo/saveContent`,{
     method: 'POST',
     body: data
   });
@@ -85,7 +122,7 @@ props.handleClickParent()
 
 
 
-// Gestion des champs de l'objet media 
+// Gestion des champs du form
 
 const handleInputChange = (index, event) => {
     const copyInputMedia = [...inputMedia];
@@ -150,11 +187,9 @@ const handleInputChange = (index, event) => {
       const copyInputMedia = [...inputMedia];
       copyInputMedia[inputIndex].sourceBase64 = img;
       setInputMedia(copyInputMedia);
-      console.log("HELLO IM IMAGE MEDIA")
     }
     if(type == 'sourceContent') {
       setImageContent(img);
-      console.log("HELLO IM IMAGE CONTENT")
   
     }
 
@@ -165,7 +200,7 @@ const handleInputChange = (index, event) => {
 
         return (
     <Modal
-    title="Nouveau Contenu"
+    title="Edition d'un contenu"
     visible={props.isVisible}
     onOk={handleOk}
     onCancel={handleCancel}
@@ -180,7 +215,7 @@ const handleInputChange = (index, event) => {
             onChange={(e)=>{setPage(e.target.value)}}
             value={page}/>
         <p className="form" >image de couverture du contenu:</p>
-        <InputFileCustom  dataSource={e => {setSourceFormType('sourceContent');dataFieldSource(e,sourceFormType)}}></InputFileCustom>
+        <InputFileCustom  dataSource={e => {setSourceFormType('sourceContent');console.log("index, source content",inputIndex);dataFieldSource(e,sourceFormType)}}></InputFileCustom>
 
         <Button
             type="primary"
@@ -238,9 +273,9 @@ const handleInputChange = (index, event) => {
                         value={inputField.sourceUrl}
                         />
                 </div>
-                  <div onClick = {() =>{console.log("ONCHANGE",index); setInputIndex(index) }}>
+                  <div onClick = {() =>{setInputIndex(index);setSourceFormType('sourceMedia') }}>
                       <p className="form" >Source du media (si le fichier est sur votre ordinateur)</p>
-                      <InputFileCustom dataSource={e => {setSourceFormType('sourceMedia');dataFieldSource(e,sourceFormType)}}></InputFileCustom>
+                      <InputFileCustom dataSource={e => {console.log("index, source media",inputIndex,sourceFormType);dataFieldSource(e,sourceFormType)}}></InputFileCustom>
                   </div>
                 <div>
                     <p className="form" style = {{marginTop:20}} >Duration</p>

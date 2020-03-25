@@ -45,6 +45,7 @@ let headerStyle = {
 
 const [isVisible,setIsVisible] = useState(false);
 const [dataBook,setDataBook] = useState({contentData:[],category:[]});
+const [idContent,setIdContent] = useState('');
 
 
 var date = new Date(1544825952726); // pour simuler une date 
@@ -80,7 +81,7 @@ useEffect( ()=> {
         setDataBook(bookDataJson.dataFromBack)
         }   
         loadDataBook();
-  },[])
+  },[isVisible])
 
 // gestion de l'overlay
 const handleClickOverlayCreaContent = ()=>{
@@ -123,7 +124,10 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                     <Tag color={color('blue')} style ={{borderRadius:5, width:60,marginRight:'auto'}}>page {cont.contentPage}</Tag>
                     <div style={{marginLeft:'auto'}}>
                         <EyeOutlined style={{fontSize: 30,margin:10}}/>
-                        <EditOutlined style={{fontSize: 30,margin:10}}/>
+                        <EditOutlined 
+                            style={{fontSize: 30,margin:10}}
+                            onClick = {()=> {setIdContent(cont.content_id);console.log("////// BOOK",cont.content_id);setIsVisible(true)}}
+                            />
                         <DeleteOutlined style={{fontSize: 30,margin:10}}/>
                     </div>
                 </div> 
@@ -176,10 +180,10 @@ var displayContents = dataBook.contentData.map((cont, i) => {
         <div style = {{marginLeft:30}}>
             <Row style = {{display:'flex',flexDirection:'column',marginLeft:20}}>
                 <div style = {mainTitleStyle}>Les contenus associés</div>
-                <Button style = {{width:'20%', margin:30}} type="primary" onClick={()=>{setIsVisible(true)}}>Ajouter un contenu</Button>
+                <Button style = {{width:'20%', margin:30}} type="primary" onClick={()=>{setIsVisible(true);setIdContent("new-content")}}>Ajouter un contenu</Button>
             </Row>
         </div>
-        <OverlayContent isVisible = {isVisible} handleClickParent ={handleClickOverlayCreaContent} idBook = {props.match.params.idBook}/>
+        <OverlayContent isVisible = {isVisible} handleClickParent ={handleClickOverlayCreaContent} idBook = {props.match.params.idBook} idContent = {idContent}/>
         <div style = {{marginLeft:30}}>
             <Row> 
                 {displayContents}
