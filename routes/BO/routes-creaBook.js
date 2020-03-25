@@ -51,18 +51,20 @@ router.post('/upload', async function(req,res,next){
       
       // JSON body
       let reqContentDataJson = JSON.parse(req.body.contentData);
-
-      // image de contenu
+      
+      // IMAGE DE CONTENU
       let imageContentUrl;
       // console.log("coverimage",reqContentDataJson.imageContent)
-      if((reqContentDataJson.imageContent != "")||(reqContentDataJson.imageContent != null)) {
-        var resultCloudinary = await cloudinary.uploader.upload(reqContentDataJson.imageContent, function(error, result){
+      if((reqContentDataJson.imageContent=='')||(reqContentDataJson.imageContent == undefined)) {
+        imageContentUrl = reqContentDataJson.imageContentUrl
+      } else {
+              var resultCloudinary = await cloudinary.uploader.upload(reqContentDataJson.imageContent, function(error, result){
           console.log("Router cover image ? ",result, error)
         });
         imageContentUrl = resultCloudinary.url
       }
-
-      // tableau de media
+      
+      // TABLEAU DE MEDIA
       const mediaData = async () => {
         return Promise.all(reqContentDataJson.media.map( async (obj,j) => { 
           let media;  
@@ -111,7 +113,7 @@ router.post('/upload', async function(req,res,next){
         return media
         })
         )}
-        
+        // SAVE ET UPDATE EN DB 
         mediaData().then(async (data) => {
           if(reqContentDataJson.idContent == 'new-content') {
               var bookAdding = await booksModel.findById(reqContentDataJson.idBook);
@@ -124,7 +126,7 @@ router.post('/upload', async function(req,res,next){
               })
               await bookAdding.save();
             } else {
-              console.log('///////////////////// HELLO I AM UPDATINF')
+              // console.log('///////////////////// HELLO I AM UPDATINF')
               // var bookUpdate = await booksModel.findOneAndUpdate(
               //   { $and:[{ content: { $elemMatch: { _id:reqContentDataJson.idContent} }},{_id:reqContentDataJson.idBook}]},
               //   { $set: {"content.$.title": reqContentDataJson.title,
@@ -133,7 +135,6 @@ router.post('/upload', async function(req,res,next){
               //            "content.$.media": data
               // }}
               //   )
-              console.log("/////////////",data)
 
               var bookUpdated = await booksModel.findOne({_id:reqContentDataJson.idBook});
               for (let i=0;i<bookUpdated.content.length;i++) {

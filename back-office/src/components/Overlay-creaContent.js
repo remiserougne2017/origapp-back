@@ -15,6 +15,8 @@ const [page,setPage] = useState('');
 const [errorMEssage,setErrorMessage]=useState({})
 const { Option } = Select;
 const [imageContent,setImageContent]=useState("");
+const [imageContentUrl,setImageContentUrl]=useState("");
+
 const [inputMedia, setInputMedia] = useState([{ 
     type: '', 
     title: '',
@@ -36,6 +38,7 @@ useEffect( ()=> {
       setTitle("");
       setPage("");
       setImageContent("");
+      setImageContentUrl('')
       setInputMedia([{ 
         type: '', 
         title: '',
@@ -56,7 +59,7 @@ useEffect( ()=> {
       if(contentDataJson.dataFromBack !== undefined) {
         setTitle(contentDataJson.dataFromBack.title);
         setPage(contentDataJson.dataFromBack.page);
-        setImageContent(contentDataJson.dataFromBack.imageContent);
+        setImageContentUrl(contentDataJson.dataFromBack.imageContent);
         setInputMedia(contentDataJson.dataFromBack.mediaData)
       }
 
@@ -89,6 +92,7 @@ const handleOk = async () => {
     idContent:props.idContent,
     title:title,
     imageContent:imageContent,
+    imageContentUrl:imageContentUrl,
     page:page,
     media:inputMedia
 }
@@ -109,7 +113,7 @@ const handleOk = async () => {
   setTitle('');
   setPage('');
   setImageContent('');
-
+  setImageContentUrl('')
 
 };  
 
@@ -216,7 +220,13 @@ const handleInputChange = (index, event) => {
             value={page}/>
         <p className="form" >image de couverture du contenu:</p>
         <InputFileCustom  dataSource={e => {setSourceFormType('sourceContent');console.log("index, source content",inputIndex);dataFieldSource(e,sourceFormType)}}></InputFileCustom>
-
+        <p className="form" style={{marginTop:20}}>Source de couverture du contenu(si url)</p>
+        <Input
+            type="text"
+            name = 'mediaSource'
+            onChange={(e)=>{setImageContentUrl(e.target.value)}}
+            value={imageContentUrl}
+            />
         <Button
             type="primary"
             onClick={() => handleAddFields()}
@@ -295,6 +305,7 @@ const handleInputChange = (index, event) => {
     <div>hello Content in creation   {JSON.stringify({
         title:title,
         imageContent:imageContent,
+        imageContentUrl:imageContentUrl,
         page:page,
         media:inputMedia
     }
