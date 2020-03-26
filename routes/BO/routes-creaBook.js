@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var booksModel = require('../../model/books');
+var tagsModel = require('../../model/tags')
 var cloudinary = require('cloudinary').v2;
 const fs = require('fs')
 cloudinary.config({ 
@@ -159,9 +160,25 @@ router.post('/upload', async function(req,res,next){
 
 
 
-  router.post('/loadBook', async function(req,res,next){
-
-    var bookOpened = await booksModel.findById(req.body.idBook);
+  router.post('/loadBook/:bool/:contentId/:delete', async function(req,res,next){
+    console.log('LoadBook params',req.params,req.body)
+    if(req.params.bool != "undefined"){
+      console.log('update boucle')
+        await booksModel.updateOne(
+        {_id: req.body.idBook,"content._id":req.params.contentId},
+        { $set: { "content.$.status" : req.params.bool } }
+        )
+    }
+   if(req.params.delete=="true"){
+      console.log("DELETE",req.params.delete)
+      await booksModel.updateOne(
+        {_id: req.body.idBook},
+        { $pull: {content : {_id : req.params.contentId}}}
+        )
+    }
+ //recup des infos du livres + populate des categories
+    var bookOpened = await booksModel.findById(req.body.idBook).populate("category").exec()
+    console.log("Tags?",bookOpened.category);
     let contentData = bookOpened.content.map((cont,k) => {
       let data = {
         contentTitle : cont.title,
@@ -173,6 +190,10 @@ router.post('/upload', async function(req,res,next){
       return data
     })
 
+ //recup tag name
+    let tagsName =  bookOpened.category.map(tag => {
+      return tag.name
+    });
 
     let dataToFront = {
       title:bookOpened.title,
@@ -182,7 +203,7 @@ router.post('/upload', async function(req,res,next){
       rating:bookOpened.rating,
       votesCount:bookOpened.votesCount,
       contentData:contentData,
-      category:bookOpened.category
+      category:tagsName
     }
 
 

@@ -46,7 +46,9 @@ let headerStyle = {
 const [isVisible,setIsVisible] = useState(false);
 const [dataBook,setDataBook] = useState({contentData:[],category:[]});
 const [idContent,setIdContent] = useState('');
-
+const [idBook,setIdBook] = useState(props.match.params.idBook)
+const [isPublished,setIsPublished] =useState(dataBook.status)
+console.log(dataBook.status)
 
 var date = new Date(1544825952726); // pour simuler une date 
 
@@ -64,23 +66,24 @@ var date = new Date(1544825952726); // pour simuler une date
 //     rating: 4
 // }
 
-const [isPublished,setIsPublished] =useState(dataBook.status)
-console.log(dataBook.status)
+
 // load info from db
+async function loadDataBook(bool,contentId,binContent) {
+    console.log(props.match.params.idBook)
+    var bookData = await fetch(`${Ip()}/bo/loadBook/${bool}/${contentId}/${binContent}`, { 
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: `idBook=${props.match.params.idBook}`
+          }
+    );
+    var bookDataJson = await bookData.json();
+    console.log(bookDataJson)
+    setDataBook(bookDataJson.dataFromBack)
+    }  
+
 useEffect( ()=> {
-    async function loadDataBook() {
-        console.log(props.match.params.idBook)
-        var bookData = await fetch(`${Ip()}/bo/loadBook`, { 
-                method: 'POST',
-                headers: {'Content-Type':'application/x-www-form-urlencoded'},
-                body: `idBook=${props.match.params.idBook}`
-              }
-        );
-        var bookDataJson = await bookData.json();
-        console.log(bookDataJson)
-        setDataBook(bookDataJson.dataFromBack)
-        }   
-        loadDataBook();
+    setIdBook(props.match.params.idBook)
+    loadDataBook();
   },[isVisible])
 
 // gestion de l'overlay
@@ -98,7 +101,6 @@ function DateFormat(d){
     var dateformat = `${day}/${month}/${year}`;
     return dateformat
     }
-
     
 
 // gestion des tags
@@ -108,6 +110,10 @@ var displayTags = dataBook.category.map((tag, i) => {
     )
     })
 
+//Fucntion pour gerer la publication des contenus
+const publishedContent= async (bool,idContent)=>{
+    let contentPublishing = fetch(`/bo/contentPublishing/${bool}/${idBook}/${idContent}/`)
+}
 
 // affichage des cards contenus
 var displayContents = dataBook.contentData.map((cont, i) => {
@@ -117,8 +123,12 @@ var displayContents = dataBook.contentData.map((cont, i) => {
             <div style={{display:'flex',flexDirection:'column'}}>
                 <div style = {{display:'flex',flexDirection:'row', justifyContent:'space-between',marginBottom:10,alignItems:'center'}}>
                     <div style = {{fontSize:16}}>{cont.contentTitle}</div>
-                    <Button type="primary"  >{JSON.stringify(cont.contentStatus)}</Button>
-                    
+                    <div style = {{display:'flex',flexDirection:'row'}}>
+                        <div style={{marginRight:20}}>
+                            {cont.contentStatus==true?"Publié":"Non publié"}</div>
+                        <Switch checked={cont.contentStatus}  onChange={()=>{console.log('switch!',!cont.contentStatus,cont.content_id);loadDataBook(!cont.contentStatus,cont.content_id)}} />
+                    </div>  
+                    {/* <Button type="primary"  >{JSON.stringify(cont.contentStatus)}</Button> */}
                 </div>
                 <div style = {{display:'flex',flexDirection:'row',marginBottom:10,alignItems:'center'}}>
                     <Tag color={color('blue')} style ={{borderRadius:5, width:60,marginRight:'auto'}}>page {cont.contentPage}</Tag>
@@ -128,7 +138,7 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                             style={{fontSize: 30,margin:10}}
                             onClick = {()=> {setIdContent(cont.content_id);console.log("////// BOOK",cont.content_id);setIsVisible(true)}}
                             />
-                        <DeleteOutlined style={{fontSize: 30,margin:10}}/>
+                        <DeleteOutlined style={{fontSize: 30,margin:10}} onClick={()=>{console.log('Delete!');loadDataBook("undefined",cont.content_id,true)}}/>
                     </div>
                 </div> 
                 <img src = {cont.contentImage} style = {{height:"300px",marginTop:'auto'}} />
