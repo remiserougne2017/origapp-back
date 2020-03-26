@@ -11,6 +11,16 @@ cloudinary.config({
 });
 var request = require('sync-request');
 
+
+//Route récup des tags pour affichage
+router.get('/tags', async function(req, res, next) {
+ 
+  var tags = await tagsModel.find()
+  
+    res.json(tags)
+    
+  });
+
 router.post('/creaBook', async function(req,res,next){
 
 // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
@@ -34,18 +44,15 @@ res.json({result:"ok",imageUrl})
 
 
 
-router.post('/upload', async function(req,res,next){
-// console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
-// let what = req.files.file.data
-// console.log("WHAT DATA IMAGE!!",what)
-    // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
+// router.post('/upload', async function(req,res,next){
+// // console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
+// // let what = req.files.file.data
+// // console.log("WHAT DATA IMAGE!!",what)
+//     // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
     
-
-    res.json({status:"done"})
-    })
+//     res.json({status:"done"})
+//     })
     
-
-
 
   router.post('/saveContent', async function(req,res,next){
       let message;
@@ -190,10 +197,10 @@ router.post('/upload', async function(req,res,next){
       return data
     })
 
- //recup tag name
-    let tagsName =  bookOpened.category.map(tag => {
-      return tag.name
-    });
+//  //recup tag name
+//     let tagsName =  bookOpened.category.map(tag => {
+//       return tag.name
+//     });
 
     let dataToFront = {
       id : bookOpened._id,
@@ -207,7 +214,7 @@ router.post('/upload', async function(req,res,next){
       rating:bookOpened.rating,
       votesCount:bookOpened.votesCount,
       contentData:contentData,
-      category:tagsName
+      category:bookOpened.category
     }
 
 

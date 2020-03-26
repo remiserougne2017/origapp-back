@@ -108,7 +108,7 @@ function DateFormat(d){
 // gestion des tags
 var displayTags = dataBook.category.map((tag, i) => {
     return (
-    <Tag  key={i} color={color('red')} style ={{borderRadius:5}}>{tag}</Tag>
+    <Tag  key={i} color={color('red')} style ={{borderRadius:5}}>{tag.name}</Tag>
     )
     })
 
@@ -150,8 +150,6 @@ var displayContents = dataBook.contentData.map((cont, i) => {
     </Col>
         )
     })
-
-
 
 // return  global 
   return (

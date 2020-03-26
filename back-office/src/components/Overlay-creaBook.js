@@ -7,7 +7,7 @@ import Tags from './Tags';
 // import DropZone from './dropZone'
 import Upload from './upload'
 import InputFileCustom from './inputFile'
-
+import Ip from './Ip'
 
 function ModalForm(props) {
 
@@ -46,7 +46,7 @@ const handleOk = async () => {
     // });
     data.append('imageData',image)
 
-    var creaBook = await fetch('http://192.168.1.28:3000/bo/creaBook',{
+    var creaBook = await fetch(`${Ip()}/bo/creaBook`,{
      method: 'POST',
     //  mode: 'no-cors',
     //  headers: {'Content-Type':'application/x-www-form-urlencoded'},
@@ -115,7 +115,7 @@ const handleOk = async () => {
           value={props.dataBook?props.dataBook.description:desc} />
            {errorMEssage.desc?<p className="alert">{errorMEssage.desc}</p>:null}
          <p className="form">Catégories:</p>
-        <Tags></Tags>
+         {props.dataBook?  <Tags selectedTags={props.dataBook.category}></Tags> : <Tags></Tags>}
      </div>
 </Modal>
       )
