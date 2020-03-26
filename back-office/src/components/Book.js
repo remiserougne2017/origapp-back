@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { Link,Redirect } from "react-router-dom";
+import { Link,Redirect } from 'react-router-dom';
 import logo from '../logoOrigapp_detoure.png';
 import '../App.css';
 import { Tag, Button,Card,Icon,Switch} from 'antd';
@@ -11,6 +11,7 @@ import { EyeOutlined,EditOutlined,DeleteOutlined } from '@ant-design/icons';
 import OverlayContent from './Overlay-creaContent'
 import background from '../origami_background.jpg';
 import Ip from './Ip'
+import OverlayForm from './Overlay-creaBook';
 
 function Book(props) {
 
@@ -48,6 +49,7 @@ const [dataBook,setDataBook] = useState({contentData:[],category:[]});
 const [idContent,setIdContent] = useState('');
 const [idBook,setIdBook] = useState(props.match.params.idBook)
 const [isPublished,setIsPublished] =useState(dataBook.status)
+const [isVisibleUpdateBook,setIsVisibleUpdateBook]= useState(false)
 console.log(dataBook.status)
 
 var date = new Date(1544825952726); // pour simuler une date 
@@ -110,38 +112,39 @@ var displayTags = dataBook.category.map((tag, i) => {
     )
     })
 
-//Fucntion pour gerer la publication des contenus
-const publishedContent= async (bool,idContent)=>{
-    let contentPublishing = fetch(`/bo/contentPublishing/${bool}/${idBook}/${idContent}/`)
+
+// GESTION DE L'OVERLAY 
+    const handleClickOverlayCreaBook = (bool)=>{
+        setIsVisibleUpdateBook(false)
 }
 
 // affichage des cards contenus
 var displayContents = dataBook.contentData.map((cont, i) => {
     return (
-        <Col xs="12" sm='4' key={i}>
+        <Col xs='12' sm='4' key={i}>
         <Card key={i} style={{ borderRadius:10,backgroundColor:'#ECF0F1',marginBottom:20}}>
             <div style={{display:'flex',flexDirection:'column'}}>
                 <div style = {{display:'flex',flexDirection:'row', justifyContent:'space-between',marginBottom:10,alignItems:'center'}}>
                     <div style = {{fontSize:16}}>{cont.contentTitle}</div>
                     <div style = {{display:'flex',flexDirection:'row'}}>
                         <div style={{marginRight:20}}>
-                            {cont.contentStatus==true?"Publié":"Non publié"}</div>
+                            {cont.contentStatus==true?'Publié':'Non publié'}</div>
                         <Switch checked={cont.contentStatus}  onChange={()=>{console.log('switch!',!cont.contentStatus,cont.content_id);loadDataBook(!cont.contentStatus,cont.content_id)}} />
                     </div>  
-                    {/* <Button type="primary"  >{JSON.stringify(cont.contentStatus)}</Button> */}
+                    {/* <Button type='primary'  >{JSON.stringify(cont.contentStatus)}</Button> */}
                 </div>
                 <div style = {{display:'flex',flexDirection:'row',marginBottom:10,alignItems:'center'}}>
                     <Tag color={color('blue')} style ={{borderRadius:5, width:60,marginRight:'auto'}}>page {cont.contentPage}</Tag>
                     <div style={{marginLeft:'auto'}}>
-                        <EyeOutlined style={{fontSize: 30,margin:10}}/>
+                        {/* <EyeOutlined style={{fontSize: 30,margin:10}}/> */}
                         <EditOutlined 
                             style={{fontSize: 30,margin:10}}
-                            onClick = {()=> {setIdContent(cont.content_id);console.log("////// BOOK",cont.content_id);setIsVisible(true)}}
+                            onClick = {()=> {setIdContent(cont.content_id);console.log('////// BOOK',cont.content_id);setIsVisible(true)}}
                             />
-                        <DeleteOutlined style={{fontSize: 30,margin:10}} onClick={()=>{console.log('Delete!');loadDataBook("undefined",cont.content_id,true)}}/>
+                        <DeleteOutlined style={{fontSize: 30,margin:10}} onClick={()=>{console.log('Delete!');loadDataBook('undefined',cont.content_id,true)}}/>
                     </div>
                 </div> 
-                <img src = {cont.contentImage} style = {{height:"300px",marginTop:'auto'}} />
+                <img src = {cont.contentImage} style = {{height:'300px',marginTop:'auto'}} />
             </div>
         </Card>        
     </Col>
@@ -152,29 +155,36 @@ var displayContents = dataBook.contentData.map((cont, i) => {
 
 // return  global 
   return (
+    
     <div style = {{backgroundImage: `url(${background})` }}>
+        <OverlayForm visible={isVisibleUpdateBook} dataBook={dataBook} handleClickParent ={handleClickOverlayCreaBook}/>
         <Header/>
         <div style = {{marginLeft:10    }}>
             <Row style = {{display:'flex', flexDirection:'column', marginLeft:20, marginBottom:30}}>
-                <Col xs="12">
+                <Col xs='12'>
                     <div style = {{marginLeft:5,textAlign:'left'}}><Link to={`/`}>Retour</Link></div>
-                    <div style = {mainTitleStyle}>{dataBook.title}</div>
+                    <div style={{display:"flex", flexDirection:"row"}}>
+                        <div style = {mainTitleStyle}>{dataBook.title}</div>
+                        <EditOutlined 
+                                    style={{fontSize: 30,margin:10}}
+                                    onClick = {()=> {console.log('////// BOOK');setIsVisibleUpdateBook(true)}}
+                            />
+                    </div> 
                     <div style = {{display:'flex', flexDirection:'row', marginLeft:30,alignItems:'center'}}> 
                         <div style = {{fontSize:20,fontStyle:'italic',paddingRight:20}}>{dataBook.author}</div>
                         <div >{displayTags}</div> 
                     </div>
                 </Col>
             </Row>
-            <Row style = {{display:'flex', flexDirection:'row', marginRight:'auto',marginLeft:50,marginBottom:20}}>
-                <Col xs="12" sm="2">
-                    <img src = {dataBook.coverImage} style = {{height:300}} />
-                </Col>
-                <Col xs="12" sm="4">    
-                    <div style = {{display:'flex',flexDirection:'column',height:300, witdh:'40%', backgroundColor:'white', borderRadius:10,borderColor:color('red'),borderWidth:1,borderStyle:'solid'}}>
+            <Row style = {{display:'flex',width:'100%', flexDirection:'row',marginLeft:50,marginBottom:20}}>
+                    <div style = {{display:'flex'}}>                            
+                        <img src = {dataBook.coverImage} style = {{height:300}} />
+                    </div>  
+                    <div style = {{display:'flex',width:'40%',flexDirection:'column',height:300,backgroundColor:'white', borderRadius:10,borderColor:color('red'),borderWidth:1,borderStyle:'solid'}}>
                         <div style = {headerStyle}>Informations clés</div>
-                        <div style = {{display:'flex',flexDirection:'row', justifyContent:'space-around', margin:10}}>
-                            <div>Statut: {isPublished==true?"publié":"non publié"}</div>
-                            {/* <Button type="primary"  >Publier/Dépublier</Button> */}
+                        <div style = {{display:'flex',flexDirection:'row', justifyContent:'flex-end', margin:10}}>
+                            <div style={{marginRight:10}}>Statut: {isPublished==true?'publié':'non publié'}</div>
+                            {/* <Button type='primary'  >Publier/Dépublier</Button> */}
                             <Switch checked={isPublished}  onChange={()=>{setIsPublished(!isPublished)}} />
                         </div>
                         <div style = {{display:'flex', flexDirection:'column', textAlign:'left', marginLeft:20, fontSize:14}}>
@@ -183,14 +193,13 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                             <div>Nombre de content : {dataBook.contentNumber}</div>
                             <div>Notation lecteur : {dataBook.rating}</div>
                         </div>                  
-                    </div>
-                </Col>             
+                    </div>           
             </Row>
         </div>
         <div style = {{marginLeft:30}}>
             <Row style = {{display:'flex',flexDirection:'column',marginLeft:20}}>
                 <div style = {mainTitleStyle}>Les contenus associés</div>
-                <Button style = {{width:'20%', margin:30}} type="primary" onClick={()=>{setIsVisible(true);setIdContent("new-content")}}>Ajouter un contenu</Button>
+                <Button style = {{width:'20%', margin:30}} type='primary' onClick={()=>{setIsVisible(true);setIdContent('new-content')}}>Ajouter un contenu</Button>
             </Row>
         </div>
         <OverlayContent isVisible = {isVisible} handleClickParent ={handleClickOverlayCreaContent} idBook = {props.match.params.idBook} idContent = {idContent}/>

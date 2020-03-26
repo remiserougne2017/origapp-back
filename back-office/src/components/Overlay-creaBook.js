@@ -19,6 +19,8 @@ const [desc,setDesc]=useState('');
 const [image,setImage]=useState();
 const [errorMEssage,setErrorMessage]=useState({})
 
+console.log("IDBOOK!",props.dataBook)
+
 const dataSource = (img)=>{
   setImage(img)
   console.log("IMAGE OVERLAY",img)
@@ -90,18 +92,18 @@ const handleOk = async () => {
         <p className="form" >Titre du livre:</p>
         <Input className="input" style={{marginBottom:20}}
         onChange={(e)=>{setTitle(e.target.value);setErrorMessage({...errorMEssage, title:""})}}
-        value={title}/>
+        value={props.dataBook?props.dataBook.title : title}/>
          {errorMEssage.title?<p className="alert">{errorMEssage.title}</p>:null}
          <p className="form">Auteurs:</p>
         <Input className="input" name="authors" placeholder="Séparés par des virgules"
           style={{marginBottom:20}}
           onChange={(e)=>{setAuthors(e.target.value)}}
-          value={authors}/>
+          value={props.dataBook?props.dataBook.authors:authors}/>
          <p className="form">Illustrateurs:</p>
         <Input className="input" name="illustrators" placeholder="Séparés par des virgules"
           style={{marginBottom:20}} 
           onChange={(e)=>{setIllustrators(e.target.value)}}
-          value={illustrators}/>
+          value={props.dataBook?props.dataBook.illustrators:illustrators}/>
          <p className="form">Image de couverture:</p>    
           {/* <DropZone/> */}
           {/* <Upload dataImage={dataImage}></Upload> */}
@@ -110,7 +112,7 @@ const handleOk = async () => {
         <TextArea className="input" name="description" rows={4}
           style={{marginBottom:20}} 
           onChange={(e)=>{setDesc(e.target.value)}}
-          value={desc} />
+          value={props.dataBook?props.dataBook.description:desc} />
            {errorMEssage.desc?<p className="alert">{errorMEssage.desc}</p>:null}
          <p className="form">Catégories:</p>
         <Tags></Tags>

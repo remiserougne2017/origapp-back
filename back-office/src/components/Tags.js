@@ -7,6 +7,7 @@ const HotTags= () => {
 const { CheckableTag } = Tag;
 const tagsFromServer = ['Movies', 'Books', 'Music', 'Sports'];
 
+
 const [selectedTags, setSelectedTags] =useState([])
 const [nextSelectedTags, setNextSelectedTags]= useState(tagsFromServer)
 

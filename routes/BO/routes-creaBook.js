@@ -196,7 +196,11 @@ router.post('/upload', async function(req,res,next){
     });
 
     let dataToFront = {
+      id : bookOpened._id,
       title:bookOpened.title,
+      illustrators: bookOpened.illustrators,
+      description : bookOpened.description,
+      year : bookOpened.year_publishing,
       author:bookOpened.authors,
       status:bookOpened.status,
       coverImage:bookOpened.image,

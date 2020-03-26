@@ -10,7 +10,7 @@ import Header from './Header';
 import color from './color';
 import background from '../origami_background.jpg';
 import InputFileCustom from './inputFile'
-import CreaBookOverlay2 from './CreaBook-Overlay-2'
+
 
 
 function Home() {
