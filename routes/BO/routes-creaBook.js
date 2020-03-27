@@ -222,7 +222,7 @@ res.json({result:"ok",imageUrl})
     })   
 
 
-    router.post('/editContent', async function(req,res,next){
+ router.post('/editContent', async function(req,res,next){
       var bookEdited = await booksModel.findById(req.body.idBook);
       // console.log("/////////////////",req.body)
       let dataToFront;
