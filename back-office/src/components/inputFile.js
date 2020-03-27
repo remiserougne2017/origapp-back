@@ -1,5 +1,5 @@
 import React, { useState,useEffect,Fragment } from 'react';
-import {  Input} from 'antd';
+import { Input} from 'antd';
 
 function inputFile(props){
     onchange=(e)=>{
