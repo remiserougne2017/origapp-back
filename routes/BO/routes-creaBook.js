@@ -185,7 +185,7 @@ res.json({result:"ok",imageUrl})
     }
  //recup des infos du livres + populate des categories
     var bookOpened = await booksModel.findById(req.body.idBook).populate("category").exec()
-    console.log("Tags?",bookOpened.category);
+    // console.log("Tags?",bookOpened.category);
     let contentData = bookOpened.content.map((cont,k) => {
       let data = {
         contentTitle : cont.title,

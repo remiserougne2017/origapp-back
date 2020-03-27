@@ -70,6 +70,7 @@ var date = new Date(1544825952726); // pour simuler une date
 
 
 // load info from db
+console.log(props.match.params.idBook)
 async function loadDataBook(bool,contentId,binContent) {
     console.log(props.match.params.idBook)
     var bookData = await fetch(`${Ip()}/bo/loadBook/${bool}/${contentId}/${binContent}`, { 
