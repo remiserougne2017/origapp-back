@@ -99,7 +99,7 @@ const handleOk = async () => {
     media:inputMedia
 }
   data.append('contentData',JSON.stringify(sendContentCreation));
-  var creaContent = await fetch(`${Ip()}/bo/saveContent`,{
+  var creaContent = await fetch(`/bo/saveContent`,{
     method: 'POST',
     body: data
   });

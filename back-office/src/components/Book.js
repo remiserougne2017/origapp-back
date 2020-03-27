@@ -72,15 +72,15 @@ var date = new Date(1544825952726); // pour simuler une date
 // load info from db
 console.log(props.match.params.idBook)
 async function loadDataBook(bool,contentId,binContent) {
-    console.log(props.match.params.idBook)
-    var bookData = await fetch(`${Ip()}/bo/loadBook/${bool}/${contentId}/${binContent}`, { 
+    console.log("LOAD!",props.match.params.idBook)
+    var bookData = await fetch(`/bo/loadBook/${bool}/${contentId}/${binContent}`, { 
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: `idBook=${props.match.params.idBook}`
           }
     );
     var bookDataJson = await bookData.json();
-    console.log(bookDataJson)
+    console.log("LOAD RETOUR BACK",bookDataJson)
     setDataBook(bookDataJson.dataFromBack)
     }  
 
@@ -114,10 +114,20 @@ var displayTags = dataBook.category.map((tag, i) => {
     })
 
 
-// GESTION DE L'OVERLAY 
+// GESTION DE L'OVERLAY Crea book
     const handleClickOverlayCreaBook = (bool)=>{
         setIsVisibleUpdateBook(false)
+        loadDataBook();
 }
+//Delete OCntent
+const deleteContent =(id)=>{
+    var r = window.confirm("Etes-vous sûr de vouloir supprimer ce contenu? Cette action est définitive."); 
+    if(r){
+      console.log("ok alert");
+      loadDataBook('undefined',id,true)
+    }
+}
+
 
 // affichage des cards contenus
 var displayContents = dataBook.contentData.map((cont, i) => {
@@ -142,7 +152,7 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                             style={{fontSize: 30,margin:10}}
                             onClick = {()=> {setIdContent(cont.content_id);console.log('////// BOOK',cont.content_id);setIsVisible(true)}}
                             />
-                        <DeleteOutlined style={{fontSize: 30,margin:10}} onClick={()=>{console.log('Delete!');loadDataBook('undefined',cont.content_id,true)}}/>
+                        <DeleteOutlined style={{fontSize: 30,margin:10}} onClick={()=>{deleteContent(cont.content_id)}}/>
                     </div>
                 </div> 
                 <img src = {cont.contentImage} style = {{height:'300px',marginTop:'auto'}} />
@@ -170,7 +180,7 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                             />
                     </div> 
                     <div style = {{display:'flex', flexDirection:'row', marginLeft:30,alignItems:'center'}}> 
-                        <div style = {{fontSize:20,fontStyle:'italic',paddingRight:20}}>{dataBook.author}</div>
+                        <div style = {{fontSize:20,fontStyle:'italic',paddingRight:20}}>{dataBook.authors}</div>
                         <div >{displayTags}</div> 
                     </div>
                 </Col>
@@ -190,7 +200,7 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                             <div style = {{marginBottom:20}}>Dernière modification : {dataBook.lastModified}</div>
                             <div>Nombre de vues  : {dataBook.views}</div>
                             <div>Nombre de content : {dataBook.contentNumber}</div>
-                            <div>Notation lecteur : {dataBook.rating}</div>
+                            <div>Notation lecteur : {Math.round(dataBook.rating*100)/100}</div>
                         </div>                  
                     </div>           
             </Row>

@@ -42,6 +42,35 @@ var resultCloudinary = await cloudinary.uploader.upload(req.body.imageData, func
 res.json({result:"ok",imageUrl})
 })
 
+//UPDATE BOOK
+router.post('/updateBook/:bookId', async function(req,res,next){
+  console.log("updateBook? ",req.body,req.parms)
+  // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+  var imageUrl = ""
+  var img
+  // if (req.body.imageData != "undefined"){
+  //   var resultCloudinary = await cloudinary.uploader.upload(req.body.imageData, function(error, result){
+  //     console.log("Router Cloud UPDATE? ",result, error)
+  //     var imageUrl = resultCloudinary.url    
+  //   });
+  // }
+ 
+  imageUrl!=""? img=imageUrl: img=req.body.img
+console.log("IMAGE?",imageUrl,img)
+      var updateBook = await booksModel.updateOne({_id:req.params.bookId},
+        {
+          title:req.body.title,
+          description: req.body.desc,
+          authors: req.body.authors,
+          illustrators: req.body.illustrators,
+          image : img,
+          category: req.body.category
+      })
+    
+      console.log("updateBook?",updateBook)
+  res.json({result:"ok upddate"})
+  })
+  
 
 
 // router.post('/upload', async function(req,res,next){
@@ -185,7 +214,7 @@ res.json({result:"ok",imageUrl})
     }
  //recup des infos du livres + populate des categories
     var bookOpened = await booksModel.findById(req.body.idBook).populate("category").exec()
-    // console.log("Tags?",bookOpened.category);
+    console.log("Tags?",bookOpened);
     let contentData = bookOpened.content.map((cont,k) => {
       let data = {
         contentTitle : cont.title,
@@ -208,7 +237,7 @@ res.json({result:"ok",imageUrl})
       illustrators: bookOpened.illustrators,
       description : bookOpened.description,
       year : bookOpened.year_publishing,
-      author:bookOpened.authors,
+      authors:bookOpened.authors,
       status:bookOpened.status,
       coverImage:bookOpened.image,
       rating:bookOpened.rating,
