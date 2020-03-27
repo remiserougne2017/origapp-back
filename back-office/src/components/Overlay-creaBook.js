@@ -18,7 +18,7 @@ const [illustrators,setIllustrators]=useState('');
 const [desc,setDesc]=useState('');
 const [image,setImage]=useState();
 const [errorMEssage,setErrorMessage]=useState({})
-
+const [urlImage,setUrlImage]= useState("")
 console.log("IDBOOK!",props.dataBook)
 
 const dataSource = (img)=>{
@@ -104,10 +104,16 @@ const handleOk = async () => {
           style={{marginBottom:20}} 
           onChange={(e)=>{setIllustrators(e.target.value)}}
           value={props.dataBook?props.dataBook.illustrators:illustrators}/>
-         <p className="form">Image de couverture:</p>    
+        <p className="form">Image de couverture:</p>    
+        <div style={{display:"flex", flexDirection:"row", height:37}}>
           {/* <DropZone/> */}
           {/* <Upload dataImage={dataImage}></Upload> */}
           <InputFileCustom dataSource={dataSource}></InputFileCustom>
+          <p style={{margin:5}}>ou</p>
+          <Input className="input" name="urlImage" 
+          onChange={(e)=>{setUrlImage(e.target.value)}} placeholder="url de l'image"
+          value={props.dataBook?props.dataBook.coverImage:urlImage}/>
+        </div>
          <p style={{marginTop:35}}className="form">Résumé de l'ouvrage:</p>
         <TextArea className="input" name="description" rows={4}
           style={{marginBottom:20}} 
