@@ -8,7 +8,7 @@ function inputFile(props){
         let reader = new FileReader();
         reader.readAsDataURL(files)
         reader.onload=(x)=>{
-            props.dataSource(x.target.result)
+         props.dataSource(x.target.result)
 
         }
     }   else {

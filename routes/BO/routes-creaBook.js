@@ -17,18 +17,23 @@ router.get('/tags', async function(req, res, next) {
  
   var tags = await tagsModel.find()
   
-    res.json(tags)
+    res.json({tags})
     
   });
 
 router.post('/creaBook', async function(req,res,next){
-
+console.log("IMAGE CREABOOK",req.body)
 // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-var imageUrl
-var resultCloudinary = await cloudinary.uploader.upload(req.body.imageData, function(error, result){
-  console.log("Router Cloud? ",result, error)
-   imageUrl = resultCloudinary.url
-});
+var imageUrl=req.body.img
+  if (req.body.image64 != "undefined"){
+    var resultCloudinary = await cloudinary.uploader.upload(req.body.image64, function(error, result){
+      console.log("Router Cloud UPDATE? ",result, error)
+      if(result){
+        imageUrl = resultCloudinary.url 
+      }
+         
+    });
+  }
 
     // var newBook = await booksModel({
     //     title:req.body.title,
@@ -44,27 +49,26 @@ res.json({result:"ok",imageUrl})
 
 //UPDATE BOOK
 router.post('/updateBook/:bookId', async function(req,res,next){
-  console.log("updateBook? ",req.body,req.parms)
+  console.log("updateBook? ",req.body,req.params,req.body.category.split(','))
   // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-  var imageUrl = ""
-  var img
-  // if (req.body.imageData != "undefined"){
-  //   var resultCloudinary = await cloudinary.uploader.upload(req.body.imageData, function(error, result){
-  //     console.log("Router Cloud UPDATE? ",result, error)
-  //     var imageUrl = resultCloudinary.url    
-  //   });
-  // }
- 
-  imageUrl!=""? img=imageUrl: img=req.body.img
-console.log("IMAGE?",imageUrl,img)
+var imageUrl=req.body.img
+  if (req.body.image64 != "undefined"){
+    var resultCloudinary = await cloudinary.uploader.upload(req.body.image64, function(error, result){
+      console.log("Router Cloud UPDATE? ",result, error)
+      if(result){
+        imageUrl = resultCloudinary.url 
+      }
+         
+    });
+  }
       var updateBook = await booksModel.updateOne({_id:req.params.bookId},
         {
           title:req.body.title,
           description: req.body.desc,
           authors: req.body.authors,
           illustrators: req.body.illustrators,
-          image : img,
-          category: req.body.category
+          image : imageUrl,
+          category: req.body.category.split(',')
       })
     
       console.log("updateBook?",updateBook)
@@ -214,7 +218,7 @@ console.log("IMAGE?",imageUrl,img)
     }
  //recup des infos du livres + populate des categories
     var bookOpened = await booksModel.findById(req.body.idBook).populate("category").exec()
-    console.log("Tags?",bookOpened);
+    // console.log("Tags?",bookOpened);
     let contentData = bookOpened.content.map((cont,k) => {
       let data = {
         contentTitle : cont.title,

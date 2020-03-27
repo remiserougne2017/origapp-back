@@ -22,8 +22,10 @@ const [urlImage,setUrlImage]= useState("")
 const  [category,setCategory]=useState([])
 const [arrayTag,setArrayTag]=useState([])
 
+//function parent inputFile custom
 const dataSource = (img)=>{
   setImage(img)
+  setUrlImage("")
   console.log("IMAGE OVERLAY",img)
 }
 //fonction parent TAG
@@ -73,18 +75,13 @@ const creaUpdateBook= async ()=>{
     //   'img' : image
     // });
     // data.append('imageData',image)
-    if(urlImage!=""){
-      var img = urlImage
-    }else{
-      var img = image
-    }
-    console.log(fetchRoute,"IMAGE TO BACK",img)
+console.log("FETCH UPDATE OU CREA?",fetchRoute)
     var creaBook = await fetch(`/bo/${fetchRoute}`,{
      method: 'POST',
     //  mode: 'no-cors',
      headers: {'Content-Type':'application/x-www-form-urlencoded'},
      body: `title=${title}&authors=${authors}&illustrators=${illustrators}
-     &desc=${desc}&img=${img}&category=${arrayTag}`
+     &desc=${desc}&img=${urlImage}&category=${arrayTag}&image64=${image}`
     //  body: data
    });
 }
@@ -92,14 +89,26 @@ const creaUpdateBook= async ()=>{
 const handleOk = async () => {
  creaUpdateBook()
  props.handleClickParent(false)
-
+ setErrorMessage({})
+ setAuthors()
+ setIllustrators()
+ setDesc() 
+ setImage()
+ setUrlImage()
+ setTitle()
+ setCategory([])
+ 
 };  
 
  const handleCancel = () => {
-   setErrorMessage({})
-    setAuthors('')
-    setIllustrators('')
-    setDesc('') 
+  setErrorMessage({})
+  setAuthors()
+  setIllustrators()
+  setDesc() 
+  setImage()
+  setUrlImage()
+  setTitle()
+  setCategory([])
     props.handleClickParent(false)
   };
     const layout = {
@@ -137,7 +146,7 @@ const handleOk = async () => {
           <InputFileCustom dataSource={dataSource}></InputFileCustom>
           <p style={{margin:5}}>ou</p>
           <Input className="input" name="urlImage" 
-          onChange={(e)=>{setUrlImage(e.target.value)}} placeholder="url de l'image"
+          onChange={(e)=>{setUrlImage(e.target.value);setImage()}} placeholder="url de l'image"
           value={urlImage}/>
         </div>
          <p style={{marginTop:35}}className="form">Résumé de l'ouvrage:</p>
@@ -147,7 +156,7 @@ const handleOk = async () => {
           value={desc} />
            {errorMEssage.desc?<p className="alert">{errorMEssage.desc}</p>:null}
          <p className="form">Catégories:</p>
-         {props.dataBook?  <Tags selectedTags={props.dataBook.category} tagsBook={tagsBook}></Tags> : <Tags  tagsBook={tagsBook}></Tags>}
+         {props.dataBook?  <Tags selectedTags={props.dataBook.category} tagsBook={tagsBook}></Tags> : <Tags selectedTags={[]}  tagsBook={tagsBook}></Tags>}
      </div>
 </Modal>
       )
