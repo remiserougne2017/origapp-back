@@ -255,7 +255,7 @@ var imageUrl=req.body.img
     })   
 
 
-    router.post('/editContent', async function(req,res,next){
+ router.post('/editContent', async function(req,res,next){
       var bookEdited = await booksModel.findById(req.body.idBook);
       // console.log("/////////////////",req.body)
       let dataToFront;
