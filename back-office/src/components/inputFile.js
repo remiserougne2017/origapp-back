@@ -3,7 +3,7 @@ import { Input} from 'antd';
 
 function inputFile(props){
     onchange=(e)=>{
-        if(e.target.files !== null) {
+        if((e.target.files !== null)&&(e.target.files !== undefined)) {
         let files=e.target.files[0]
         let reader = new FileReader();
         reader.readAsDataURL(files)

@@ -16,6 +16,7 @@ const [errorMEssage,setErrorMessage]=useState({})
 const { Option } = Select;
 const [imageContent,setImageContent]=useState("");
 const [imageContentUrl,setImageContentUrl]=useState("");
+// const [isHidden,setIsHidden]=useState(true);
 
 const [inputMedia, setInputMedia] = useState([{ 
     type: '', 
@@ -28,6 +29,7 @@ const [inputMedia, setInputMedia] = useState([{
   ])
   const [inputIndex,setInputIndex]=useState()
   const [sourceFormType,setSourceFormType]=useState("sourceContent")
+  const { TextArea } = Input;
 
 
 
@@ -128,14 +130,29 @@ props.handleClickParent()
 
 // Gestion des champs du form
 
-const handleInputChange = (index, event) => {
+const handleInputChange = (index, event,type) => {
     const copyInputMedia = [...inputMedia];
-
-    if(event.target == undefined) {
+    console.log("EVENT",event)
+    if(event.target == undefined) { // correspond au type de media envoyé (le champ select fonctoinne differement du champs input) ici event est en fait la valeur séléctionné par le user
+      console.log('base 64 scenario ? ')
         copyInputMedia[index].type = event;
+        copyInputMedia[index].sourceUrl = '';
+        copyInputMedia[index].duration = ''
+        copyInputMedia[index].sourceBase64 = ''
+        copyInputMedia[index].text = '';
+
     }
-    else {
- 
+    else { // correspond aux autres inputds du formulaire
+    
+    if((type == "Texte")||(type == "Citation")) {
+      console.log("hello la boucle texte")
+
+    }
+    if((type == "Audio")||(type == "Image")||(type == "Video")) {
+      console.log("hello la boucle image")
+
+    } 
+
     switch (event.target.name) {
         case 'mediaTitle': 
         copyInputMedia[index].title = event.target.value;
@@ -189,6 +206,8 @@ const handleInputChange = (index, event) => {
   const dataFieldSource = (img,type)=>{
     if(type == 'sourceMedia') {
       const copyInputMedia = [...inputMedia];
+      copyInputMedia[inputIndex].text = "";
+      copyInputMedia[inputIndex].sourceUrl = "";
       copyInputMedia[inputIndex].sourceBase64 = img;
       setInputMedia(copyInputMedia);
     }
@@ -233,7 +252,18 @@ const handleInputChange = (index, event) => {
             style = {{marginTop:40}}
         > Ajouter un media
         </Button>
-          {inputMedia.map((inputField, index) => { 
+          {inputMedia.map((inputField, index) => {
+            let isHiddenTextNeeded = true ;
+            let isHiddenSourceNeeded = true ;
+
+            if((inputField.type=="Texte")||(inputField.type=="Citation")) {
+              isHiddenTextNeeded = false;
+              isHiddenSourceNeeded = true;
+            } 
+            if((inputField.type=="Image")||(inputField.type=="Audio")||(inputField.type=="Video")) {
+              isHiddenSourceNeeded = false;
+              isHiddenTextNeeded = true;
+            }
 
             return(
             (
@@ -248,9 +278,9 @@ const handleInputChange = (index, event) => {
                 <div>
                     <p className="form" >Type de media</p>
                     <Select
-                        name = 'mediaTitle'
+                        name = 'mediaType'
                         defaultValue="Séléctionner"
-                        onChange={value => handleInputChange(index, value)}
+                        onChange={value => handleInputChange(index, value,inputField.type)}
                         value= {inputField.type}
                          >
                         {mediaDropdown}
@@ -259,40 +289,45 @@ const handleInputChange = (index, event) => {
                 <div>
                     <p className="form" >Titre</p>
                     <Input
-                    type="text"
-                    name = 'mediaTitle'
-                    onChange={event => handleInputChange(index, event)}
-                    value={inputField.title}
+                        type="text"
+                        name = 'mediaTitle'
+                        onChange={event => handleInputChange(index, event)}
+                        value={inputField.title}
                     />
                 </div>
-                <div>
+                <div hidden = {isHiddenTextNeeded}>
                     <p className="form" >Texte (pour le media texte)</p>
-                    <Input
+                    <TextArea
+                        autoSize = {true}
                         type="text"
                         name = 'mediaText'
-                        onChange={event => handleInputChange(index, event)}
+                        onChange={event => handleInputChange(index, event,inputField.type)}
                         value={inputField.text}
                         />
                 </div>
-                <div>
+                <div hidden = {isHiddenSourceNeeded}>  
                     <p className="form" >Source du media (si url)</p>
                     <Input
                         type="text"
                         name = 'mediaSource'
-                        onChange={event => handleInputChange(index, event)}
+                        onChange={event => handleInputChange(index, event,inputField.type)}
                         value={inputField.sourceUrl}
                         />
                 </div>
-                  <div onClick = {() =>{setInputIndex(index);setSourceFormType('sourceMedia') }}>
+                  <div
+                    hidden = {isHiddenSourceNeeded} 
+                    onClick = {() =>{setInputIndex(index);setSourceFormType('sourceMedia') }}>
                       <p className="form" >Source du media (si le fichier est sur votre ordinateur)</p>
                       <InputFileCustom dataSource={e => {console.log("index, source media",inputIndex,sourceFormType);dataFieldSource(e,sourceFormType)}}></InputFileCustom>
                   </div>
-                <div>
+                <div
+                    hidden = {isHiddenSourceNeeded} 
+                    >
                     <p className="form" style = {{marginTop:20}} >Duration</p>
                     <Input
                         type="text"
                         name = 'mediaDuration'
-                        onChange={event => handleInputChange(index, event)}
+                        onChange={event => handleInputChange(index, event,inputField.type)}
                         value={inputField.duration}
                         />
                 </div>
