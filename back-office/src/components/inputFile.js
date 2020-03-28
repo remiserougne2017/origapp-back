@@ -5,8 +5,10 @@ function inputFile(props){
     onchange=(e)=>{
         if((e.target.files !== null)&&(e.target.files !== undefined)) {
         let files=e.target.files[0]
+    
         let reader = new FileReader();
-        reader.readAsDataURL(files)
+       var testFile = reader.readAsDataURL(files)
+        console.log('files!!',e.target.files[0])
         reader.onload=(x)=>{
          props.dataSource(x.target.result)
 

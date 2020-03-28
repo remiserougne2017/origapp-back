@@ -49,18 +49,21 @@ res.json({result:"ok",imageUrl})
 
 //UPDATE BOOK
 router.post('/updateBook/:bookId', async function(req,res,next){
+  var result="ko"
   console.log("updateBook? ",req.body,req.params,req.body.category.split(','))
   // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
 var imageUrl=req.body.img
   if (req.body.image64 != "undefined"){
+    console.log("Cloud UPDATE img? ",req.body.image64)
     var resultCloudinary = await cloudinary.uploader.upload(req.body.image64, function(error, result){
       console.log("Router Cloud UPDATE? ",result, error)
       if(result){
-        imageUrl = resultCloudinary.url 
+        imageUrl = result.url 
       }
          
     });
   }
+  console.log("image to bdd",imageUrl)
       var updateBook = await booksModel.updateOne({_id:req.params.bookId},
         {
           title:req.body.title,
@@ -70,21 +73,24 @@ var imageUrl=req.body.img
           image : imageUrl,
           category: req.body.category.split(',')
       })
-    
+    result="ok"
       console.log("updateBook?",updateBook)
-  res.json({result:"ok upddate"})
+      fs.unlinkSync(req.body.image64);
+  res.json({result})
   })
   
 
 
-// router.post('/upload', async function(req,res,next){
-// // console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
-// // let what = req.files.file.data
-// // console.log("WHAT DATA IMAGE!!",what)
-//     // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
+router.post('/upload', async function(req,res,next){
+console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
+var path = './tmp/'+req.files.file.name
+console.log("WHAT DATA IMAGE!!",path)
+var fileCopy = await req.files.file.mv(path);
+
+    // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
     
-//     res.json({status:"done"})
-//     })
+    res.json({status:"done",imagePath : path})
+    })
     
 
   router.post('/saveContent', async function(req,res,next){
@@ -250,7 +256,7 @@ var imageUrl=req.body.img
       category:bookOpened.category
     }
 
-
+   console.log("BACK tO FRONT Image?",dataToFront.coverImage);
   res.json({result:"ok",dataFromBack:dataToFront})
     })   
 

@@ -142,8 +142,8 @@ const handleOk = async () => {
         <p className="form">Image de couverture:</p>    
         <div style={{display:"flex", flexDirection:"row", height:37}}>
           {/* <DropZone/> */}
-          {/* <Upload dataImage={dataImage}></Upload> */}
-          <InputFileCustom dataSource={dataSource}></InputFileCustom>
+          <Upload dataSource={dataSource}></Upload>
+          {/* <InputFileCustom dataSource={dataSource}></InputFileCustom> */}
           <p style={{margin:5}}>ou</p>
           <Input className="input" name="urlImage" 
           onChange={(e)=>{setUrlImage(e.target.value);setImage()}} placeholder="url de l'image"

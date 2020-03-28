@@ -116,8 +116,11 @@ var displayTags = dataBook.category.map((tag, i) => {
 
 // GESTION DE L'OVERLAY Crea book
     const handleClickOverlayCreaBook = (bool)=>{
-        setIsVisibleUpdateBook(false)
-        loadDataBook();
+        console.log("CREA BOOK")
+        setTimeout(() => {
+            loadDataBook();
+          }, 3000);
+        setIsVisibleUpdateBook(false)     
 }
 //Delete OCntent
 const deleteContent =(id)=>{
