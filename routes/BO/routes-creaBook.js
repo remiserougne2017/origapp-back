@@ -198,6 +198,8 @@ var fileCopy = await req.files.file.mv(path);
             }
         })
 
+        //suppression du media dans le dossier temporaire
+        fs.unlinkSync(reqContentDataJson.imageContent);
       res.json({result:"ok"})
       })
 
