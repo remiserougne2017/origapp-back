@@ -95,7 +95,7 @@ var fileCopy = await req.files.file.mv(path);
 
   router.post('/saveContent', async function(req,res,next){
       let message;
-      
+      console.log("Router cover image ? ",req.body )
       // JSON body
       let reqContentDataJson = JSON.parse(req.body.contentData);
       
