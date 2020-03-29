@@ -115,7 +115,7 @@ var fileCopy = await req.files.file.mv(path);
       const mediaData = async () => {
         return Promise.all(reqContentDataJson.media.map( async (obj,j) => { 
           let media;  
-          if((obj.type == 'Texte')||(obj.type == 'Citation')) { // a terme mettre un switch si les objets différent beacuoup
+          if((obj.type == 'texte')||(obj.type == 'citation')) { // a terme mettre un switch si les objets différent beacuoup
             media = {
               title:obj.title,
               type:obj.type,
@@ -124,7 +124,7 @@ var fileCopy = await req.files.file.mv(path);
               source:""
             } 
           } 
-          if((obj.type == 'Image')||(obj.type == 'Video')||(obj.type == 'Audio')) {
+          if((obj.type == 'image')||(obj.type == 'video')||(obj.type == 'audio')) {
             if(((obj.sourceUrl == '')||(obj.sourceUrl == undefined))&&((obj.sourceBase64 == '')||(obj.sourceBase64 == undefined))) {
               message = "source manquante"
             } 
@@ -134,12 +134,12 @@ var fileCopy = await req.files.file.mv(path);
                 sourceMedia = obj.sourceUrl
               }    
               else {
-                if(obj.type == "Image") {
+                if(obj.type == "image") {
                   var resultCloudinary = await cloudinary.uploader.upload(obj.sourceBase64, function(error, result){
                   console.log("Router image media ? ",result, error)
                   });
                 }  
-                if((obj.type == "Video")||(obj.type =="Audio")) {
+                if((obj.type == "video")||(obj.type =="audio")) {
                   var resultCloudinary = await cloudinary.uploader.upload(obj.sourceBase64,{ resource_type: "video" },function(error, result){
                   console.log("Router video audio? ",result, error)
                   });

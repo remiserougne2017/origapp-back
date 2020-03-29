@@ -73,7 +73,7 @@ useEffect( ()=> {
 
 
 // Liste des medias disponibles dans le form
-const mediaType = ['Texte','Image','Audio','Video','Citation']
+const mediaType = ['Texte','image','audio','video','citation']
 let mediaDropdown = mediaType.map((type,j) => {
     return(
         <Option 
@@ -145,11 +145,11 @@ const handleInputChange = (index, event,type) => {
     }
     else { // correspond aux autres inputds du formulaire
     
-    if((type == "Texte")||(type == "Citation")) {
+    if((type == "texte")||(type == "citation")) {
       console.log("hello la boucle texte")
 
     }
-    if((type == "Audio")||(type == "Image")||(type == "Video")) {
+    if((type == "audio")||(type == "image")||(type == "video")) {
       console.log("hello la boucle image")
 
     } 
@@ -258,11 +258,11 @@ const handleInputChange = (index, event,type) => {
             let isHiddenTextNeeded = true ;
             let isHiddenSourceNeeded = true ;
 
-            if((inputField.type=="Texte")||(inputField.type=="Citation")) {
+            if((inputField.type=="texte")||(inputField.type=="citation")) {
               isHiddenTextNeeded = false;
               isHiddenSourceNeeded = true;
             } 
-            if((inputField.type=="Image")||(inputField.type=="Audio")||(inputField.type=="Video")) {
+            if((inputField.type=="image")||(inputField.type=="audio")||(inputField.type=="video")) {
               isHiddenSourceNeeded = false;
               isHiddenTextNeeded = true;
             }
