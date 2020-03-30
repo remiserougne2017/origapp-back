@@ -1,8 +1,6 @@
 import React, {useState, useEffect } from 'react';
 import '../App.css';
 import {Tag} from 'antd';
-import Ip from './Ip'
-import Header from './Header';
 
 
 const HotTags= (props) => {
@@ -21,11 +19,12 @@ const [selectedTags, setSelectedTags] =useState([])
 const [nextSelectedTags, setNextSelectedTags]= useState(tagsFromServer)
 console.log("SELECTED TAGS",props.selectedTags)
 useEffect(()=>{
-  // const getTag = async ()=>{
-  //   var tags = await fetch(`/bo/tags`)
-  //   let tagJson = await tags.json()
-  //   console.log('FETCH TAGS',tagJson)
-  //   setTagFromServer(tagJson)  
+  // const getTag = async () => {
+  //   var tags = await fetch(`/bo/tags`);
+  //   console.log('FETCH TAGS', await tags);
+  //   let tagJson = await tags.json();
+
+  //   setTagFromServer(tagJson);
   // }
   // getTag()
   if(props.selectedTags){

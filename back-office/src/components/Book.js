@@ -12,6 +12,7 @@ import OverlayContent from './Overlay-creaContent'
 import background from '../origami_background.jpg';
 import Ip from './Ip'
 import OverlayForm from './Overlay-creaBook';
+import { set } from 'mongoose';
 
 function Book(props) {
 
@@ -48,12 +49,25 @@ const [isVisible,setIsVisible] = useState(false);
 const [dataBook,setDataBook] = useState({contentData:[],category:[]});
 const [idContent,setIdContent] = useState('');
 const [idBook,setIdBook] = useState(props.match.params.idBook)
-const [isPublished,setIsPublished] =useState(dataBook.status)
+const [isPublished,setIsPublished] =useState()
 const [isVisibleUpdateBook,setIsVisibleUpdateBook]= useState(false)
+const [contentPublishedCount, setContentPublishedCount] =useState()
+// const [isPublishedContent,setIsPublishedContent] =useState()
 console.log(dataBook.status)
 
 var date = new Date(1544825952726); // pour simuler une date 
 
+
+//function qui compte le nb de contenu publié
+const toCountPublishedContent = ()=>{
+    var count =0
+    dataBook.contentData.map(e=>{
+        if(e.contentStatus == true){
+            count ++       };
+    })
+    console.log("nb de contenu publié",count)
+    return count
+}
 
 // var dataBook = {
 //     title : 'Livre 1',
@@ -82,12 +96,42 @@ async function loadDataBook(bool,contentId,binContent) {
     var bookDataJson = await bookData.json();
     console.log("LOAD RETOUR BACK",bookDataJson)
     setDataBook(bookDataJson.dataFromBack)
+    setIsPublished(bookDataJson.dataFromBack.status) 
     }  
 
+    //Recalcule le nb de contenus publiés à chaque refresh de dataBook
+    useEffect(()=>{
+        setContentPublishedCount(toCountPublishedContent())
+    },[dataBook])
+
+    //
 useEffect( ()=> {
     setIdBook(props.match.params.idBook)
     loadDataBook();
   },[isVisible])
+  
+  //ecoute le changement IsPublished du book pour update la bdd
+  useEffect( ()=> {
+
+      if(isPublished){
+console.log("HOOK nb contneu publié",contentPublishedCount)
+        var count = toCountPublishedContent()
+        if(count==0||contentPublishedCount==0){
+            alert("Impossible de publier un livre qui ne possède aucun contenu publié")
+            setIsPublished(false)
+        }else{
+            loadDataBook(isPublished);
+        }
+      }else{
+        loadDataBook(isPublished);
+      }
+  },[isPublished,contentPublishedCount])
+
+//Gestion de la publication des contenus
+const contentToPublish = (bool,content_id) => {
+    loadDataBook(bool,content_id)
+}
+
 
 // gestion de l'overlay form content
 const handleClickOverlayCreaContent = ()=>{
@@ -122,7 +166,7 @@ var displayTags = dataBook.category.map((tag, i) => {
           }, 3000);
         setIsVisibleUpdateBook(false)     
 }
-//Delete OCntent
+//Delete Content
 const deleteContent =(id)=>{
     var r = window.confirm("Etes-vous sûr de vouloir supprimer ce contenu? Cette action est définitive."); 
     if(r){
@@ -143,7 +187,7 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                     <div style = {{display:'flex',flexDirection:'row'}}>
                         <div style={{marginRight:20}}>
                             {cont.contentStatus==true?'Publié':'Non publié'}</div>
-                        <Switch checked={cont.contentStatus}  onChange={()=>{console.log('switch!',!cont.contentStatus,cont.content_id);loadDataBook(!cont.contentStatus,cont.content_id)}} />
+                        <Switch checked={cont.contentStatus}  onChange={()=>{contentToPublish(!cont.contentStatus,cont.content_id)}} />
                     </div>  
                     {/* <Button type='primary'  >{JSON.stringify(cont.contentStatus)}</Button> */}
                 </div>
@@ -176,15 +220,18 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                 <Col xs='12'>
                     <div style = {{marginLeft:5,textAlign:'left'}}><Link to={`/`}>Retour</Link></div>
                     <div style={{display:"flex", flexDirection:"row"}}>
-                        <div style = {mainTitleStyle}>{dataBook.title}</div>
+                    <div style={{display:"flex", flexDirection:"column"}}>
+                            <div style = {mainTitleStyle}>{dataBook.title}</div>
+                            <div style = {{marginLeft:30}} >{displayTags}</div> 
+                        </div>
                         <EditOutlined 
                                     style={{fontSize: 30,margin:10}}
                                     onClick = {()=> {console.log('////// BOOK');setIsVisibleUpdateBook(true)}}
                             />
                     </div> 
-                    <div style = {{display:'flex', flexDirection:'row', marginLeft:30,alignItems:'center'}}> 
-                        <div style = {{fontSize:20,fontStyle:'italic',paddingRight:20}}>{dataBook.authors}</div>
-                        <div >{displayTags}</div> 
+                    <div style = {{display:'flex', flexDirection:'column', marginLeft:30,marginTop:10}}> 
+                        <div >{dataBook.authors}</div>
+                        <div >{dataBook.illustrators}</div>
                     </div>
                 </Col>
             </Row>

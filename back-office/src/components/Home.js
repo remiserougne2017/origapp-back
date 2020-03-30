@@ -90,9 +90,10 @@ var displayBooks = dataBooks.map((book, i) => {
 
 
 
-    // GESTION DE L'OVERLAY 
+    // GESTION DE L'OVERLAY  CREABOOK
     const handleClickOverlayCreaBook = (bool)=>{
             setVisible(false)
+            //recharger la page pour afficher les modifs
     }
 
 // RETURN GLOBAL

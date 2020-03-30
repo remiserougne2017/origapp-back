@@ -14,10 +14,10 @@ var request = require('sync-request');
 
 //Route récup des tags pour affichage
 router.get('/tags', async function(req, res, next) {
- 
+ console.log("TAGS!!")
   var tags = await tagsModel.find()
-  
-    res.json({tags})
+  console.log("TAGS!!",tags)
+    res.json({"tags":tags})
     
   });
 
@@ -29,21 +29,22 @@ var imageUrl=req.body.img
     var resultCloudinary = await cloudinary.uploader.upload(req.body.image64, function(error, result){
       console.log("Router Cloud UPDATE? ",result, error)
       if(result){
-        imageUrl = resultCloudinary.url 
+        imageUrl = result.url 
       }
          
     });
   }
 
-    // var newBook = await booksModel({
-    //     title:req.body.title,
-    //     description: req.body.desc,
-    //     authors: req.body.authors,
-    //     illustrators: req.body.illustrators,
-    //     image : imageUrl
-    // })
-    // var bookSave = await newBook.save()
-    // console.log("SAVE?",bookSave)
+    var newBook = await booksModel({
+        title:req.body.title,
+        description: req.body.desc,
+        authors: req.body.authors,
+        illustrators: req.body.illustrators,
+        image : imageUrl,
+        status : false
+    })
+    var bookSave = await newBook.save()
+    console.log("SAVE?",bookSave)
 res.json({result:"ok",imageUrl})
 })
 
@@ -212,10 +213,18 @@ var fileCopy = await req.files.file.mv(path);
     console.log('LoadBook params',req.params,req.body)
     if(req.params.bool != "undefined"){
       console.log('update boucle')
+      if(req.params.contentId != "undefined"){
         await booksModel.updateOne(
-        {_id: req.body.idBook,"content._id":req.params.contentId},
-        { $set: { "content.$.status" : req.params.bool } }
-        )
+          {_id: req.body.idBook,"content._id":req.params.contentId},
+          { $set: { "content.$.status" : req.params.bool } }
+          )
+      }else{
+        await booksModel.updateOne(
+          {_id: req.body.idBook},
+          { $set: { "status" : req.params.bool } }
+          )
+      }
+       
     }
    if(req.params.delete=="true"){
       console.log("DELETE",req.params.delete)
