@@ -84,13 +84,14 @@ router.post('/sign-up', async (req, res, next) => {
 /* Route POST SIGN-IN */
 router.post('/sign-in', async (req, res, next) => {
 
-  console.log(req.body)
-
+  console.log("SIGNIN!",req.body,req.params)
+  var from = req.body.from
   var error = {};
   var result = false;
   var token = null;
   var user = null;
   var prenom = null; 
+  var publisher=null
   
   //Vérification champs non vides
   if(req.body.email == '' ){
@@ -100,9 +101,19 @@ router.post('/sign-in', async (req, res, next) => {
    }else{
 
       //Vérification email
-      var user = await usersModel.findOne({
-      email: req.body.email
-      })  
+      if(req.body.from == "web"){
+        var user = await usersModel.findOne({
+          email: req.body.email, role:"admin"
+          })  
+          publisher = user.publisher
+          console.log("USER admin",user)
+        
+      }else {
+        var user = await usersModel.findOne({
+          email: req.body.email
+          })
+          console.log("USER lammbda",user)
+      }
     
     if(!user){
       result = false
@@ -122,7 +133,7 @@ router.post('/sign-in', async (req, res, next) => {
   }
     
   console.log(error)
-  res.json({result, token, prenom, error})
+  res.json({result, token, prenom, error,publisher})
 })
 
 //Update Name

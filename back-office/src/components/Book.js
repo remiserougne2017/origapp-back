@@ -218,7 +218,7 @@ var displayContents = dataBook.contentData.map((cont, i) => {
         <div style = {{marginLeft:10    }}>
             <Row style = {{display:'flex', flexDirection:'column', marginLeft:20, marginBottom:30}}>
                 <Col xs='12'>
-                    <div style = {{marginLeft:5,textAlign:'left'}}><Link to={`/`}>Retour</Link></div>
+                    <div style = {{marginLeft:5,textAlign:'left'}}><Link to={`/Home`}>Retour</Link></div>
                     <div style={{display:"flex", flexDirection:"row"}}>
                     <div style={{display:"flex", flexDirection:"column"}}>
                             <div style = {mainTitleStyle}>{dataBook.title}</div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link,Redirect } from "react-router-dom";
 import logo from '../logoOrigapp_detoure.png';
 import '../App.css';
@@ -10,22 +10,33 @@ import Header from './Header';
 import color from './color';
 import background from '../origami_background.jpg';
 import InputFileCustom from './inputFile'
+import {connect} from 'react-redux';
 
 
-
-function Home() {
+function Home(props) {
 const [visible,setVisible]=useState(false)
 const [image,setImage]=useState()
-
+// const [idPublisher,setIdPublisher] = useState(props.publisher);
+const [dataBooks,setDataBooks] = useState([])
 var date = new Date(1544825952726); // pour simuler une date 
 
+useEffect(()=>{
+    console.log("PUBLISHER?",props.publisher)
+    const toLoadBooks = async ()=>{
+        var books = await fetch(`/bo/home/${props.publisher}`)
+        var resp=await books.json()
+        console.log("RESP HOME",resp.dataBookHome)
+        setDataBooks(resp.dataBookHome)
+    };
+    toLoadBooks()
+},[props.publisher])
 
- var dataBooks = [
-     {title:'Livre 1',authors:'Victor Hugo',status:true,image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',lastModified:date,idBook:'5e5fd3b2a2f6a844f031ec4e'},
-     {title:'Livre 2',authors:'Proust',status:true,image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',lastModified:date,idBook:'5e7e010780fceb35e041b963'},
-     {title:'Livre 3',authors:'Bakounine',status:true,image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',lastModified:date,idBook:'5e7e010980fceb35e041b964'},
-     {title:'Livre 4',authors:'Marc Levy',status:true,image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',lastModified:date,idBook:"5e7e010c80fceb35e041b965"}
-    ]
+//  var dataBooks = [
+//      {title:'Livre 1',authors:'Victor Hugo',status:true,image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',lastModified:date,idBook:'5e5fd3b2a2f6a844f031ec4e'},
+//      {title:'Livre 2',authors:'Proust',status:true,image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',lastModified:date,idBook:'5e7e010780fceb35e041b963'},
+//      {title:'Livre 3',authors:'Bakounine',status:true,image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',lastModified:date,idBook:'5e7e010980fceb35e041b964'},
+//      {title:'Livre 4',authors:'Marc Levy',status:true,image:'https://res.cloudinary.com/dxkvzc4jc/image/upload/v1583511089/79114572_10218298487586791_8761985699067985920_o_a2xejb.jpg',lastModified:date,idBook:"5e7e010c80fceb35e041b965"}
+//     ]
 
 
     // STYLE VARIABLES: 
@@ -52,13 +63,13 @@ var date = new Date(1544825952726); // pour simuler une date
     }
 
 // converti timestamp au format date dd/mm/yyyy
-function DateFormat(d){
-    var day = d.getDate();
-    var month = d.getMonth()+1;
-    var year = d.getFullYear();
-    var dateformat = `${day}/${month}/${year}`;
-    return dateformat
-    }
+// function DateFormat(d){
+//     var day = d.getDate();
+//     var month = d.getMonth()+1;
+//     var year = d.getFullYear();
+//     var dateformat = `${day}/${month}/${year}`;
+//     return dateformat
+//     }
   
 
 
@@ -75,7 +86,7 @@ var displayBooks = dataBooks.map((book, i) => {
                     style = {{marginBottom:20,borderRadius:10}}
                     hoverable = {true}
                     headStyle = {{backgroundColor:color('red'),color:'white'}}>
-                    <p>Dernière modification :{DateFormat(book.lastModified)}</p>
+                    {/* <p>Dernière modification :{DateFormat(book.lastModified)}</p> */}
 
                     <div style = {{flexDirection:'row',display:'flex', justifyContent:'space-between'}}>
                         <img src = {book.image} style = {{height:"200px",marginTop:'auto'}} />
@@ -98,7 +109,7 @@ var displayBooks = dataBooks.map((book, i) => {
 
 // RETURN GLOBAL
   return (
-    <div style = {{backgroundImage: `url(${background})` }}>
+    <div style = {{backgroundImage: `url(${background})`, height:'100vh'}}>
         <Header/>
         {/* <InputFileCustom></InputFileCustom> */}
         <div style = {{display:'flex',flexDirection: 'column',justifyContent:'left'}}>
@@ -122,4 +133,9 @@ var displayBooks = dataBooks.map((book, i) => {
   );
 }
 
-export default Home;
+function mapStateToProps(state) {
+  return { token: state.token,
+           publisher: state.publisher
+   }
+}
+export default connect(mapStateToProps,null)(Home)

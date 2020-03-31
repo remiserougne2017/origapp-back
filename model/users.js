@@ -8,6 +8,7 @@ var usersSchema = mongoose.Schema({
     salt:String,
     token:String,
     role: String,
+    publisher:{type: mongoose.Schema.Types.ObjectId, ref:"publishers"},
     myLibrairy: [{type: mongoose.Schema.Types.ObjectId, ref:"books"}],
     lastRead: [{type: mongoose.Schema.Types.ObjectId, ref:"books"}],
     comments: [{type: mongoose.Schema.Types.ObjectId, ref:"comments"}]

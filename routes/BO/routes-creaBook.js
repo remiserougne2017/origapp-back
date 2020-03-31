@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var booksModel = require('../../model/books');
 var tagsModel = require('../../model/tags')
+var publishersModel = require('../../model/publishers')
 var cloudinary = require('cloudinary').v2;
 const fs = require('fs')
 cloudinary.config({ 
@@ -18,9 +19,48 @@ router.get('/tags', async function(req, res, next) {
   var tags = await tagsModel.find()
   console.log("TAGS!!",tags)
     res.json({"tags":tags})
-    
   });
 
+//ROUTE chargement de la Home en focntion de l'id Maison d'édition (publisher)
+router.get('/home/:publisher', async function(req, res, next) {
+  console.log("HOME BO!!",req.params)
+  var listBooks = await publishersModel.findById({_id:req.params.publisher})
+  console.log("LIST HOME",listBooks.books)
+
+  const dataBook = async () =>{
+    return Promise.all(listBooks.books.map( async e =>{
+      const toCall = async (y)=>{
+       var x = await booksModel.findById({_id:y})
+       return x
+      };
+     var book=  toCall(e)
+     return book
+    
+    //  
+       })
+    );
+  }
+  var dataBookHome=[]
+  dataBook().then(e=>{
+   
+    e.map(b=>{
+      dataBookHome.push({
+        title:  b.title,
+        authors:  b.authors,
+        illustrators: b.illustrators,
+        image: b.image,
+        idBook: b._id
+         })
+    })
+    console.log("book!!",dataBookHome)
+    res.json({"dataBookHome":dataBookHome})
+  })
+  
+  // var bookAdding = await booksModel.findById({})
+  
+});
+
+//ROUTE CREA BOOK 
 router.post('/creaBook', async function(req,res,next){
 console.log("IMAGE CREABOOK",req.body)
 // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
