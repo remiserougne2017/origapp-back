@@ -50,7 +50,6 @@ const [idContent,setIdContent] = useState('');
 const [idBook,setIdBook] = useState(props.match.params.idBook)
 const [isPublished,setIsPublished] =useState(dataBook.status)
 const [isVisibleUpdateBook,setIsVisibleUpdateBook]= useState(false)
-console.log(dataBook.status)
 
 var date = new Date(1544825952726); // pour simuler une date 
 
@@ -70,9 +69,7 @@ var date = new Date(1544825952726); // pour simuler une date
 
 
 // load info from db
-console.log(props.match.params.idBook)
 async function loadDataBook(bool,contentId,binContent) {
-    console.log("LOAD!",props.match.params.idBook)
     var bookData = await fetch(`/bo/loadBook/${bool}/${contentId}/${binContent}`, { 
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
@@ -91,7 +88,6 @@ useEffect( ()=> {
 
 // gestion de l'overlay
 const handleClickOverlayCreaContent = ()=>{
-    console.log('hello handleclik')
     setIsVisible(false)
 }
 
@@ -176,7 +172,7 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                         <div style = {mainTitleStyle}>{dataBook.title}</div>
                         <EditOutlined 
                                     style={{fontSize: 30,margin:10}}
-                                    onClick = {()=> {console.log('////// BOOK');setIsVisibleUpdateBook(true)}}
+                                    onClick = {()=> {setIsVisibleUpdateBook(true)}}
                             />
                     </div> 
                     <div style = {{display:'flex', flexDirection:'row', marginLeft:30,alignItems:'center'}}> 

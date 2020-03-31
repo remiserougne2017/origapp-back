@@ -24,13 +24,15 @@ const [selectedTags, setSelectedTags] =useState([])
 const [nextSelectedTags, setNextSelectedTags]= useState(tagsFromServer)
 console.log("SELECTED TAGS",props.selectedTags)
 useEffect(()=>{
-  // const getTag =async ()=>{
+  console.log("hellllooo")
+  const getTag =async ()=>{
     
-  //   var tags = await fetch(`${Ip()}/bo/tags`)
-  //   console.log('FETCH TAGS',tags)
-  //   setTagFromServer(tags)  
-  // }
-  // getTag()
+    var tags = await fetch(`/bo/tags`)
+    let tagJson = await tags.json()
+    console.log('FETCH TAGS 2',tagJson)
+    setTagFromServer(tagJson)  
+  }
+  getTag()
   if(props.selectedTags){
     setSelectedTags(props.selectedTags)
   }

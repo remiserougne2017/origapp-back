@@ -50,7 +50,7 @@ useEffect( ()=> {
         duration:'',
          }])
     } else {
-      var contentData = await fetch(`${Ip()}/bo/editContent`, { 
+      var contentData = await fetch(`/bo/editContent`, { 
               method: 'POST',
               headers: {'Content-Type':'application/x-www-form-urlencoded'},
               body: `idBook=${props.idBook}&idContent=${props.idContent}`
@@ -72,7 +72,7 @@ useEffect( ()=> {
 
 
 // Liste des medias disponibles dans le form
-const mediaType = ['Texte','Image','Audio','Video','Citation']
+const mediaType = ['text','image','audio','video','quote']
 let mediaDropdown = mediaType.map((type,j) => {
     return(
         <Option 
@@ -98,6 +98,7 @@ const handleOk = async () => {
     page:page,
     media:inputMedia
 }
+  console.log(sendContentCreation)
   data.append('contentData',JSON.stringify(sendContentCreation));
   var creaContent = await fetch(`/bo/saveContent`,{
     method: 'POST',
@@ -132,9 +133,7 @@ props.handleClickParent()
 
 const handleInputChange = (index, event,type) => {
     const copyInputMedia = [...inputMedia];
-    console.log("EVENT",event)
     if(event.target == undefined) { // correspond au type de media envoyé (le champ select fonctoinne differement du champs input) ici event est en fait la valeur séléctionné par le user
-      console.log('base 64 scenario ? ')
         copyInputMedia[index].type = event;
         copyInputMedia[index].sourceUrl = '';
         copyInputMedia[index].duration = ''
@@ -144,15 +143,6 @@ const handleInputChange = (index, event,type) => {
     }
     else { // correspond aux autres inputds du formulaire
     
-    if((type == "Texte")||(type == "Citation")) {
-      console.log("hello la boucle texte")
-
-    }
-    if((type == "Audio")||(type == "Image")||(type == "Video")) {
-      console.log("hello la boucle image")
-
-    } 
-
     switch (event.target.name) {
         case 'mediaTitle': 
         copyInputMedia[index].title = event.target.value;
@@ -256,11 +246,11 @@ const handleInputChange = (index, event,type) => {
             let isHiddenTextNeeded = true ;
             let isHiddenSourceNeeded = true ;
 
-            if((inputField.type=="Texte")||(inputField.type=="Citation")) {
+            if((inputField.type=="text")||(inputField.type=="quote")) {
               isHiddenTextNeeded = false;
               isHiddenSourceNeeded = true;
             } 
-            if((inputField.type=="Image")||(inputField.type=="Audio")||(inputField.type=="Video")) {
+            if((inputField.type=="image")||(inputField.type=="audio")||(inputField.type=="video")) {
               isHiddenSourceNeeded = false;
               isHiddenTextNeeded = true;
             }

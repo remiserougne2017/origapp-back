@@ -2042,8 +2042,10 @@ let arrayContent = [];
 
 for(let i=0;i<bookOpened.content.length;i++){
 
-
   let arrayMedia = []
+  // console.log("LISTE CONTENUS",bookOpened.content[i])
+  if(bookOpened.content[i].status==true) {
+  
   for(let j = 0;j<bookOpened.content[i].media.length;j++){
     arrayMedia.push({
       type: bookOpened.content[i].media[j].type,
@@ -2058,6 +2060,7 @@ for(let i=0;i<bookOpened.content.length;i++){
   media:arrayMedia
  })
 
+}
 }
 
 let dataBook = {

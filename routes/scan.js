@@ -47,7 +47,15 @@ router.post('/', async function(req, res, next) {
     for(let i = 0; i < responseAPI.predictions.length; i++){
       console.log(responseAPI.predictions[i].tagName);
       if(responseAPI.predictions[i].probability >= 0.99){
-          var bookMatchId = '5e6b4e82a94f732fb08184ad'// On prod changer pour responseAPI.predictions[i].tagName
+          var bookMatchId = '5e6b4e82a94f732fb08184ad' // On prod changer pour responseAPI.predictions[i].tagName
+          
+          // Vérification le statut publié du livre
+          var book = await booksModel.findById(bookMatchId); // remplace bookMatchId par responseAPI.predictions[i].tagName
+          if(book.status == true) {
+            console.log("Le livre est toujours publié ", bookMatchId)
+          } else {
+            console.log('livre non trouvé ou actuellement pas publié sur l app',bookMatchId)
+          }
       }
     }
 
