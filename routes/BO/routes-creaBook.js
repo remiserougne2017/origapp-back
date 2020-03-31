@@ -156,7 +156,7 @@ var fileCopy = await req.files.file.mv(path);
       const mediaData = async () => {
         return Promise.all(reqContentDataJson.media.map( async (obj,j) => { 
           let media;  
-          if((obj.type == 'texte')||(obj.type == 'citation')) { // a terme mettre un switch si les objets différent beacuoup
+          if((obj.type == 'text')||(obj.type == 'quote')) { // a terme mettre un switch si les objets différent beacuoup
             media = {
               title:obj.title,
               type:obj.type,

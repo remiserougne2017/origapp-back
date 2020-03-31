@@ -84,9 +84,7 @@ const toCountPublishedContent = ()=>{
 
 
 // load info from db
-console.log(props.match.params.idBook)
 async function loadDataBook(bool,contentId,binContent) {
-    console.log("LOAD!",props.match.params.idBook)
     var bookData = await fetch(`/bo/loadBook/${bool}/${contentId}/${binContent}`, { 
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
@@ -135,7 +133,6 @@ const contentToPublish = (bool,content_id) => {
 
 // gestion de l'overlay form content
 const handleClickOverlayCreaContent = ()=>{
-    console.log('hello handleclik')
     setIsVisible(false)
 }
 
@@ -226,7 +223,7 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                         </div>
                         <EditOutlined 
                                     style={{fontSize: 30,margin:10}}
-                                    onClick = {()=> {console.log('////// BOOK');setIsVisibleUpdateBook(true)}}
+                                    onClick = {()=> {setIsVisibleUpdateBook(true)}}
                             />
                     </div> 
                     <div style = {{display:'flex', flexDirection:'column', marginLeft:30,marginTop:10}}> 

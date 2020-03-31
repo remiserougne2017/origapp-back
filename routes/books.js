@@ -2042,16 +2042,14 @@ let arrayContent = [];
 
 for(let i=0;i<bookOpened.content.length;i++){
 
-
   let arrayMedia = []
-  for(let j = 0;j<bookOpened.content[i].media.length;j++){  
-    console.log('bookOpened',i,j, bookOpened.content[i].media[j])
-    if(bookOpened.content[i].media[j]!=null){
-      arrayMedia.push({
-        type: bookOpened.content[i].media[j].type,
-      })
-    }
-   
+  // console.log("LISTE CONTENUS",bookOpened.content[i])
+  if(bookOpened.content[i].status==true) {
+  
+  for(let j = 0;j<bookOpened.content[i].media.length;j++){
+    arrayMedia.push({
+      type: bookOpened.content[i].media[j].type,
+    })
   }
  arrayContent.push({
   idContent : bookOpened.content[i]._id,
@@ -2062,6 +2060,7 @@ for(let i=0;i<bookOpened.content.length;i++){
   media:arrayMedia
  })
 
+}
 }
 
 let dataBook = {

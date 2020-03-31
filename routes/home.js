@@ -25,7 +25,7 @@ var tags = await tagsModel.find()
 
 //// ROUTE CATALOGUE
 router.get('/homePage/:token', async function(req, res, next) {
-  console.log("TOKEN",req.params.token)
+  // console.log("TOKEN",req.params.token)
 
   //rechercher la librairy du user !! token en DUR à enlever
   var user = await usersModel.findOne({token:req.params.token});
@@ -37,7 +37,7 @@ router.get('/homePage/:token', async function(req, res, next) {
 /*  // Generation des livres mieux notés
  var livresMieuxNotes = [] */
  
-  var catalogue = await booksModel.find()
+  var catalogue = await booksModel.find({status:true})
 
  if (catalogue.length>0) {
    result="ok"
@@ -94,7 +94,11 @@ router.post('/searchTag', async function(req, res, next) {
    var allBooks =await booksModel.find()
     res.json({result,resultMin : allBooks})
   }else{
-    var taggedBooks = await booksModel.find({ category: { $all: tagId } })
+    var taggedBooks = await booksModel.find(
+      {$and:[
+        { category: { $all: tagId } },
+        { status: true }
+      ]})
       if(taggedBooks.length==0){
       var result="Aucun résultat"
         res.json({result})
@@ -123,7 +127,6 @@ router.post('/searchTag', async function(req, res, next) {
 /* var regex = /^${req.body.textsearch}/i 
  */
 router.post('/searchtext/:id', async function(req, res, next) {
-
   const regex = new RegExp(`${req.body.textSearch}`,"gi");
  
   var resultMin =[]
@@ -131,12 +134,17 @@ router.post('/searchtext/:id', async function(req, res, next) {
   var user = await usersModel.findOne({token:req.params.id});
   /* var tokenUser = user.token    */                                               //
   var userLibrairy = user.myLibrairy                                              //
-  var exratio = await booksModel.find({ $or: [
-    { 'title': regex },
-    { 'authors': regex },
-    { 'illustrators': regex },
-   // { 'publisher': regex }
-    ]
+  var exratio = await booksModel.find(
+    {$and:[
+      { $or: [{ 'title': regex },{ 'authors': regex },{ 'illustrators': regex }]},
+      {status:true}
+  ]
+    //     { $and:[{ content: { $elemMatch: { _id:reqContentDataJson.idContent} }},{_id:reqContentDataJson.idBook}]},
+    // { $set: {"content.$.title": reqContentDataJson.title,
+    //          "content.$.imageContent": reqContentDataJson.imageContentUrl,
+    //          "content.$.pageNum": reqContentDataJson.page,
+    //          "content.$.media": data
+  // }}
  });
   for (let i=0; i<exratio.length; i++){
   var isInLibrairy = userLibrairy.findIndex(e =>e.equals(exratio[i]._id));      //
@@ -169,7 +177,7 @@ router.post('/searchtext/:id', async function(req, res, next) {
 //Route ajout à la bibliotheque si bool == true     ///////////////////////////  LIBRAIRY  /////////////////
 
 router.get('/addLibrairy/:id/:bool/:token', async function(req, res, next) {
-console.log("ADDLIBRAIRY",req.params)
+// console.log("ADDLIBRAIRY",req.params)
   var user = await usersModel.findOne({token:req.params.token})
   var userLib=user.myLibrairy
   newLib = userLib.filter(e=>e!=req.params.id)
@@ -195,10 +203,11 @@ console.log("ADDLIBRAIRY",req.params)
 router.get('/myLibrary/:token', async (req, res, next) => {
 
   var user = await usersModel.findOne({token:req.params.token}).populate('myLibrairy').exec();
-  
+  console.log("//////////////////////",user)
   var mesLivres = [];
   for(let i=0; i < user.myLibrairy.length; i++){
 
+    if(user.myLibrairy[i].status==true) {
     //le livre est-il en bibliotheque du user
     var isInLibrairy = user.myLibrairy.findIndex(e => e.equals(user.myLibrairy[i]._id));
     var bool = isInLibrairy!=-1?true:false
@@ -212,7 +221,7 @@ router.get('/myLibrary/:token', async (req, res, next) => {
       rating: user.myLibrairy[i].rating,
       inLibrairy: bool})
     }
-
+  }
   res.json(mesLivres)
 });
 
@@ -240,10 +249,9 @@ for (let i=0; i<bibliUserBdd.length; i++) {
   }   
 }
 
-var tagsBook = await booksModel.findOne({_id:bibliUserBdd[0]});
 // console.log("tags du book",tagsBook.category)
 var taggedBooks = await booksModel.find(
-  { $and:[{category: { $in: myTags} },{_id:{ $nin: bibliUserBdd}}]});
+  { $and:[{category: { $in: myTags} },{_id:{ $nin: bibliUserBdd}},{status:true}]});
 
 // console.log("taggedbooks",taggedBooks);
 

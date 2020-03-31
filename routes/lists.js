@@ -12,14 +12,14 @@ router.get('/', function(req, res, next) {
 router.get('/lastRead/:token', async (req, res, next) => {
 
 var user = await usersModel.findOne({token:req.params.token}).populate('lastRead').exec();
-  
+console.log("///////////// LAST READE",user)
 var lastReads = [];
   for(let i=0; i < user.lastRead.length; i++){
 
      /* //le livre est-il en bibliotheque du user
     var isInLibrairy = user.myLibrairy.findIndex(e => e.equals(user.myLibrairy[i]._id));
     var bool = isInLibrairy!=-1?true:false */
-
+    if(user.lastRead[i].status == true) {
     lastReads.push({
       id: user.lastRead[i]._id,
       title: user.lastRead[i].title, 
@@ -29,7 +29,7 @@ var lastReads = [];
       rating: user.lastRead[i].rating,
       /* inLibrairy: bool */})
     }
-
+  }
   res.json(lastReads)
 });
 
@@ -37,7 +37,7 @@ var lastReads = [];
 router.get('/bestRated', async (req, res, next) => {
 
   var bestRated = [];
-  var book = await booksModel.find()
+  var book = await booksModel.find({status:true})
 
   // Trie par rating (ordre décroissante)
   var rating = book.sort(function (a, b) {

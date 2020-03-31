@@ -15,8 +15,8 @@ router.get('/', function(req, res, next) {
 /* Route POST SIGN-UP */
 router.post('/sign-up', async (req, res, next) => {
 
-  console.log(req.body)
-
+  req.body.email = req.body.email.toLowerCase();
+  // console.log("////////////////////////////////////////////",req.body)
   var error = {};
   var result = false;
   var token = null;
@@ -42,7 +42,7 @@ router.post('/sign-up', async (req, res, next) => {
      // Vérification d'email valide
   var regexEmail = /^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/;
   var testEmail = req.body.email;
-  if(regexEmail.test(testEmail) != true){
+if(regexEmail.test(testEmail) != true){
     error.emailNotValid = 'Email invalide'
     res.json({result, error})
   }
@@ -53,31 +53,32 @@ router.post('/sign-up', async (req, res, next) => {
   if(regexPassword.test(testPassword) != true){
     error.passwordNotValid = 'Au moins 8 caractères dont 1 chiffre'
     res.json({result, error})
-    }else{
-        var salt = uid2(32)
-        var newUser = new usersModel({
-          firstName: req.body.firstName,
-          email: req.body.email,
-          role: '', //reader ou editor
-          pwd: SHA256(req.body.password+salt).toString(encBase64),
-          salt: salt,
-          token: uid2(32),
-          myLibrairy: [],
-          lastRead: [],
-          comments: []
-        })
-    
-        saveUser = await newUser.save()
-        
-        if(saveUser){
-          result = true
-          token = saveUser.token
-          prenom = saveUser.firstName
-          res.json({result, token, prenom, error})      
-        }else{
+    }
+  else{
+    var salt = uid2(32)
+    var newUser = new usersModel({
+      firstName: req.body.firstName,
+      email: req.body.email,
+      role: '', //reader ou editor
+      pwd: SHA256(req.body.password+salt).toString(encBase64),
+      salt: salt,
+      token: uid2(32),
+      myLibrairy: [],
+      lastRead: [],
+      comments: []
+    })
+  
+      saveUser = await newUser.save()
+      
+      if(saveUser){
+        result = true
+        token = saveUser.token
+        prenom = saveUser.firstName
+        res.json({result, token, prenom, error})      
+      }else{
         res.json({result, token, prenom, error})   
-        }
       }
+    }
     }
 });
 
@@ -86,6 +87,9 @@ router.post('/sign-in', async (req, res, next) => {
 
   console.log("SIGNIN!",req.body,req.params)
   var from = req.body.from
+  req.body.email = req.body.email.toLowerCase();
+  // console.log(req.body)
+
   var error = {};
   var result = false;
   var token = null;
@@ -161,17 +165,17 @@ var resp = await usersModel.updateOne({token:req.params.token},
 
 router.get('/logout/:token', async (req, res, next) => {
 
-  console.log("route params",req.params)
+  // console.log("route params",req.params)
   var token = req.params.token
   var userFind = await usersModel.findOne({token:req.params.token})
   var user = userFind.firstName
   var result = true
   res.json({result, user})
-  console.log("prenom user envoyé au front", result, token, user)
+  // console.log("prenom user envoyé au front", result, token, user)
 })
 
 router.post('/update/:token', async (req, res, next)=>{
-  console.log("update params&body",req.params, req.body)
+  // console.log("update params&body",req.params, req.body)
  // Vérification de mot de passe valide - 8 caractères dont 1 chiffre
  var regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
  var testPassword = req.body.pwd1;
