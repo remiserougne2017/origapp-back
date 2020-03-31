@@ -2002,7 +2002,7 @@ router.get('/bdd', async function(req, res, next) {
 
 // OPEN BOOK
 router.post('/open-book', async function(req,res,next){
-
+console.log("OPEN BOOK",req.body)
   // AJOUTER dans le tableau dernière lecture du user l'id du livre
   var userOpening = await usersModel.findOne({token:req.body.token});
     var arrayLastRead = userOpening.lastRead;
@@ -2037,12 +2037,13 @@ router.post('/open-book', async function(req,res,next){
   
   // ENVOYER AU FRONT les datas du livre
   var bookOpened = await booksModel.findOne({_id:req.body.idBook});
-
+// console.log('bookOpened',bookOpened)
 let arrayContent = [];
 
 for(let i=0;i<bookOpened.content.length;i++){
 
   let arrayMedia = []
+<<<<<<< HEAD
   // console.log("LISTE CONTENUS",bookOpened.content[i])
   if(bookOpened.content[i].status==true) {
   
@@ -2050,6 +2051,16 @@ for(let i=0;i<bookOpened.content.length;i++){
     arrayMedia.push({
       type: bookOpened.content[i].media[j].type,
     })
+=======
+  for(let j = 0;j<bookOpened.content[i].media.length;j++){  
+    console.log('bookOpened',i,j, bookOpened.content[i].media[j])
+    if(bookOpened.content[i].media[j]!=null){
+      arrayMedia.push({
+        type: bookOpened.content[i].media[j].type,
+      })
+    }
+   
+>>>>>>> c272adce658bf2a7f0df36994ee3ad29fa249e22
   }
  arrayContent.push({
   idContent : bookOpened.content[i]._id,

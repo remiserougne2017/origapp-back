@@ -5,6 +5,7 @@ import {DeleteOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, } from 'reactstrap';
 import InputFileCustom from './inputFile';
+import Upload from './upload'
 import Ip from './Ip'
 
 
@@ -228,7 +229,8 @@ const handleInputChange = (index, event,type) => {
             onChange={(e)=>{setPage(e.target.value)}}
             value={page}/>
         <p className="form" >image de couverture du contenu:</p>
-        <InputFileCustom  dataSource={e => {setSourceFormType('sourceContent');console.log("index, source content",inputIndex);dataFieldSource(e,sourceFormType)}}></InputFileCustom>
+        <Upload  dataSource={e => {setSourceFormType('sourceContent');console.log("index, source content",inputIndex);dataFieldSource(e,sourceFormType)}}></Upload>
+        {/* <InputFileCustom  dataSource={e => {setSourceFormType('sourceContent');console.log("index, source content",inputIndex);dataFieldSource(e,sourceFormType)}}></InputFileCustom> */}
         <p className="form" style={{marginTop:20}}>Source de couverture du contenu(si url)</p>
         <Input
             type="text"
@@ -269,7 +271,7 @@ const handleInputChange = (index, event,type) => {
                     <p className="form" >Type de media</p>
                     <Select
                         name = 'mediaType'
-                        defaultValue="Séléctionner"
+                        defaultValue="Selectionner"
                         onChange={value => handleInputChange(index, value,inputField.type)}
                         value= {inputField.type}
                          >
@@ -308,7 +310,8 @@ const handleInputChange = (index, event,type) => {
                     hidden = {isHiddenSourceNeeded} 
                     onClick = {() =>{setInputIndex(index);setSourceFormType('sourceMedia') }}>
                       <p className="form" >Source du media (si le fichier est sur votre ordinateur)</p>
-                      <InputFileCustom dataSource={e => {console.log("index, source media",inputIndex,sourceFormType);dataFieldSource(e,sourceFormType)}}></InputFileCustom>
+                      <Upload dataSource={e => {console.log("index, source media",inputIndex,sourceFormType);dataFieldSource(e,sourceFormType)}}></Upload>
+                      {/* <InputFileCustom dataSource={e => {console.log("index, source media",inputIndex,sourceFormType);dataFieldSource(e,sourceFormType)}}></InputFileCustom> */}
                   </div>
                 <div
                     hidden = {isHiddenSourceNeeded} 

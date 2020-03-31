@@ -14,78 +14,89 @@ var request = require('sync-request');
 
 //Route récup des tags pour affichage
 router.get('/tags', async function(req, res, next) {
- 
+ console.log("TAGS!!")
   var tags = await tagsModel.find()
-  
-    res.json(tags)
+  console.log("TAGS!!",tags)
+    res.json({"tags":tags})
     
   });
 
 router.post('/creaBook', async function(req,res,next){
-
+console.log("IMAGE CREABOOK",req.body)
 // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-var imageUrl
-var resultCloudinary = await cloudinary.uploader.upload(req.body.imageData, function(error, result){
-  console.log("Router Cloud? ",result, error)
-   imageUrl = resultCloudinary.url
-});
+var imageUrl=req.body.img
+  if (req.body.image64 != "undefined"){
+    var resultCloudinary = await cloudinary.uploader.upload(req.body.image64, function(error, result){
+      console.log("Router Cloud UPDATE? ",result, error)
+      if(result){
+        imageUrl = result.url 
+      }
+         
+    });
+  }
 
-    // var newBook = await booksModel({
-    //     title:req.body.title,
-    //     description: req.body.desc,
-    //     authors: req.body.authors,
-    //     illustrators: req.body.illustrators,
-    //     image : imageUrl
-    // })
-    // var bookSave = await newBook.save()
-    // console.log("SAVE?",bookSave)
+    var newBook = await booksModel({
+        title:req.body.title,
+        description: req.body.desc,
+        authors: req.body.authors,
+        illustrators: req.body.illustrators,
+        image : imageUrl,
+        status : false
+    })
+    var bookSave = await newBook.save()
+    console.log("SAVE?",bookSave)
 res.json({result:"ok",imageUrl})
 })
 
 //UPDATE BOOK
 router.post('/updateBook/:bookId', async function(req,res,next){
-  console.log("updateBook? ",req.body,req.parms)
+  var result="ko"
+  console.log("updateBook? ",req.body,req.params,req.body.category.split(','))
   // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-  var imageUrl = ""
-  var img
-  // if (req.body.imageData != "undefined"){
-  //   var resultCloudinary = await cloudinary.uploader.upload(req.body.imageData, function(error, result){
-  //     console.log("Router Cloud UPDATE? ",result, error)
-  //     var imageUrl = resultCloudinary.url    
-  //   });
-  // }
- 
-  imageUrl!=""? img=imageUrl: img=req.body.img
-console.log("IMAGE?",imageUrl,img)
+var imageUrl=req.body.img
+  if (req.body.image64 != "undefined"){
+    console.log("Cloud UPDATE img? ",req.body.image64)
+    var resultCloudinary = await cloudinary.uploader.upload(req.body.image64, function(error, result){
+      console.log("Router Cloud UPDATE? ",result, error)
+      if(result){
+        imageUrl = result.url 
+      }
+         
+    });
+  }
+  console.log("image to bdd",imageUrl)
       var updateBook = await booksModel.updateOne({_id:req.params.bookId},
         {
           title:req.body.title,
           description: req.body.desc,
           authors: req.body.authors,
           illustrators: req.body.illustrators,
-          image : img,
-          category: req.body.category
+          image : imageUrl,
+          category: req.body.category.split(',')
       })
-    
+    result="ok"
       console.log("updateBook?",updateBook)
-  res.json({result:"ok upddate"})
+      fs.unlinkSync(req.body.image64);
+  res.json({result})
   })
   
 
 
-// router.post('/upload', async function(req,res,next){
-// // console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
-// // let what = req.files.file.data
-// // console.log("WHAT DATA IMAGE!!",what)
-//     // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
+router.post('/upload', async function(req,res,next){
+console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
+var path = './tmp/'+req.files.file.name
+console.log("WHAT DATA IMAGE!!",path)
+var fileCopy = await req.files.file.mv(path);
+
+    // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
     
-//     res.json({status:"done"})
-//     })
+    res.json({status:"done",imagePath : path})
+    })
     
 
   router.post('/saveContent', async function(req,res,next){
       let message;
-      
+      console.log("Router cover image ? ",req.body )
       // JSON body
       let reqContentDataJson = JSON.parse(req.body.contentData);
       
@@ -188,6 +199,8 @@ console.log("IMAGE?",imageUrl,img)
             }
         })
 
+        //suppression du media dans le dossier temporaire
+        fs.unlinkSync(reqContentDataJson.imageContent);
       res.json({result:"ok"})
       })
 
@@ -200,10 +213,18 @@ console.log("IMAGE?",imageUrl,img)
     console.log('LoadBook params',req.params,req.body)
     if(req.params.bool != "undefined"){
       console.log('update boucle')
+      if(req.params.contentId != "undefined"){
         await booksModel.updateOne(
-        {_id: req.body.idBook,"content._id":req.params.contentId},
-        { $set: { "content.$.status" : req.params.bool } }
-        )
+          {_id: req.body.idBook,"content._id":req.params.contentId},
+          { $set: { "content.$.status" : req.params.bool } }
+          )
+      }else{
+        await booksModel.updateOne(
+          {_id: req.body.idBook},
+          { $set: { "status" : req.params.bool } }
+          )
+      }
+       
     }
    if(req.params.delete=="true"){
       console.log("DELETE",req.params.delete)
@@ -214,7 +235,7 @@ console.log("IMAGE?",imageUrl,img)
     }
  //recup des infos du livres + populate des categories
     var bookOpened = await booksModel.findById(req.body.idBook).populate("category").exec()
-    console.log("Tags?",bookOpened);
+    // console.log("Tags?",bookOpened);
     let contentData = bookOpened.content.map((cont,k) => {
       let data = {
         contentTitle : cont.title,
@@ -246,7 +267,7 @@ console.log("IMAGE?",imageUrl,img)
       category:bookOpened.category
     }
 
-
+   console.log("BACK tO FRONT Image?",dataToFront.coverImage);
   res.json({result:"ok",dataFromBack:dataToFront})
     })   
 

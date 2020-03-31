@@ -8,7 +8,7 @@ function UploadComp(props){
 
     const propsUp = {
       // action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-      action:'http://192.168.1.28:3000/bo/upload',
+      action:'/bo/upload',
       // headers: {'Content-Type':'application/x-www-form-urlencoded',
       // 'Access-Control-Allow-Origin' : "*"},
       listType: 'picture',
@@ -17,16 +17,8 @@ function UploadComp(props){
       onChange(info) {
         if (info.file.status !== 'uploading') {
           
-          console.log("upload Comp INFO!",info.file);
-
-          // let reader = new FileReader();
-          // reader.readAsDataURL(info.file)
-
-          // reader.onload=(x)=>{
-          // console.log("img Data",x.target.result)
-          // props.dataImage(info.file)
-          // }
-          props.dataImage(info.file)
+          console.log("upload Comp INFO!",info.file.response.imagePath);
+          props.dataSource(info.file.response.imagePath)
         }
         if (info.file.status === 'done') {
           message.success(`${info.file.name} file uploaded successfully`);
@@ -40,7 +32,7 @@ function UploadComp(props){
       <div>
         <Upload {...propsUp}>
           <Button>
-            <UploadOutlined /> Upload
+            <UploadOutlined /> Sélectionnez un fichier
           </Button>
         </Upload>
       </div>
