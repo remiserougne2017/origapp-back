@@ -210,7 +210,7 @@ var fileCopy = await req.files.file.mv(path);
                 pageNum:reqContentDataJson.page,
                 imageContent:imageContentUrl,
                 media:data,
-                status:true
+                status:false
               })
               await bookAdding.save();
             } else {

@@ -56,9 +56,11 @@ console.log("RESP SIGN",body)
     if(body.result == true){
     //   props.addToken(body.token)
     setPublisher(body.publisher)
-      setUserExists(true)
+     
+      console.log("TO reducer",body.token,body.publisher)
       props.addToken(body.token)
       props.addPublisher(body.publisher)
+      setUserExists(true)
       
     }  else {
       setErrorMess(body.error)

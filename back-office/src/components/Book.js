@@ -53,7 +53,6 @@ const [isPublished,setIsPublished] =useState()
 const [isVisibleUpdateBook,setIsVisibleUpdateBook]= useState(false)
 const [contentPublishedCount, setContentPublishedCount] =useState()
 // const [isPublishedContent,setIsPublishedContent] =useState()
-console.log(dataBook.status)
 
 var date = new Date(1544825952726); // pour simuler une date 
 
@@ -207,6 +206,10 @@ var displayContents = dataBook.contentData.map((cont, i) => {
     })
 
 // return  global 
+if(props.token==""){
+    console.log("TOKEN 2 ?",props.token)
+    return <Redirect to={"/"}/>
+}else{
   return (
     
     <div style = {{backgroundImage: `url(${background})` }}>
@@ -267,6 +270,6 @@ var displayContents = dataBook.contentData.map((cont, i) => {
         </div>
     </div>
   );
-}
+}}
 
 export default Book;

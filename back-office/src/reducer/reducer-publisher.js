@@ -1,6 +1,6 @@
 export default function(publisher = '', action){
     if(action.type == 'addPublisher'){
-        console.log('reducer add TOKEn')
+        console.log('reducer add publisher')
         return action.publisher
     } else if (action.type == 'deletePublisher'){
         console.log('reducer delete publisher SURE');

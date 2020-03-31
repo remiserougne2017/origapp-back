@@ -9,18 +9,25 @@ import OverlayForm from './Overlay-creaBook';
 import Header from './Header';
 import color from './color';
 import background from '../origami_background.jpg';
-import InputFileCustom from './inputFile'
 import {connect} from 'react-redux';
 
 
 function Home(props) {
+   
+
+   
 const [visible,setVisible]=useState(false)
 const [image,setImage]=useState()
 // const [idPublisher,setIdPublisher] = useState(props.publisher);
 const [dataBooks,setDataBooks] = useState([])
+const [token,setToken]=useState(props.token)
 var date = new Date(1544825952726); // pour simuler une date 
 
+
+
 useEffect(()=>{
+    console.log("TOKEN?",props.token)
+   
     console.log("PUBLISHER?",props.publisher)
     const toLoadBooks = async ()=>{
         var books = await fetch(`/bo/home/${props.publisher}`)
@@ -108,6 +115,10 @@ var displayBooks = dataBooks.map((book, i) => {
     }
 
 // RETURN GLOBAL
+if(props.token==""){
+    console.log("TOKEN 2 ?",props.token)
+    return <Redirect to={"/"}/>
+}else{
   return (
     <div style = {{backgroundImage: `url(${background})`, height:'100vh'}}>
         <Header/>
@@ -131,11 +142,12 @@ var displayBooks = dataBooks.map((book, i) => {
         </div>
     </div>
   );
-}
+}}
 
 function mapStateToProps(state) {
   return { token: state.token,
            publisher: state.publisher
    }
 }
+
 export default connect(mapStateToProps,null)(Home)
