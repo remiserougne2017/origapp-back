@@ -25,7 +25,7 @@ function SignInUp(props) {
     })
 
     const body = await data.json()
-console.log("RESP SIGN",body)
+    console.log("RESP SIGN",body)
     if(body.result == true){
     //   props.addToken(body.token)
      
@@ -33,13 +33,14 @@ console.log("RESP SIGN",body)
       props.addToken(body.token)
       props.addPublisher(body.publisher)
       setUserExists(true)
-      
+      setSignInPassword("")
     }  else {
       setErrorMess(body.error)
     }
   }
 
   if(userExists){
+    
     return <Redirect to={`/Home`}/>
   }  
 
