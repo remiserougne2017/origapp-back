@@ -56,22 +56,8 @@ const creaUpdateBook= async ()=>{
     console.log("CreaBook")
     fetchRoute=`creaBook/${props.publisher}`
   }
-  // if (title == "" ){
-  //   setErrorMessage({...errorMEssage, title :"Le titre est obligatoire"})
-  // }else if(desc==""){
-  //   setErrorMessage({...errorMEssage, desc:"La description est obligatoire"})
-  // }else {
-    // Les champs obligatoires sont remplis, on envoie
-    //création d'un envoie de fichier
-    // var data = new FormData();
 
-    // data.append('bookData',{
-    //   "title":title,
-    //   "authors":authors,
-    //   "illustrators": illustrators,
-    //   "desc": desc,
-    //   'img' : image
-    // });
+
     // data.append('imageData',image)
 console.log("FETCH UPDATE OU CREA?",fetchRoute)
     var creaBook = await fetch(`/bo/${fetchRoute}`,{
@@ -85,17 +71,23 @@ console.log("FETCH UPDATE OU CREA?",fetchRoute)
 }
 
 const handleOk = async () => {
- creaUpdateBook()
- props.handleClickParent(false)
- setErrorMessage({})
- setAuthors()
- setIllustrators()
- setDesc() 
- setImage()
- setUrlImage()
- setTitle()
- setCategory([])
- 
+  if (title == ""|| desc==""||authors==""||(image==""||urlImage=="")){
+    console.log("erreru champs obl")
+    setErrorMessage({...errorMEssage, title :"Le titre, le(s) auteur(s), une image et une description sont obligatoires"})
+  }else{
+    creaUpdateBook()
+    props.handleClickParent(false)
+    setErrorMessage({})
+    setAuthors()
+    setIllustrators()
+    setDesc() 
+    setImage()
+    setUrlImage()
+    setTitle()
+    setCategory([])
+  }
+
+
 };  
 
  const handleCancel = () => {
