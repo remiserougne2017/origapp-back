@@ -24,17 +24,14 @@ const [token,setToken]=useState(props.token)
 var date = new Date(1544825952726); // pour simuler une date 
 
 
+const toLoadBooks = async ()=>{
+    var books = await fetch(`/bo/home/${props.publisher}`)
+    var resp=await books.json()
+    console.log("RESP HOME",resp.dataBookHome)
+    setDataBooks(resp.dataBookHome)
+};
 
-useEffect(()=>{
-    console.log("TOKEN?",props.token)
-   
-    console.log("PUBLISHER?",props.publisher)
-    const toLoadBooks = async ()=>{
-        var books = await fetch(`/bo/home/${props.publisher}`)
-        var resp=await books.json()
-        console.log("RESP HOME",resp.dataBookHome)
-        setDataBooks(resp.dataBookHome)
-    };
+useEffect(()=>{ 
     toLoadBooks()
 },[props.publisher])
 
@@ -112,6 +109,7 @@ var displayBooks = dataBooks.map((book, i) => {
     const handleClickOverlayCreaBook = (bool)=>{
             setVisible(false)
             //recharger la page pour afficher les modifs
+            toLoadBooks()
     }
 
 // RETURN GLOBAL
@@ -135,7 +133,6 @@ if(props.token==""){
                     <Row>
                         {displayBooks}
                     <OverlayForm visible={visible} handleClickParent ={handleClickOverlayCreaBook}/>
-                    {/* <CreaBookOverlay2 visible={visible} handleClickParent ={handleClickOverlayCreaBook}/> */}
                     </Row>
                 </div>
             </div>

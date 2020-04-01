@@ -21,7 +21,7 @@ router.get('/tags', async function(req, res, next) {
     res.json({"tags":tags})
   });
 
-//ROUTE chargement de la Home en focntion de l'id Maison d'édition (publisher)
+//ROUTE chargement de la Home en fonction de l'id Maison d'édition (publisher)
 router.get('/home/:publisher', async function(req, res, next) {
   console.log("HOME BO!!",req.params)
   var listBooks = await publishersModel.findById({_id:req.params.publisher})
@@ -61,7 +61,7 @@ router.get('/home/:publisher', async function(req, res, next) {
 });
 
 //ROUTE CREA BOOK 
-router.post('/creaBook', async function(req,res,next){
+router.post('/creaBook/:publisher', async function(req,res,next){
 console.log("IMAGE CREABOOK",req.body)
 // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
 var imageUrl=req.body.img
@@ -81,7 +81,9 @@ var imageUrl=req.body.img
         authors: req.body.authors,
         illustrators: req.body.illustrators,
         image : imageUrl,
-        status : false
+        status : false,
+        category : req.body.category.split(','),
+        publisher:req.params.publisher
     })
     var bookSave = await newBook.save()
     console.log("SAVE?",bookSave)

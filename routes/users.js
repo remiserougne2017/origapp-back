@@ -65,7 +65,8 @@ if(regexEmail.test(testEmail) != true){
       token: uid2(32),
       myLibrairy: [],
       lastRead: [],
-      comments: []
+      comments: [],
+      publisher:""
     })
   
       saveUser = await newUser.save()
@@ -109,7 +110,7 @@ router.post('/sign-in', async (req, res, next) => {
         var user = await usersModel.findOne({
           email: req.body.email, role:"admin"
           })  
-          publisher = user.publisher
+         
           console.log("USER admin",user)
         
       }else {
@@ -125,10 +126,12 @@ router.post('/sign-in', async (req, res, next) => {
     }else{
       const passwordEncrypt = SHA256(req.body.password + user.salt).toString(encBase64)
       console.log(user.pwd+' compare '+passwordEncrypt)
+
       if(passwordEncrypt == user.pwd){
         result = true
         token = user.token
         prenom = user.firstName
+        publisher = user.publisher
       } else {
         result = false
         error.password = 'mot de passe incorrect'

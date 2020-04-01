@@ -1,13 +1,11 @@
 import React, { useState,useEffect } from 'react';
 import '../App.css';
-import { Modal, Button,Card, Form, Input,Tag,p} from 'antd';
+import { Modal, Input} from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, } from 'reactstrap';
+import {connect} from 'react-redux';
 import Tags from './Tags';
-// import DropZone from './dropZone'
 import Upload from './upload'
-import InputFileCustom from './inputFile'
-import Ip from './Ip'
+
 
 function ModalForm(props) {
 
@@ -56,7 +54,7 @@ const creaUpdateBook= async ()=>{
     fetchRoute = `updateBook/${props.dataBook.id}`
   }else{
     console.log("CreaBook")
-    fetchRoute="creaBook"
+    fetchRoute=`creaBook/${props.publisher}`
   }
   // if (title == "" ){
   //   setErrorMessage({...errorMEssage, title :"Le titre est obligatoire"})
@@ -162,6 +160,11 @@ const handleOk = async () => {
       )
 };
 
+function mapStateToProps(state) {
+  return { token: state.token,
+           publisher: state.publisher
+   }
+}
 
+export default connect(mapStateToProps,null)(ModalForm)
 
-export default ModalForm

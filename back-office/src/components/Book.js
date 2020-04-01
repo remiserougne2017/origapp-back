@@ -111,7 +111,7 @@ useEffect( ()=> {
   useEffect( ()=> {
 
       if(isPublished){
-console.log("HOOK nb contneu publié",contentPublishedCount)
+console.log("HOOK nb contenu publié",contentPublishedCount)
         var count = toCountPublishedContent()
         if(count==0||contentPublishedCount==0){
             alert("Impossible de publier un livre qui ne possède aucun contenu publié")

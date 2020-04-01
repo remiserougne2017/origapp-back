@@ -10,38 +10,11 @@ import color from './color'
 
 function SignInUp(props) {
 
-    const [factotoryName,setFactoryName] =useState('')
-  const [signUpUsername, setSignUpUsername] = useState('')
-  const [lastName,setLastName]  = useState('')
-  const [signUpEmail, setSignUpEmail] = useState('')
-  const [signUpPassword, setSignUpPassword] = useState('')
-  const [signUpPassword2, setSignUpPassword2] = useState('')
   const [signInEmail, setSignInEmail] = useState('')
   const [signInPassword, setSignInPassword] = useState('')
-  const  [publisher,setPublisher] =useState()
   const [userExists, setUserExists] = useState(false)
-const [errorMess,setErrorMess] =useState({})
-  // const [listErrorsSignin, setErrorsSignin] = useState()
-  // const [listErrorsSignup, setErrorsSignup] = useState()
-
-  // var handleSubmitSignup = async () => {
-    
-  //   const data = await fetch('/sign-up', {
-  //     method: 'POST',
-  //     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-  //     body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
-  //   })
-
-  //   const body = await data.json()
-
-  //   if(body.result == true){
-  //   //   props.addToken(body.token)
-  //     setUserExists(true)
-      
-  //   } else {
-  //     setErrorsSignup(body.error)
-  //   }
-  // }
+  const [errorMess,setErrorMess] =useState({})
+ 
 
   var handleSubmitSignin = async () => {
  
@@ -55,7 +28,6 @@ const [errorMess,setErrorMess] =useState({})
 console.log("RESP SIGN",body)
     if(body.result == true){
     //   props.addToken(body.token)
-    setPublisher(body.publisher)
      
       console.log("TO reducer",body.token,body.publisher)
       props.addToken(body.token)
@@ -69,17 +41,7 @@ console.log("RESP SIGN",body)
 
   if(userExists){
     return <Redirect to={`/Home`}/>
-  }
-
-  // var tabErrorsSignin = listErrorsSignin.map((error,i) => {
-  //   return(<p>{error}</p>)
-  // })
-
-  // var tabErrorsSignup = listErrorsSignup.map((error,i) => {
-  //   return(<p>{error}</p>)
-  // })
-
-  
+  }  
 
   return (
     <div style = {{flex:1,flexDirection:"column",backgroundImage: `url(${background})`,height:"100vh",alignItems:"center" }}>
@@ -101,26 +63,7 @@ console.log("RESP SIGN",body)
           <Button onClick={() =>{handleSubmitSignin();setSignInPassword('')}}  style={{marginTop:15,width:'20%'}} type="primary">Se connecter</Button>
 
         </div>
-    {/* SIGN-UP */}
-
-        {/* <div className="Sign">
-          <h6>Création d'un compte</h6> 
-          <Input onChange={(e) => setFactoryName(e.target.value)} className="Login-input" placeholder="Maison d'édition" />   
-          <Input onChange={(e) => setSignUpUsername(e.target.value)} className="Login-input" placeholder="Prénom" />
-          <Input onChange={(e) => setLastName(e.target.value)} className="Login-input" placeholder="Nom" />
-
-          <Input onChange={(e) => setSignUpEmail(e.target.value)} className="Login-input" placeholder="Adresse mail" />
-
-          <Input.Password onChange={(e) => setSignUpPassword(e.target.value)} className="Login-input" placeholder="Saisir un mot de passe" />
-          <Input.Password onChange={(e) => setSignUpPassword2(e.target.value)} className="Login-input" placeholder="Vérifier le mot de passe" />
-    
-          {tabErrorsSignup}
-
-          <Button onClick={() => handleSubmitSignup()} style={{width:'80%'}} type="primary">Créer son compte</Button>
-
-        </div> */}
       </div>
-      
     </div>
   );
 }
