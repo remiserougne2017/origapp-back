@@ -13,7 +13,7 @@ function Header(props) {
         <p style = {{fontSize:20, textAlign:'left',fontSize:50, color: color('red'), paddingLeft:30}}> Origapp
         </p>
         <div style={{display:"flex",marginLeft:"auto",marginRight:40}}>
-        <LogoutOutlined onClick={()=>{console.log('logOut');props.deletePublisher();props.deleteToken() }} />
+        <LogoutOutlined onClick={()=>{console.log('logOut');props.deletePublisher();props.deleteToken()}} />
         </div>
        
     </div>
