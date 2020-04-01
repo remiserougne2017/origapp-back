@@ -23,46 +23,29 @@ router.get('/tags', async function(req, res, next) {
 
 //ROUTE chargement de la Home en fonction de l'id Maison d'édition (publisher)
 router.get('/home/:publisher', async function(req, res, next) {
-  console.log("HOME BO!!",req.params)
-  var listBooks = await publishersModel.findById({_id:req.params.publisher})
-  console.log("LIST HOME",listBooks.books)
 
-  const dataBook = async () =>{
-    return Promise.all(listBooks.books.map( async e =>{
-      const toCall = async (y)=>{
-       var x = await booksModel.findById({_id:y})
-       return x
-      };
-     var book=  toCall(e)
-     return book
-    
-    //  
-       })
-    );
-  }
-  var dataBookHome=[]
-  dataBook().then(e=>{
-   
-    e.map(b=>{
-      dataBookHome.push({
-        title:  b.title,
-        authors:  b.authors,
-        illustrators: b.illustrators,
-        image: b.image,
-        idBook: b._id
-         })
-    })
-    console.log("book!!",dataBookHome)
-    res.json({"dataBookHome":dataBookHome})
-  })
-  
-  // var bookAdding = await booksModel.findById({})
+  var listBooks = await booksModel.find({publisher :req.params.publisher})
+  console.log("HOME BO!! listBooks",listBooks)
+  var dataBookHome = listBooks.map(b=>{
+    var book = 
+       {
+          title:  b.title,
+          authors:  b.authors,
+          illustrators: b.illustrators,
+          image: b.image,
+          idBook: b._id
+           }
+    return book
+      })
+ 
+  res.json({"dataBookHome":dataBookHome})
   
 });
 
 //ROUTE CREA BOOK 
 router.post('/creaBook/:publisher', async function(req,res,next){
 console.log("IMAGE CREABOOK",req.body)
+
 // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
 var imageUrl=req.body.img
   if (req.body.image64 != "undefined"){
@@ -74,7 +57,9 @@ var imageUrl=req.body.img
          
     });
   }
-
+  var category
+  req.body.category.split(',')[0] !=''?category =  req.body.category.split(','):category =[]
+  console.log("CAte?", req.body.category.split(',')[0] !='')
     var newBook = await booksModel({
         title:req.body.title,
         description: req.body.desc,
@@ -82,7 +67,7 @@ var imageUrl=req.body.img
         illustrators: req.body.illustrators,
         image : imageUrl,
         status : false,
-        category : req.body.category.split(','),
+        category : category,
         publisher:req.params.publisher
     })
     var bookSave = await newBook.save()
@@ -90,6 +75,19 @@ var imageUrl=req.body.img
 res.json({result:"ok",imageUrl})
 })
 
+//DELETE book
+router.get('/deleteBook/:idBook', async function(req,res,next){
+  console.log("delete CREABOOK",req.params)
+  var result="ko"
+  var deleteBook = await booksModel.deleteOne({_id : req.params.idBook})
+  console.log("DELETE BOOK",deleteBook)
+  if(deleteBook){
+    result="ok"
+  }
+
+  
+  res.json({result})
+  })
 //UPDATE BOOK
 router.post('/updateBook/:bookId', async function(req,res,next){
   var result="ko"

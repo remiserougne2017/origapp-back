@@ -1,18 +1,17 @@
 import React, { useState,useEffect } from 'react';
 import { Link,Redirect } from 'react-router-dom';
-import logo from '../logoOrigapp_detoure.png';
 import '../App.css';
-import { Tag, Button,Card,Icon,Switch} from 'antd';
+import { Tag, Button,Card,Switch} from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 import Header from './Header';
 import color from './color';
-import { EyeOutlined,EditOutlined,DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined,DeleteOutlined } from '@ant-design/icons';
 import OverlayContent from './Overlay-creaContent'
 import background from '../origami_background.jpg';
-import Ip from './Ip'
+import {connect} from 'react-redux';
 import OverlayForm from './Overlay-creaBook';
-import { set } from 'mongoose';
+
 
 function Book(props) {
 
@@ -52,7 +51,7 @@ const [idBook,setIdBook] = useState(props.match.params.idBook)
 const [isPublished,setIsPublished] =useState()
 const [isVisibleUpdateBook,setIsVisibleUpdateBook]= useState(false)
 const [contentPublishedCount, setContentPublishedCount] =useState()
-// const [isPublishedContent,setIsPublishedContent] =useState()
+const [deleteBook,setDeleteBook]=useState(false)
 
 var date = new Date(1544825952726); // pour simuler une date 
 
@@ -68,6 +67,20 @@ const toCountPublishedContent = ()=>{
     return count
 }
 
+//Function DELETE BOOK
+const toDeleteBook = async (id)=>{
+    var r = window.confirm("Etes-vous sûr de vouloir supprimer votre ouvrage? Cette action est définitive."); 
+    if(r){
+        var deleteBook = await fetch(`/bo/deleteBook/${id}`)
+        var resp= await deleteBook.json()
+        console.log("resp delete",resp)
+        if(resp.result=='ok'){
+            // setDeleteBook(true)
+            return <Redirect to={"/Home"}/>
+        }
+    }
+  
+}
 // var dataBook = {
 //     title : 'Livre 1',
 //     author:'Proust',
@@ -91,7 +104,6 @@ async function loadDataBook(bool,contentId,binContent) {
           }
     );
     var bookDataJson = await bookData.json();
-    console.log("LOAD RETOUR BACK",bookDataJson)
     setDataBook(bookDataJson.dataFromBack)
     setIsPublished(bookDataJson.dataFromBack.status) 
     }  
@@ -109,9 +121,8 @@ useEffect( ()=> {
   
   //ecoute le changement IsPublished du book pour update la bdd
   useEffect( ()=> {
-
       if(isPublished){
-console.log("HOOK nb contenu publié",contentPublishedCount)
+// console.log("HOOK nb contenu publié",contentPublishedCount)
         var count = toCountPublishedContent()
         if(count==0||contentPublishedCount==0){
             alert("Impossible de publier un livre qui ne possède aucun contenu publié")
@@ -133,6 +144,7 @@ const contentToPublish = (bool,content_id) => {
 // gestion de l'overlay form content
 const handleClickOverlayCreaContent = ()=>{
     setIsVisible(false)
+    loadDataBook()
 }
 
 
@@ -228,6 +240,7 @@ if(props.token==""){
                                     style={{fontSize: 30,margin:10}}
                                     onClick = {()=> {setIsVisibleUpdateBook(true)}}
                             />
+                        <DeleteOutlined style={{fontSize: 30,margin:10}} onClick={()=>{toDeleteBook(idBook)}}/>
                     </div> 
                     <div style = {{display:'flex', flexDirection:'column', marginLeft:30,marginTop:10}}> 
                         <div >{dataBook.authors}</div>
@@ -272,4 +285,11 @@ if(props.token==""){
   );
 }}
 
-export default Book;
+function mapStateToProps(state) {
+    return { token: state.token,
+             publisher: state.publisher
+     }
+  }
+  
+  export default connect(mapStateToProps,null)(Book)
+  
