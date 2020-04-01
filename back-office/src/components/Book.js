@@ -66,6 +66,10 @@ const toCountPublishedContent = ()=>{
     console.log("nb de contenu publié",count)
     return count
 }
+    //Recalcule le nb de contenus publiés à chaque refresh de dataBook
+    useEffect(()=>{
+        setContentPublishedCount(toCountPublishedContent())
+    },[dataBook])
 
 //Function DELETE BOOK
 const toDeleteBook = async (id)=>{
@@ -108,10 +112,6 @@ async function loadDataBook(bool,contentId,binContent) {
     setIsPublished(bookDataJson.dataFromBack.status) 
     }  
 
-    //Recalcule le nb de contenus publiés à chaque refresh de dataBook
-    useEffect(()=>{
-        setContentPublishedCount(toCountPublishedContent())
-    },[dataBook])
 
     //
 useEffect( ()=> {
