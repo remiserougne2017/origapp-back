@@ -46,14 +46,14 @@ useEffect(()=>{
     // STYLE VARIABLES: 
 
     let mainTitleStyle = {
-        fontSize:20, 
+        fontSize:22, 
         textAlign:'left',
-        fontSize:40, 
         color: color('red'),
-        padding:5, 
+        paddingTop:5, 
         paddingLeft:50 ,
         marginLeft:30,
         marginBottom:40,
+        marginTop:20,
         borderBottomColor:color('red'),
         borderBottomWidth:3,
         borderBottomStyle:'solid'        // backgroundColor:color('red')
@@ -81,21 +81,19 @@ useEffect(()=>{
 
 var displayBooks = dataBooks.map((book, i) => {
     return (
-        <Col  key={i} xs="12" sm="4" >
+        <Col  key={i} xs="12" sm="6" lg="4" >
             <Link  key={i}
                 to={`/openbook/${book.idBook}`}
                 style={{ textDecoration: 'none' }}
                 >
                 <Card key={i} title={book.title} 
-                    style = {{marginBottom:20,borderRadius:10}}
+                    style = {{marginBottom:20,borderRadius:10, }}
                     hoverable = {true}
                     headStyle = {{backgroundColor:color('red'),color:'white'}}>
                     {/* <p>Dernière modification :{DateFormat(book.lastModified)}</p> */}
-
+                    <Button type="primary" style = {{...buttonStyle}} ><Link to={`/openbook/${book.idBook}`}>Voir</Link></Button>
                     <div style = {{flexDirection:'row',display:'flex', justifyContent:'space-between'}}>
-                        <img src = {book.image} style = {{height:"200px",marginTop:'auto'}} />
-                        
-                        <Button type="primary" style = {{...buttonStyle}} ><Link to={`/openbook/${book.idBook}`}>Voir</Link></Button>
+                        <img src = {book.image} style = {{height:"200px",marginTop:'auto'}} />                        
                     </div>
                 </Card>   
             </Link>     
@@ -109,7 +107,9 @@ var displayBooks = dataBooks.map((book, i) => {
     const handleClickOverlayCreaBook = (bool)=>{
             setVisible(false)
             //recharger la page pour afficher les modifs
-            toLoadBooks()
+            setTimeout(() => {
+                toLoadBooks()
+            }, 1500); 
     }
 
 // RETURN GLOBAL
@@ -118,26 +118,30 @@ if(props.token==""){
     return <Redirect to={"/"}/>
 }else{
   return (
-    <div style = {{backgroundImage: `url(${background})`, height:'100vh'}}>
-        <Header/>
-        {/* <InputFileCustom></InputFileCustom> */}
-        <div style = {{display:'flex',flexDirection: 'column',justifyContent:'left'}}>
-            <div style = {{height:200}}>
-                <div style = {mainTitleStyle}>Tableau de bord</div>
-            </div>
-            <div style = {{display:'flex', flexDirection:'column'}}>
-                <div style = {mainTitleStyle}>Mes livres
+    //   <Container >
+        //   <Row>
+        <div style = {{width:"100%",backgroundColor:"transparent",margin:20}}>
+            <Header/>
+            {/* <InputFileCustom></InputFileCustom> */}
+            <div style = {{display:'flex',flexDirection: 'column',justifyContent:'left',backgroundColor:"white"}}>
+                <div style = {{height:200}}>
+                    <div style = {mainTitleStyle}>Tableau de bord</div>
                 </div>
-                <div style = {{marginLeft:30}}>
-                    <Button style = {{width:'20%',marginTop:20, marginBottom:60,height:50, ...buttonStyle}} type="primary" onClick={()=>{setVisible(true)}}>Ajouter un livre</Button>
-                    <Row>
-                        {displayBooks}
-                    <OverlayForm visible={visible} handleClickParent ={handleClickOverlayCreaBook}/>
-                    </Row>
+                <div style = {{display:'flex', flexDirection:'column'}}>
+                    <div style = {mainTitleStyle}>Mes livres
+                    </div>
+                    <div style = {{margin:30}}>
+                        <Button style = {{marginTop:20, marginBottom:60,height:50, ...buttonStyle}} type="primary" onClick={()=>{setVisible(true)}}>Ajouter un livre</Button>
+                        <Row>
+                            {displayBooks}
+                        <OverlayForm visible={visible} handleClickParent ={handleClickOverlayCreaBook}/>
+                        </Row>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        // </Row>
+    // </Container>
   );
 }}
 

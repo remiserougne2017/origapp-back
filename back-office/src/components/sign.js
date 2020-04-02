@@ -49,7 +49,7 @@ function SignInUp(props) {
       <div style = {{display:'flex',flexDirection:'row', paddingBottom:20, paddingLeft:20,
        paddingTop:20,marginBottom:30, alignItems:'center',borderBottomColor:color('red'),borderBottomWidth:1,borderBottomStyle:'solid'}}>
         <img src={logo} className="App-logo" alt="logo" />
-        <p style = {{fontSize:20, textAlign:'left',fontSize:50, color: color('red'), paddingLeft:30}}> Origapp
+        <p style = {{fontSize:30, textAlign:'left',color: color('red'), paddingLeft:30}}> Origapp
         </p>
       </div>
       {/* SIGN-IN */}
@@ -59,7 +59,7 @@ function SignInUp(props) {
                 
           <Input onChange={(e) => setSignInEmail(e.target.value)} className="Login-input" placeholder="email" />
           <p style={{fontStyle:'italic',color:'red'}}>{errorMess.email?errorMess.email:null}</p>
-          <Input.Password onChange={(e) => setSignInPassword(e.target.value)} className="Login-input" placeholder="password" value={signInPassword} />
+          <Input.Password onChange={(e) => setSignInPassword(e.target.value)} className="Login-input" placeholder="mot de passe" value={signInPassword} />
           <p style={{fontStyle:'italic',color:'red'}}>{errorMess.password?(errorMess.password):null}{errorMess.emptyFieldPwd?(errorMess.emptyFieldPwd):null}</p>
           <Button onClick={() =>{handleSubmitSignin();setSignInPassword('')}}  style={{marginTop:15,width:'20%'}} type="primary">Se connecter</Button>
 

@@ -21,7 +21,6 @@ function Book(props) {
 let mainTitleStyle = {
     fontSize:20, 
     textAlign:'left',
-    fontSize:40, 
     color: color('red'),
     padding:5, 
     paddingLeft:50 ,
@@ -77,10 +76,13 @@ const toDeleteBook = async (id)=>{
     if(r){
         var deleteBook = await fetch(`/bo/deleteBook/${id}`)
         var resp= await deleteBook.json()
-        console.log("resp delete",resp)
+        
         if(resp.result=='ok'){
+            console.log("resp delete",resp)
             // setDeleteBook(true)
-            return <Redirect to={"/Home"}/>
+            return <Redirect to="/Home"/>
+        }else{
+            console.log("resp delete else")
         }
     }
   
@@ -171,7 +173,7 @@ var displayTags = dataBook.category.map((tag, i) => {
         console.log("CREA BOOK")
         setTimeout(() => {
             loadDataBook();
-          }, 3000);
+          }, 1500);
         setIsVisibleUpdateBook(false)     
 }
 //Delete Content
@@ -187,7 +189,7 @@ const deleteContent =(id)=>{
 // affichage des cards contenus
 var displayContents = dataBook.contentData.map((cont, i) => {
     return (
-        <Col xs='12' sm='4' key={i}>
+        <Col xs="12" sm="6" lg="4" key={i}>
         <Card key={i} style={{ borderRadius:10,backgroundColor:'#ECF0F1',marginBottom:20}}>
             <div style={{display:'flex',flexDirection:'column'}}>
                 <div style = {{display:'flex',flexDirection:'row', justifyContent:'space-between',marginBottom:10,alignItems:'center'}}>
@@ -271,7 +273,7 @@ if(props.token==""){
         <div style = {{marginLeft:30}}>
             <Row style = {{display:'flex',flexDirection:'column',marginLeft:20}}>
                 <div style = {mainTitleStyle}>Les contenus associés</div>
-                <Button style = {{width:'20%', margin:30}} type='primary' onClick={()=>{setIsVisible(true);setIdContent('new-content')}}>Ajouter un contenu</Button>
+                <Button style = {{width:'20%', margin:15,padding:5}} type='primary' onClick={()=>{setIsVisible(true);setIdContent('new-content')}}>Ajouter un contenu</Button>
             </Row>
         </div>
         <OverlayContent isVisible = {isVisible} handleClickParent ={handleClickOverlayCreaContent} idBook = {props.match.params.idBook} idContent = {idContent}/>

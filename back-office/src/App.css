@@ -7,6 +7,12 @@
   pointer-events: none;
 }
 
+#root{
+  display: flex;
+  justify-content: center;
+  background-image: url('./origami_background.jpg')
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
