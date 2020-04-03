@@ -8,6 +8,7 @@
 }
 
 #root{
+  height: 100vw;
   display: flex;
   justify-content: center;
   background-image: url('./origami_background.jpg')

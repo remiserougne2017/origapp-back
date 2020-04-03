@@ -13,12 +13,11 @@ function OverlayContent(props) {
 
 const [title,setTitle] = useState('');
 const [page,setPage] = useState('');
-const [errorMEssage,setErrorMessage]=useState({})
+const [errorMEssage,setErrorMessage]=useState('')
 const { Option } = Select;
 const [imageContent,setImageContent]=useState("");
 const [imageContentUrl,setImageContentUrl]=useState("");
 // const [isHidden,setIsHidden]=useState(true);
-
 const [inputMedia, setInputMedia] = useState([{ 
     type: '', 
     title: '',
@@ -87,7 +86,10 @@ let mediaDropdown = mediaType.map((type,j) => {
 
 // Gestion de l'overlay : envoie au DB on ok et cancel
 const handleOk = async () => {
-
+if(title ==""||(imageContent==""||imageContentUrl=="")||
+page==""){
+  setErrorMessage("Le titre, l'image et l'indication de la page sont obligatoires")
+}else{
   props.handleClickParent();
   var data = new FormData();
   let sendContentCreation = {
@@ -119,7 +121,8 @@ const handleOk = async () => {
   setImageContent('');
   setImageContentUrl('')
 
-};  
+};
+}
 
  const handleCancel = () => {
 console.log('cancel')
@@ -238,6 +241,7 @@ const handleInputChange = (index, event,type) => {
             onChange={(e)=>{setImageContentUrl(e.target.value)}}
             value={imageContentUrl}
             />
+            {errorMEssage!=""?<p className="alert">{errorMEssage}</p>:null}
         <Button
             type="primary"
             onClick={() => handleAddFields()}

@@ -226,7 +226,7 @@ if(props.token==""){
 }else{
   return (
     
-    <div style = {{backgroundImage: `url(${background})` }}>
+    <div style={{width:"100%"}}>
         <OverlayForm visible={isVisibleUpdateBook} dataBook={dataBook} handleClickParent ={handleClickOverlayCreaBook}/>
         <Header/>
         <div style = {{marginLeft:10    }}>
