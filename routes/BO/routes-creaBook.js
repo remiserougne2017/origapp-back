@@ -240,7 +240,11 @@ var fileCopy = await req.files.file.mv(path);
         })
 
         //suppression du media dans le dossier temporaire
-        fs.unlinkSync(reqContentDataJson.imageContent);
+        console.log("PATH???",reqContentDataJson.imageContent)
+        if(reqContentDataJson.imageContent){
+          fs.unlinkSync(reqContentDataJson.imageContent);
+        }
+   
       res.json({result:"ok"})
       })
 
@@ -275,7 +279,7 @@ var fileCopy = await req.files.file.mv(path);
     }
  //recup des infos du livres + populate des categories
     var bookOpened = await booksModel.findById(req.body.idBook).populate("category").exec()
-    // console.log("Tags?",bookOpened);
+    console.log("bookOpened content?",bookOpened.content.length);
     let contentData = bookOpened.content.map((cont,k) => {
       let data = {
         contentTitle : cont.title,

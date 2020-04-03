@@ -90,7 +90,7 @@ if(title ==""||(imageContent==""&&imageContentUrl=="")||
 page==""){
   setErrorMessage("Le titre, l'image et l'indication de la page sont obligatoires")
 }else{
-  props.handleClickParent();
+  
   var data = new FormData();
   let sendContentCreation = {
     idBook:props.idBook,
@@ -120,7 +120,7 @@ page==""){
   setPage('');
   setImageContent('');
   setImageContentUrl('')
-
+  props.handleClickParent();
 };
 }
 

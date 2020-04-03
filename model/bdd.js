@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 
 var options = {
-    connectTimeoutMS: 5000,
+    connectTimeoutMS: 6000,
     useNewUrlParser: true,
     useUnifiedTopology: true
 }

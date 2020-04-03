@@ -91,14 +91,15 @@ router.post('/searchTag', async function(req, res, next) {
   }
   if(tagId.length==0){
    var result="Aucune sélection"
-   var allBooks =await booksModel.find()
+   var allBooks =await booksModel.find({ status: true })
     res.json({result,resultMin : allBooks})
   }else{
     var taggedBooks = await booksModel.find(
       {$and:[
-        { category: { $all: tagId } },
-        { status: true }
+        { status: true },
+        { category: { $all: tagId } }
       ]})
+      
       if(taggedBooks.length==0){
       var result="Aucun résultat"
         res.json({result})
@@ -136,8 +137,9 @@ router.post('/searchtext/:id', async function(req, res, next) {
   var userLibrairy = user.myLibrairy                                              //
   var exratio = await booksModel.find(
     {$and:[
+      {status:true},
       { $or: [{ 'title': regex },{ 'authors': regex },{ 'illustrators': regex }]},
-      {status:true}
+     
   ]
     //     { $and:[{ content: { $elemMatch: { _id:reqContentDataJson.idContent} }},{_id:reqContentDataJson.idBook}]},
     // { $set: {"content.$.title": reqContentDataJson.title,
