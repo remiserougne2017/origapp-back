@@ -86,7 +86,7 @@ let mediaDropdown = mediaType.map((type,j) => {
 
 // Gestion de l'overlay : envoie au DB on ok et cancel
 const handleOk = async () => {
-if(title ==""||(imageContent==""||imageContentUrl=="")||
+if(title ==""||(imageContent==""&&imageContentUrl=="")||
 page==""){
   setErrorMessage("Le titre, l'image et l'indication de la page sont obligatoires")
 }else{

@@ -12,7 +12,6 @@ import background from '../origami_background.jpg';
 import {connect} from 'react-redux';
 import OverlayForm from './Overlay-creaBook';
 
-
 function Book(props) {
 
 
@@ -79,7 +78,7 @@ const toDeleteBook = async (id)=>{
         
         if(resp.result=='ok'){
             console.log("resp delete",resp)
-            // setDeleteBook(true)
+            setDeleteBook(true)
             return <Redirect to="/Home"/>
         }else{
             console.log("resp delete else")
@@ -118,6 +117,7 @@ async function loadDataBook(bool,contentId,binContent) {
     //
 useEffect( ()=> {
     setIdBook(props.match.params.idBook)
+    console.log('usefeffect LOAD')
     loadDataBook();
   },[isVisible])
   
@@ -146,7 +146,10 @@ const contentToPublish = (bool,content_id) => {
 // gestion de l'overlay form content
 const handleClickOverlayCreaContent = ()=>{
     setIsVisible(false)
-    loadDataBook()
+// console.log('TIME OUT LOAD NEW CONTENT')
+//     setTimeout(() => {
+//         loadDataBook()
+//     }, 1500);
 }
 
 
@@ -172,8 +175,8 @@ var displayTags = dataBook.category.map((tag, i) => {
     const handleClickOverlayCreaBook = (bool)=>{
         console.log("CREA BOOK")
         setTimeout(() => {
-            loadDataBook();
-          }, 1500);
+            loadDataBook(null);
+          }, 3000);
         setIsVisibleUpdateBook(false)     
 }
 //Delete Content
@@ -223,6 +226,9 @@ var displayContents = dataBook.contentData.map((cont, i) => {
 if(props.token==""){
     console.log("TOKEN 2 ?",props.token)
     return <Redirect to={"/"}/>
+}else if(deleteBook){
+    setDeleteBook(false)
+    return <Redirect to='/Home'/>
 }else{
   return (
     

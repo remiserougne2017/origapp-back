@@ -65,8 +65,7 @@ if(regexEmail.test(testEmail) != true){
       token: uid2(32),
       myLibrairy: [],
       lastRead: [],
-      comments: [],
-      publisher:""
+      comments: []
     })
   
       saveUser = await newUser.save()

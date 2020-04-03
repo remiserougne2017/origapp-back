@@ -251,7 +251,7 @@ var fileCopy = await req.files.file.mv(path);
 
   router.post('/loadBook/:bool/:contentId/:delete', async function(req,res,next){
     console.log('LoadBook params',req.params,req.body)
-    if(req.params.bool != "undefined"){
+    if(req.params.bool != "undefined"||req.params.bool==null){
       console.log('update boucle')
       if(req.params.contentId != "undefined"){
         await booksModel.updateOne(
@@ -307,7 +307,7 @@ var fileCopy = await req.files.file.mv(path);
       category:bookOpened.category
     }
 
-   console.log("BACK tO FRONT Image?",dataToFront.coverImage);
+   console.log("BACK tO FRONT Image?",dataToFront);
   res.json({result:"ok",dataFromBack:dataToFront})
     })   
 
