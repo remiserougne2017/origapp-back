@@ -23,8 +23,7 @@ const [inputMedia, setInputMedia] = useState([{
     title: '',
     text:'',
     sourceUrl:'',
-    sourceBase64:'',
-    duration:'',
+    sourceBase64:''
      }
   ])
   const [inputIndex,setInputIndex]=useState()
@@ -46,8 +45,7 @@ useEffect( ()=> {
         title: '',
         text:'',
         sourceUrl:'',
-        sourceBase64:'',
-        duration:'',
+        sourceBase64:''
          }])
     } else {
       var contentData = await fetch(`/bo/editContent`, { 
@@ -57,7 +55,7 @@ useEffect( ()=> {
             }
       );
       var contentDataJson = await contentData.json();
-      // console.log("//////////////////////",contentDataJson.dataFromBack)
+      console.log(props.idBook,props.idContent,"//////////////////////",contentDataJson)
       if(contentDataJson.dataFromBack !== undefined) {
         setTitle(contentDataJson.dataFromBack.title);
         setPage(contentDataJson.dataFromBack.page);
@@ -67,7 +65,8 @@ useEffect( ()=> {
 
       }   
     }
-      editContent();
+  console.log('EDIT CONTENT',props.idBook,props.idContent)
+  editContent();
 },[props.isVisible])
 
 
@@ -114,7 +113,6 @@ page==""){
     text:'',
     sourceUrl:'',
     sourceBase64:'',
-    duration:'',
      }]);
   setTitle('');
   setPage('');
@@ -139,11 +137,9 @@ const handleInputChange = (index, event,type) => {
     const copyInputMedia = [...inputMedia];
     if(event.target == undefined) { // correspond au type de media envoyé (le champ select fonctoinne differement du champs input) ici event est en fait la valeur séléctionné par le user
         copyInputMedia[index].type = event;
-        copyInputMedia[index].sourceUrl = '';
-        copyInputMedia[index].duration = ''
+        copyInputMedia[index].sourceUrl = ''
         copyInputMedia[index].sourceBase64 = ''
         copyInputMedia[index].text = '';
-
     }
     else { // correspond aux autres inputds du formulaire
     
@@ -159,15 +155,9 @@ const handleInputChange = (index, event,type) => {
         case 'mediaText': 
         copyInputMedia[index].text = event.target.value;
         break;
-    
-        case 'mediaDuration':
-        copyInputMedia[index].duration = event.target.value;
-        break;
-
         case 'mediaType':
         copyInputMedia[index].type = event.target.value;
         break;
-
         default:
         console.log("ERROR")
     }
@@ -184,7 +174,6 @@ const handleInputChange = (index, event,type) => {
       text:'',
       sourceUrl:'',
       sourceBase64:'',
-      duration:'',
        });
     setInputMedia(copyInputMedia);
   };
@@ -207,7 +196,6 @@ const handleInputChange = (index, event,type) => {
     }
     if(type == 'sourceContent') {
       setImageContent(img);
-  
     }
 
   }
@@ -274,6 +262,7 @@ const handleInputChange = (index, event,type) => {
                 <div>
                     <p className="form" >Type de media</p>
                     <Select
+                        style={{ width: 120 }}
                         name = 'mediaType'
                         defaultValue="Selectionner"
                         onChange={value => handleInputChange(index, value,inputField.type)}
@@ -317,18 +306,6 @@ const handleInputChange = (index, event,type) => {
                       <Upload dataSource={e => {console.log("index, source media",inputIndex,sourceFormType);dataFieldSource(e,sourceFormType)}}></Upload>
                       {/* <InputFileCustom dataSource={e => {console.log("index, source media",inputIndex,sourceFormType);dataFieldSource(e,sourceFormType)}}></InputFileCustom> */}
                   </div>
-                <div
-                    hidden = {isHiddenSourceNeeded} 
-                    >
-                    <p className="form" style = {{marginTop:20}} >Duration</p>
-                    <Input
-                        type="text"
-                        name = 'mediaDuration'
-                        onChange={event => handleInputChange(index, event,inputField.type)}
-                        value={inputField.duration}
-                        />
-                </div>
-
               </div>
             </Fragment>
           ))}

@@ -23,6 +23,7 @@ const contentSchema = mongoose.Schema({
     pageNum: String,
     status: Boolean,
     media: [mediaSchema],
+    mediaCount :Number
 
 })
 
@@ -44,7 +45,8 @@ const booksSchema = mongoose.Schema({
     viewsCount: Number,
     content: [contentSchema],
     publisher: {type: mongoose.Schema.Types.ObjectId, ref:"publishers"},
-    comments: [commentsSchema]
+    comments: [commentsSchema],
+    
 })
 
 var booksModel = mongoose.model('books', booksSchema);

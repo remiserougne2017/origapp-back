@@ -61,7 +61,6 @@ const toCountPublishedContent = ()=>{
         if(e.contentStatus == true){
             count ++       };
     })
-    console.log("nb de contenu publié",count)
     return count
 }
     //Recalcule le nb de contenus publiés à chaque refresh de dataBook
@@ -77,11 +76,7 @@ const toDeleteBook = async (id)=>{
         var resp= await deleteBook.json()
         
         if(resp.result=='ok'){
-            console.log("resp delete",resp)
             setDeleteBook(true)
-            return <Redirect to="/Home"/>
-        }else{
-            console.log("resp delete else")
         }
     }
   
@@ -117,14 +112,12 @@ async function loadDataBook(bool,contentId,binContent) {
     //
 useEffect( ()=> {
     setIdBook(props.match.params.idBook)
-    console.log('usefeffect LOAD')
     loadDataBook();
   },[isVisible])
   
   //ecoute le changement IsPublished du book pour update la bdd
   useEffect( ()=> {
       if(isPublished){
-// console.log("HOOK nb contenu publié",contentPublishedCount)
         var count = toCountPublishedContent()
         if(count==0||contentPublishedCount==0){
             alert("Impossible de publier un livre qui ne possède aucun contenu publié")
@@ -139,17 +132,25 @@ useEffect( ()=> {
 
 //Gestion de la publication des contenus
 const contentToPublish = (bool,content_id) => {
-    loadDataBook(bool,content_id)
+    if(bool){
+    dataBook.contentData.forEach(e => {
+        if(e.content_id == content_id){
+            if(e.mediaCount==0){
+            alert("Impossible de publier un contenu qui ne possède aucun media")
+        }else{
+            loadDataBook(bool,content_id)
+        }
+     }
+    });
+    }else{
+        loadDataBook(bool,content_id)
+    }
 }
 
 
 // gestion de l'overlay form content
 const handleClickOverlayCreaContent = ()=>{
     setIsVisible(false)
-// console.log('TIME OUT LOAD NEW CONTENT')
-//     setTimeout(() => {
-//         loadDataBook()
-//     }, 1500);
 }
 
 
@@ -173,7 +174,6 @@ var displayTags = dataBook.category.map((tag, i) => {
 
 // GESTION DE L'OVERLAY Crea book
     const handleClickOverlayCreaBook = (bool)=>{
-        console.log("CREA BOOK")
         setTimeout(() => {
             loadDataBook(null);
           }, 3000);
@@ -183,8 +183,7 @@ var displayTags = dataBook.category.map((tag, i) => {
 const deleteContent =(id)=>{
     var r = window.confirm("Etes-vous sûr de vouloir supprimer ce contenu? Cette action est définitive."); 
     if(r){
-      console.log("ok alert");
-      loadDataBook('undefined',id,true)
+        loadDataBook('undefined',id,true)
     }
 }
 
@@ -210,7 +209,7 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                         {/* <EyeOutlined style={{fontSize: 30,margin:10}}/> */}
                         <EditOutlined 
                             style={{fontSize: 30,margin:10}}
-                            onClick = {()=> {setIdContent(cont.content_id);console.log('////// BOOK',cont.content_id);setIsVisible(true)}}
+                            onClick = {()=> {setIdContent(cont.content_id);setIsVisible(true)}}
                             />
                         <DeleteOutlined style={{fontSize: 30,margin:10}} onClick={()=>{deleteContent(cont.content_id)}}/>
                     </div>
@@ -224,7 +223,6 @@ var displayContents = dataBook.contentData.map((cont, i) => {
 
 // return  global 
 if(props.token==""){
-    console.log("TOKEN 2 ?",props.token)
     return <Redirect to={"/"}/>
 }else if(deleteBook){
     setDeleteBook(false)

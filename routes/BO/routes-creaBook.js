@@ -15,7 +15,6 @@ var request = require('sync-request');
 
 //Route récup des tags pour affichage
 router.get('/tags', async function(req, res, next) {
- console.log("TAGS!!")
   var tags = await tagsModel.find()
   console.log("TAGS!!",tags)
     res.json({"tags":tags})
@@ -25,7 +24,6 @@ router.get('/tags', async function(req, res, next) {
 router.get('/home/:publisher', async function(req, res, next) {
 
   var listBooks = await booksModel.find({publisher :req.params.publisher})
-  console.log("HOME BO!! listBooks",listBooks)
   var dataBookHome = listBooks.map(b=>{
     var book = 
        {
@@ -44,13 +42,11 @@ router.get('/home/:publisher', async function(req, res, next) {
 
 //ROUTE CREA BOOK 
 router.post('/creaBook/:publisher', async function(req,res,next){
-console.log("IMAGE CREABOOK",req.body)
 
 // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
 var imageUrl=req.body.img
   if (req.body.image64 != "undefined"){
     var resultCloudinary = await cloudinary.uploader.upload(req.body.image64, function(error, result){
-      console.log("Router Cloud UPDATE? ",result, error)
       if(result){
         imageUrl = result.url 
       }
@@ -59,7 +55,6 @@ var imageUrl=req.body.img
   }
   var category
   req.body.category.split(',')[0] !=''?category =  req.body.category.split(','):category =[]
-  console.log("CAte?", req.body.category.split(',')[0] !='')
     var newBook = await booksModel({
         title:req.body.title,
         description: req.body.desc,
@@ -71,16 +66,13 @@ var imageUrl=req.body.img
         publisher:req.params.publisher
     })
     var bookSave = await newBook.save()
-    console.log("SAVE?",bookSave)
 res.json({result:"ok",imageUrl})
 })
 
 //DELETE book
 router.get('/deleteBook/:idBook', async function(req,res,next){
-  console.log("delete CREABOOK",req.params)
   var result="ko"
   var deleteBook = await booksModel.deleteOne({_id : req.params.idBook})
-  console.log("DELETE BOOK",deleteBook)
   if(deleteBook){
     result="ok"
   }
@@ -91,20 +83,16 @@ router.get('/deleteBook/:idBook', async function(req,res,next){
 //UPDATE BOOK
 router.post('/updateBook/:bookId', async function(req,res,next){
   var result="ko"
-  console.log("updateBook? ",req.body,req.params,req.body.category.split(','))
   // test base 64 cloudinary +> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
 var imageUrl=req.body.img
   if (req.body.image64 != "undefined"){
-    console.log("Cloud UPDATE img? ",req.body.image64)
     var resultCloudinary = await cloudinary.uploader.upload(req.body.image64, function(error, result){
-      console.log("Router Cloud UPDATE? ",result, error)
       if(result){
         imageUrl = result.url 
       }
          
     });
   }
-  console.log("image to bdd",imageUrl)
       var updateBook = await booksModel.updateOne({_id:req.params.bookId},
         {
           title:req.body.title,
@@ -115,7 +103,6 @@ var imageUrl=req.body.img
           category: req.body.category.split(',')
       })
     result="ok"
-      console.log("updateBook?",updateBook)
       fs.unlinkSync(req.body.image64);
   res.json({result})
   })
@@ -123,9 +110,7 @@ var imageUrl=req.body.img
 
 
 router.post('/upload', async function(req,res,next){
-console.log("Upload BODY?", req.body," Upload FILES?",req.files.file)
 var path = './tmp/'+req.files.file.name
-console.log("WHAT DATA IMAGE!!",path)
 var fileCopy = await req.files.file.mv(path);
 
     // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
@@ -136,18 +121,21 @@ var fileCopy = await req.files.file.mv(path);
 
   router.post('/saveContent', async function(req,res,next){
       let message;
-      console.log("Router cover image ? ",req.body )
+      var mediaCount
       // JSON body
       let reqContentDataJson = JSON.parse(req.body.contentData);
-      
+      console.log("CONTENTU?",reqContentDataJson)
+      if(/*reqContentDataJson.media[0].type==''||*/reqContentDataJson.media.length==0){
+        mediaCount=0
+      }else{
+        mediaCount =1
+      }
       // IMAGE DE CONTENU
       let imageContentUrl;
-      // console.log("coverimage",reqContentDataJson.imageContent)
       if((reqContentDataJson.imageContent=='')||(reqContentDataJson.imageContent == undefined)) {
         imageContentUrl = reqContentDataJson.imageContentUrl
       } else {
               var resultCloudinary = await cloudinary.uploader.upload(reqContentDataJson.imageContent, function(error, result){
-          console.log("Router cover image ? ",result, error)
         });
         imageContentUrl = resultCloudinary.url
       }
@@ -156,6 +144,7 @@ var fileCopy = await req.files.file.mv(path);
       const mediaData = async () => {
         return Promise.all(reqContentDataJson.media.map( async (obj,j) => { 
           let media;  
+       
           if((obj.type == 'text')||(obj.type == 'quote')) { // a terme mettre un switch si les objets différent beacuoup
             media = {
               title:obj.title,
@@ -177,12 +166,10 @@ var fileCopy = await req.files.file.mv(path);
               else {
                 if(obj.type == "image") {
                   var resultCloudinary = await cloudinary.uploader.upload(obj.sourceBase64, function(error, result){
-                  console.log("Router image media ? ",result, error)
                   });
                 }  
                 if((obj.type == "video")||(obj.type =="audio")) {
                   var resultCloudinary = await cloudinary.uploader.upload(obj.sourceBase64,{ resource_type: "video" },function(error, result){
-                  console.log("Router video audio? ",result, error)
                   });
                 }
                 sourceMedia = resultCloudinary.url 
@@ -204,17 +191,18 @@ var fileCopy = await req.files.file.mv(path);
         // SAVE ET UPDATE EN DB 
         mediaData().then(async (data) => {
           if(reqContentDataJson.idContent == 'new-content') {
+            console.log('NwContent!',mediaCount)
               var bookAdding = await booksModel.findById(reqContentDataJson.idBook);
               bookAdding.content.push({
                 title:reqContentDataJson.title,
                 pageNum:reqContentDataJson.page,
                 imageContent:imageContentUrl,
                 media:data,
-                status:false
+                status:false,
+                mediaCount : mediaCount
               })
               await bookAdding.save();
             } else {
-              // console.log('///////////////////// HELLO I AM UPDATINF')
               // var bookUpdate = await booksModel.findOneAndUpdate(
               //   { $and:[{ content: { $elemMatch: { _id:reqContentDataJson.idContent} }},{_id:reqContentDataJson.idBook}]},
               //   { $set: {"content.$.title": reqContentDataJson.title,
@@ -226,12 +214,18 @@ var fileCopy = await req.files.file.mv(path);
 
               var bookUpdated = await booksModel.findOne({_id:reqContentDataJson.idBook});
               for (let i=0;i<bookUpdated.content.length;i++) {
+
                   if(bookUpdated.content[i]._id == reqContentDataJson.idContent) {
+                    var contentStatus
+                    mediaCount==0?contentStatus=false:contentStatus=bookUpdated.content[i].status
                       bookUpdated.content[i].title = reqContentDataJson.title;
                       bookUpdated.content[i].pageNum = reqContentDataJson.page;
                       bookUpdated.content[i].imageContent = imageContentUrl;
-                      bookUpdated.content[i].media = data // pb : je pense qu'on écrase les media précédents (donc pas de suivi des id)
-                  }
+                      bookUpdated.content[i].media = data; // pb : je pense qu'on écrase les media précédents (donc pas de suivi des id)
+                      bookUpdated.content[i].mediaCount = mediaCount;
+                      bookUpdated.content[i].status = contentStatus;
+
+                    }
               }
 
               await bookUpdated.save()
@@ -240,7 +234,6 @@ var fileCopy = await req.files.file.mv(path);
         })
 
         //suppression du media dans le dossier temporaire
-        console.log("PATH???",reqContentDataJson.imageContent)
         if(reqContentDataJson.imageContent){
           fs.unlinkSync(reqContentDataJson.imageContent);
         }
@@ -248,15 +241,9 @@ var fileCopy = await req.files.file.mv(path);
       res.json({result:"ok"})
       })
 
-
-
-
-
-
   router.post('/loadBook/:bool/:contentId/:delete', async function(req,res,next){
-    console.log('LoadBook params',req.params,req.body)
+ 
     if(req.params.bool != "undefined"||req.params.bool==null){
-      console.log('update boucle')
       if(req.params.contentId != "undefined"){
         await booksModel.updateOne(
           {_id: req.body.idBook,"content._id":req.params.contentId},
@@ -271,7 +258,6 @@ var fileCopy = await req.files.file.mv(path);
        
     }
    if(req.params.delete=="true"){
-      console.log("DELETE",req.params.delete)
       await booksModel.updateOne(
         {_id: req.body.idBook},
         { $pull: {content : {_id : req.params.contentId}}}
@@ -279,14 +265,20 @@ var fileCopy = await req.files.file.mv(path);
     }
  //recup des infos du livres + populate des categories
     var bookOpened = await booksModel.findById(req.body.idBook).populate("category").exec()
-    console.log("bookOpened content?",bookOpened.content.length);
     let contentData = bookOpened.content.map((cont,k) => {
+      var contentStatus
+      if(cont.mediaCount==0){
+        contentStatus = false
+      }else{
+        contentStatus=cont.status
+      }
       let data = {
         contentTitle : cont.title,
         contentImage:cont.imageContent,
         contentPage: cont.pageNum,
         contentStatus:cont.status,
-        content_id:cont._id
+        content_id:cont._id,
+        mediaCount : cont.mediaCount
       }
       return data
     })
@@ -311,58 +303,67 @@ var fileCopy = await req.files.file.mv(path);
       category:bookOpened.category
     }
 
-   console.log("BACK tO FRONT Image?",dataToFront);
   res.json({result:"ok",dataFromBack:dataToFront})
     })   
 
 
  router.post('/editContent', async function(req,res,next){
+   
       var bookEdited = await booksModel.findById(req.body.idBook);
-      // console.log("/////////////////",req.body)
       let dataToFront;
       let mediaData;
+      var mediaCount;
+      console.log("EDIT",bookEdited)
       if(req.body.idBook == "new-content") {
         dataToFront = {
           title :"",
           page:'',
           imageContent:'',
-          inputMedia:{ 
-            type: '', 
-            title: '',
-            text:'',
-            sourceUrl:'',
-            sourceBase64:'',
-            duration:'',
-             }
+          // inputMedia:{ 
+          //   type: '', 
+          //   title: '',
+          //   text:'',
+          //   sourceUrl:'',
+          //   sourceBase64:'',
+          //   duration:'',
+          //    }
         }
       } else {
         for(let i=0;i<bookEdited.content.length;i++){
           if(bookEdited.content[i]._id == req.body.idContent) {
-            mediaData = bookEdited.content[i].media.map((med,k) =>{
-              media = {
-                type: med.type, 
-                title: med.title,
-                text:med.texte,
-                sourceUrl:med.source,
-                duration:med.duration,
-              }
-              return media
-            })
+          
+            if(bookEdited.content[i].media[0] !=null){
+              mediaCount = 1
+              mediaData = bookEdited.content[i].media.map((med,k) =>{
+                media = {
+                  type: med.type, 
+                  title: med.title,
+                  text:med.texte,
+                  sourceUrl:med.source,
+                  duration:med.duration,
+                }
+                return media
+              });
+            }else{
+              mediaData = []
+              mediaCount = 0
+            };
+
             dataToFront = {
+              id:  bookEdited.content[i]._id,
               title: bookEdited.content[i].title,
               page:bookEdited.content[i].pageNum,
               imageContent:bookEdited.content[i].imageContent,
               mediaData:mediaData,
+              mediaCount : mediaCount
             }
 
 
 
           }
         }
-      // console.log("contentdata",dataToFront)        
-
     }
-      
+      console.log("Data EDIT CONTENT",dataToFront)
     res.json({result:"ok",dataFromBack:dataToFront})
     })
 
