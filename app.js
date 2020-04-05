@@ -6,12 +6,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose=require('./model/bdd');
 
+//routes
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
-
-//routes
 var homeRouter = require('./routes/home');
 var booksRouter = require('./routes/books');
 var listsRouter = require('./routes/lists');
@@ -33,7 +31,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'back-office/build')));
 // app.use(cors());
-app.use('/', indexRouter);
+app.use('/', usersRouter);
 app.use('/users', usersRouter);
 app.use('/lists',listsRouter);
 app.use('/books',booksRouter);
