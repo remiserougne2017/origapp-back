@@ -37,8 +37,8 @@ router.get('/homePage/:token', async function(req, res, next) {
 /*  // Generation des livres mieux notés
  var livresMieuxNotes = [] */
  
-  var catalogue = await booksModel.find({status:true})
-
+  var catalogue = await booksModel.find({status:true}).populate('publisher').exec();
+console.log("catalogue?",catalogue)
  if (catalogue.length>0) {
    result="ok"
   for (let i=0; i<catalogue.length; i++){
@@ -54,7 +54,8 @@ router.get('/homePage/:token', async function(req, res, next) {
       authors: catalogue[i].authors,
       illustrators: catalogue[i].illustrators,
       rating: catalogue[i].rating,
-      inLibrairy: bool
+      inLibrairy: bool,
+      publisher : catalogue[i].publisher.name
     });
   }
 

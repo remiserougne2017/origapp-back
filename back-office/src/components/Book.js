@@ -204,7 +204,7 @@ var displayContents = dataBook.contentData.map((cont, i) => {
                     {/* <Button type='primary'  >{JSON.stringify(cont.contentStatus)}</Button> */}
                 </div>
                 <div style = {{display:'flex',flexDirection:'row',marginBottom:10,alignItems:'center'}}>
-                    <Tag color={color('blue')} style ={{borderRadius:5, width:60,marginRight:'auto'}}>page {cont.contentPage}</Tag>
+                    <Tag color={color('blue')} style ={{borderRadius:5, width:60,marginRight:'auto'}}>{cont.contentPage}</Tag>
                     <div style={{marginLeft:'auto'}}>
                         {/* <EyeOutlined style={{fontSize: 30,margin:10}}/> */}
                         <EditOutlined 
