@@ -311,7 +311,7 @@ const handleInputChange = (index, event,type) => {
           ))}
           )}
     </div>
-    <div>hello Content in creation   {JSON.stringify({
+    {/* <div>hello Content in creation   {JSON.stringify({
         title:title,
         imageContent:imageContent,
         imageContentUrl:imageContentUrl,
@@ -319,7 +319,7 @@ const handleInputChange = (index, event,type) => {
         media:inputMedia
     }
         )}
-</div>
+</div> */}
 </Modal>
       )
 };
