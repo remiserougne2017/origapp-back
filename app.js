@@ -14,7 +14,7 @@ var homeRouter = require('./routes/home');
 var booksRouter = require('./routes/books');
 var listsRouter = require('./routes/lists');
 var scanRouter = require('./routes/scan');
-var backOfficeRouter = require('./routes/bo/routes-creaBook');
+var backOfficeRouter = require('./routes/BO/routes-creaBook');
 
 var app = express();
 app.use(fileUpload());
