@@ -2036,7 +2036,7 @@ console.log("OPEN BOOK",req.body)
   }
   
   // ENVOYER AU FRONT les datas du livre
-  var bookOpened = await booksModel.findOne({_id:req.body.idBook});
+  var bookOpened = await booksModel.findOne({_id:req.body.idBook}).populate('publisher').exec();
 // console.log('bookOpened',bookOpened)
 let arrayContent = [];
 
@@ -2073,6 +2073,7 @@ let dataBook = {
     rating:bookOpened.rating,
     votes:bookOpened.votesCount,
     contents:arrayContent,
+    publisher:bookOpened.publisher.name
   }
 
   
