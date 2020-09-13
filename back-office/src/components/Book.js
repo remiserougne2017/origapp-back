@@ -53,7 +53,6 @@ const [deleteBook,setDeleteBook]=useState(false)
 
 var date = new Date(1544825952726); // pour simuler une date 
 
-
 //function qui compte le nb de contenu publié
 const toCountPublishedContent = ()=>{
     var count =0
@@ -132,8 +131,10 @@ useEffect( ()=> {
 
 //Gestion de la publication des contenus
 const contentToPublish = (bool,content_id) => {
+    
     if(bool){
     dataBook.contentData.forEach(e => {
+        console.log('CONTENU?',bool,content_id,e.mediaCount)
         if(e.content_id == content_id){
             if(e.mediaCount==0){
             alert("Impossible de publier un contenu qui ne possède aucun media")

@@ -242,7 +242,7 @@ var fileCopy = await req.files.file.mv(path);
       })
 
   router.post('/loadBook/:bool/:contentId/:delete', async function(req,res,next){
- 
+ console.log('LOAD BOOK',req.params)
     if(req.params.bool != "undefined"||req.params.bool==null){
       if(req.params.contentId != "undefined"){
         await booksModel.updateOne(
@@ -332,7 +332,7 @@ var fileCopy = await req.files.file.mv(path);
         for(let i=0;i<bookEdited.content.length;i++){
           if(bookEdited.content[i]._id == req.body.idContent) {
           
-            if(bookEdited.content[i].media[0] !=null){
+            if(bookEdited.content[i].media[0]){
               mediaCount = 1
               mediaData = bookEdited.content[i].media.map((med,k) =>{
                 media = {
