@@ -5,8 +5,9 @@ var router = express.Router();
 var booksModel = require('../model/books')
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+
+router.get('/regles-de-confidentialite', async function(req, res, next) {
+    res.render('index');
+  });
 
 module.exports = router;
