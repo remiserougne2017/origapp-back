@@ -1,5 +1,6 @@
 const Ip = () => {
-    return 'http://192.168.43.90:3000'
+    return "https://back-origapp.herokuapp.com/"
+    //'http://192.168.43.90:3000'
     //"http://192.168.43.22:3000"
     //192.168.43.22
 
