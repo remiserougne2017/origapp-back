@@ -71,8 +71,9 @@ console.log("FETCH UPDATE OU CREA?",fetchRoute)
 }
 
 const handleOk = async () => {
-  if (title == ""|| desc==""||authors==""||(image==""||urlImage=="")){
-    console.log("erreru champs obl")
+    console.log("fiel obl",title,desc,authors,image,urlImage)
+  if (title == ""|| desc==""||authors==""||(image=="" && urlImage=="")){
+    console.log("erreur champs obl")
     setErrorMessage({...errorMEssage, title :"Le titre, le(s) auteur(s), une image et une description sont obligatoires"})
   }else{
     creaUpdateBook()

@@ -17,14 +17,15 @@ function SignInUp(props) {
  
 
   var handleSubmitSignin = async () => {
+    console.log("HEY!!")
  
     const data = await fetch('users/sign-in', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `email=${signInEmail}&password=${signInPassword}&from=web`
     })
-
-    const body = await data.json()
+    
+    let body = await data.json()
     console.log("RESP SIGN",body)
     if(body.result == true){
     //   props.addToken(body.token)

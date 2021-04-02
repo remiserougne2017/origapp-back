@@ -103,6 +103,7 @@ async function loadDataBook(bool,contentId,binContent) {
           }
     );
     var bookDataJson = await bookData.json();
+    console.log("bookDataJson",bookDataJson)
     setDataBook(bookDataJson.dataFromBack)
     setIsPublished(bookDataJson.dataFromBack.status) 
     }  
@@ -176,7 +177,8 @@ var displayTags = dataBook.category.map((tag, i) => {
 // GESTION DE L'OVERLAY Crea book
     const handleClickOverlayCreaBook = (bool)=>{
         setTimeout(() => {
-            loadDataBook(null);
+            // loadDataBook(null);
+            loadDataBook();
           }, 3000);
         setIsVisibleUpdateBook(false)     
 }

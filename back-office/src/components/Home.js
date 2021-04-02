@@ -7,9 +7,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'reactstrap';
 import OverlayForm from './Overlay-creaBook';
 import Header from './Header';
-import color from './color';
 import background from '../origami_background.jpg';
 import {connect} from 'react-redux';
+import color from './color'
 
 
 function Home(props) {
@@ -48,22 +48,18 @@ useEffect(()=>{
     let mainTitleStyle = {
         fontSize:22, 
         textAlign:'left',
-        color: color('red'),
         paddingTop:5, 
         paddingLeft:50 ,
         marginLeft:30,
         marginBottom:40,
         marginTop:20,
-        borderBottomColor:color('red'),
         borderBottomWidth:3,
         borderBottomStyle:'solid'        // backgroundColor:color('red')
     }
         
     let buttonStyle = {
-        backgroundColor:color('blue'),
-        borderColor:color('blue')
-    
-    
+        backgroundColor:"blue",
+        borderColor:"blue"
     }
 
 // converti timestamp au format date dd/mm/yyyy

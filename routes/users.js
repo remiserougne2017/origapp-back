@@ -2,9 +2,8 @@ var express = require('express');
 var router = express.Router();
 var usersModel = require('../model/users');
 const nodemailer = require("nodemailer");
-var email = require('../model/email.js')
+var email = require('../email.js')
 var cred = email.cred()
-console.log('CRED',cred)
 
 // CryptotF3wu5s5ND0D5W3jSQ4NATIjdyRTj1tA
 var uid2 = require('uid2')
