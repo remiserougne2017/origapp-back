@@ -80,6 +80,7 @@ router.get('/deleteBook/:idBook', async function(req,res,next){
   
   res.json({result})
   })
+
 //UPDATE BOOK
 router.post('/updateBook/:bookId', async function(req,res,next){
   var result="ko"
@@ -89,6 +90,8 @@ var imageUrl=req.body.img
     var resultCloudinary = await cloudinary.uploader.upload(req.body.image64, function(error, result){
       if(result){
         imageUrl = result.url 
+      }else{
+          console.log("error upload cloudinary",error)
       }
          
     });
@@ -110,13 +113,14 @@ var imageUrl=req.body.img
 
 
 router.post('/upload', async function(req,res,next){
-var path = './tmp/'+req.files.file.name
-var fileCopy = await req.files.file.mv(path);
-
+    // ./tmp en dev
+    // var path = './tmp/'+req.files.file.name
+    // /tmp pour la prod
+    var path = '/tmp/'+req.files.file.name;
+    await req.files.file.mv(path);
     // var resultCloudinary = await cloudinary.uploader.upload(req.body.thumbUrl)
-    
     res.json({status:"done",imagePath : path})
-    })
+})
     
 
   router.post('/saveContent', async function(req,res,next){
